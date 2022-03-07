@@ -126,6 +126,10 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+tbody {
+  tr:hover {
+    background-color: transparent !important;
+  }
+}
 </style>

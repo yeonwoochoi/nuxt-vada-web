@@ -1,10 +1,10 @@
 <template>
-  <p></p>
+  <p>join-information</p>
 </template>
 
 <script>
 export default {
-  name: "index"
+  name: "join-information"
 }
 </script>
 

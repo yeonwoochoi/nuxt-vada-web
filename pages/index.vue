@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-container style="height: fit-content; margin-bottom: 100px;">
-      <v-row align="center" :justify="`${isMobile ? 'start' : 'space-around'}`" :class="`${isMobile ? 'mx-9' : ''}`">
-        <v-col cols="12" md="6" lg="5" style="text-align: start" class="pr-8">
+    <v-container style="height: fit-content; margin-bottom: 100px; padding: 0px 50px 50px;">
+      <v-row align="center" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-9' : ''}`">
+        <v-col cols="12" lg="5" xl="4" style="text-align: start">
           <div :style="`font-size: ${breakpoint === 'xs' ? 29 : 36}px; line-height: 45px`">
             <p class="font-weight-medium mb-1">{{ companyIntroHeader1 }}</p>
             <p class="font-weight-black">{{ companyIntroHeader2 }}</p>
@@ -22,21 +22,21 @@
             <v-icon class="ml-3" :small="breakpoint === 'xs'">mdi-arrow-right</v-icon>
           </v-btn>
         </v-col>
-        <v-col cols="11" md="6" lg="7">
+        <v-col cols="12" md="12" lg="7" xl="6">
           <v-img :src="companyIntroImg" contain/>
         </v-col>
       </v-row>
     </v-container>
-    <v-img :src="techIntroImg" style="min-height: 600px; height: fit-content; margin-top: 100px; margin-bottom: 100px">
+    <v-img :src="techIntroImg" style="min-height: 600px; max-height: 800px; height: fit-content; margin-top: 100px; margin-bottom: 100px; padding: 100px;">
       <v-row align="center" justify="end" style="height: 100%">
-        <v-col cols="10" sm="7" md="6" lg="5">
+        <v-col cols="12" md="6" lg="5">
           <div style="text-align: start;">
             <div class="my-6">
               <div
                 v-for="(text, i) in techIntroHeaders"
                 :key="`tech-header-${i}`"
                 class="font-weight-regular white--text"
-                :style="`font-size: ${isMobile ? 35 : 45}px; line-height: ${isMobile? 45 : 55}px`"
+                :style="`font-size: ${techFontSize.fontSize}px; line-height: ${techFontSize.lineHeight}px`"
               >
                 <p v-text="text" class="mb-0"/>
               </div>
@@ -46,7 +46,7 @@
                 v-for="(text, i) in techIntroContents"
                 :key="`tech-content-${i}`"
                 class="ml-1 font-weight-medium white--text"
-                :style="`font-size: ${isMobile ? 10 : 13}px; line-height: ${isMobile? 20 : 22}px`"
+                :style="`font-size: ${isMobile ? 11 : 13}px; line-height: ${isMobile? 20 : 22}px`"
               >
                 <p v-text="text" class="mb-0"/>
               </div>
@@ -62,7 +62,7 @@
         </v-col>
       </v-row>
     </v-img>
-    <v-container style="height: fit-content; margin-top: 100px;">
+    <v-container style="height: fit-content; margin-top: 100px; padding: 40px 100px 10px">
       <v-row align="start" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-9' : ''}`">
         <v-col cols="12" md="4" style="text-align: start" class="pr-8">
           <p class="mb-1 font-weight-regular" :style="`font-size: ${isMobile ? 35 : 40}px;`">{{ noticeHeader }}</p>
@@ -84,7 +84,6 @@
 
 <script>
 import HomeCard from "../components/Home/HomeCard";
-
 export default {
   name: "index",
   components: {HomeCard},
@@ -124,6 +123,15 @@ export default {
     breakpoint() {
       return this.$vuetify.breakpoint.name
     },
+    techFontSize() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs": return { fontSize: 30, lineHeight: 40 };
+        case "sm": return { fontSize: 40, lineHeight: 50 };
+        case "md": return { fontSize: 40, lineHeight: 50 };
+        case "lg": return { fontSize: 45, lineHeight: 55 };
+        default: return { fontSize: 55, lineHeight: 65 };
+      }
+    }
   },
   methods: {
     moveTo (link) {

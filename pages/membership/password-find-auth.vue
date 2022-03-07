@@ -1,10 +1,10 @@
-  <template>
-  <p>login</p>
+<template>
+  <p>password-find-auth</p>
 </template>
 
 <script>
 export default {
-  name: "login"
+  name: "password-find-auth"
 }
 </script>
 

@@ -130,7 +130,6 @@ import {mapState, mapGetters} from 'vuex'
 import CompanyLogoBtn from "../../../components/CompanyLogoBtn";
 import AppBarSheetView from "../../../components/appBar/AppBarSheetView";
 import AppBarMainSheetView from "../../../components/appBar/AppBarMainSheetView";
-
 export default {
   name: "DefaultAppBar",
   components: {
@@ -209,7 +208,7 @@ export default {
       this.isHovered = flag
     },
     onClickLogIn(){
-
+      this.$router.push('/membership/login')
     },
     goToMain() {
       if (this.$router.currentRoute.path === '/') {
@@ -226,39 +225,32 @@ export default {
 .no-background-hover::before {
   background-color: transparent !important;
 }
-
 .menu-button {
   background: linear-gradient(currentColor, currentColor) bottom / 0 .1em no-repeat;
   transition: 1s background-size;
 }
-
 .menu-button:hover {
   background-size: 100% .1em;
 }
-
 /* Variations */
 .menu-button.left {
   background-position: left bottom;
 }
-
 .menu-button:active {
   background-size: 100% .1em;
 }
-
 .menu-button.active-black {
   transition: none;
   border-bottom-style: solid;
   border-bottom-color: black;
   border-bottom-width: thin;
 }
-
 .menu-button.active-white {
   transition: none;
   border-bottom-style: solid;
   border-bottom-color: white;
   border-bottom-width: thin;
 }
-
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;

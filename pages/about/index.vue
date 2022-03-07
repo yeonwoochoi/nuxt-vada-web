@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div style="padding: 100px 0;">
     <v-container style="height: fit-content; margin-bottom: 100px;">
-      <v-row align="center" justify="center">
-        <v-col cols="10" class="mb-6">
+      <v-row align="center" justify="center" class="px-6 px-md-0">
+        <v-col cols="12" xl="10" class="mb-6 pl-2">
           <p class="font-weight-black ml-1" style="font-size: 11px;">{{ companyPreface }}</p>
           <div class="font-weight-medium text-uppercase my-12" :style="`font-size: ${companyIntroHeaderSize}px; line-height: ${companyIntroHeaderSize-10}px; letter-spacing: 3px;`">
             <p v-for="(text, i) in companyName" :key="`company-about-name-${i}`" v-text="text" />
@@ -11,19 +11,19 @@
             <p v-for="(text, j) in companyInfoSummary" :key="`company-info-summary-${j}`" v-text="text" class="mb-0" />
           </div>
         </v-col>
-        <v-col cols="11">
-          <v-img :src="companyImg" contain/>
+        <v-col cols="12" xl="10">
+          <v-img :src="companyImg"/>
         </v-col>
       </v-row>
     </v-container>
-    <v-container style="height: fit-content; margin-top: 100px; margin-bottom: 100px;">
-      <v-row align="start" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-9' : ''}`">
-        <v-col cols="10" sm="6" md="5">
+    <v-container style="height: fit-content; margin-top: 100px; margin-bottom: 100px; padding: 50px 0;">
+      <v-row align="start" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-7' : ''}`">
+        <v-col cols="10" md="5" xl="4">
           <div class="font-weight-black" :style="`font-size: ${isMobile ? 21 : 25}px; line-height: ${isMobile ? 22 : 30}px;`">
             <p v-for="(text, i) in companyHeaders" :key="`company-about-header-${i}`" v-text="text" />
           </div>
         </v-col>
-        <v-col cols="10" sm="6" md="5">
+        <v-col cols="10" md="5" xl="4">
           <ul
             v-for="(item, j) in companyContents"
             :key="`-company-about-content-${j}`"
@@ -37,11 +37,12 @@
       </v-row>
     </v-container>
     <v-container style="height: fit-content;">
-      <v-row align="center" :justify="`${isMobile ? 'start' : 'space-around'}`" :class="`${isMobile ? 'mx-9' : ''}`">
-        <v-col v-if="!isMobile" cols="10" md="7" lg="6" class="pr-md-12">
+      <v-row align="center" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-9' : ''}`">
+        <v-col v-if="!isMobile" cols="10" md="7" lg="6" xl="5" class="mr-lg-12">
           <v-img :src="techImg" contain/>
         </v-col>
-        <v-col cols="10" md="5" lg="4" style="text-align: start">
+        <v-spacer v-if="breakpoint === 'md'"/>
+        <v-col cols="10" md="4" lg="4" xl="3" style="text-align: start" class="ml-lg-12">
           <div
             v-for="(item, i) in techHeaders"
             :key="`tech-header-${i}`"
@@ -54,7 +55,7 @@
           </div>
         </v-col>
         <v-col v-if="isMobile" cols="11">
-          <v-img :src="techImg" contain/>
+          <v-img :src="techImg"/>
         </v-col>
       </v-row>
     </v-container>
