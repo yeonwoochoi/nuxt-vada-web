@@ -35,7 +35,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import CompanyLogoBtn from "../../../components/CompanyLogoBtn";
+import CompanyLogoBtn from "../../../components/button/CompanyLogoBtn";
 import Mobile from "./mobile";
 
 export default {

@@ -56,7 +56,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     vendor: ['vue-notifications'],
-    transpile: [/^vue2-google-maps($|\/)/]
+    transpile: [/^vue2-google-maps($|\/)/, 'vee-validate/dist/rules']
   },
   server: {
     port: 8765

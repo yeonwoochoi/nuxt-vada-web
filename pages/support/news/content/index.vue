@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import MainCard from "../../../../components/MainCard";
-import NewsBoardContentCard from "../../../../components/news/NewsBoardContentCard";
+import MainCard from "../../../../components/card/MainCard";
+import NewsBoardContentCard from "../../../../components/card/news/NewsBoardContentCard";
 import {mapState} from "vuex";
 
 export default {

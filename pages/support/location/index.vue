@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import MainCard from "../../../components/MainCard";
-import GoogleMap from "../../../components/contact/GoogleMap";
+import MainCard from "../../../components/card/MainCard";
+import GoogleMap from "../../../components/map/GoogleMap";
 import ContactCard from "../../../components/contact/ContactCard";
 
 export default {

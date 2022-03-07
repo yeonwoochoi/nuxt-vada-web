@@ -18,8 +18,8 @@
 
 <script>
 import {mapState} from "vuex";
-import NewsBoardCard from "../../../components/news/NewsBoardCard";
-import MainCard from "../../../components/MainCard";
+import NewsBoardCard from "../../../components/card/news/NewsBoardCard";
+import MainCard from "../../../components/card/MainCard";
 export default {
   name: "index",
   components: {NewsBoardCard, MainCard},

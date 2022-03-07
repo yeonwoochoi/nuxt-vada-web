@@ -80,7 +80,7 @@ export default {
       this.$router.push('/')
     },
     goToSignUp() {
-      this.$router.push('/membership/join-agreement')
+      this.$router.push('/membership/join')
     },
     goToPasswordFind() {
       this.$router.push('/membership/password-find')

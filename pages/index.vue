@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import HomeCard from "../components/Home/HomeCard";
+import HomeCard from "../components/card/home/HomeCard";
 export default {
   name: "index",
   components: {HomeCard},

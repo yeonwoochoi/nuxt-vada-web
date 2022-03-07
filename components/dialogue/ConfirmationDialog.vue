@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: "ConfirmationDialogCard",
+  name: "ConfirmationDialog",
   props: {
     title: {
       type: String,

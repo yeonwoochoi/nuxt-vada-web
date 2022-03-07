@@ -42,11 +42,11 @@
 </template>
 
 <script>
-import MainCard from "../../components/MainCard";
-import InquiryListCard from "../../components/my-page/InquiryListCard";
-import UserInfoCard from "../../components/my-page/UserInfoCard";
-import PurchaseListCard from "../../components/my-page/PurchaseListCard";
-import WithdrawalCard from "../../components/my-page/WithdrawalCard";
+import MainCard from "../../components/card/MainCard";
+import InquiryListCard from "../../components/card/my-page/InquiryListCard";
+import UserInfoCard from "../../components/card/my-page/UserInfoCard";
+import PurchaseListCard from "../../components/card/my-page/PurchaseListCard";
+import WithdrawalCard from "../../components/card/my-page/WithdrawalCard";
 export default {
   name: "index",
   components: {WithdrawalCard, PurchaseListCard, UserInfoCard, InquiryListCard, MainCard},

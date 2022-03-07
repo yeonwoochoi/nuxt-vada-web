@@ -127,9 +127,9 @@
 
 <script>
 import {mapState, mapGetters} from 'vuex'
-import CompanyLogoBtn from "../../../components/CompanyLogoBtn";
-import AppBarSheetView from "../../../components/appBar/AppBarSheetView";
-import AppBarMainSheetView from "../../../components/appBar/AppBarMainSheetView";
+import CompanyLogoBtn from "../../../components/button/CompanyLogoBtn";
+import AppBarSheetView from "../../../components/sheet/appBar/AppBarSheetView";
+import AppBarMainSheetView from "../../../components/sheet/appBar/AppBarMainSheetView";
 export default {
   name: "DefaultAppBar",
   components: {

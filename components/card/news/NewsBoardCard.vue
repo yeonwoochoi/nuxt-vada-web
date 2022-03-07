@@ -31,13 +31,13 @@
     </v-col>
     <v-col cols="12">
       <v-data-table
-          v-if="isMobile"
-          :header="headers"
-          :items="tableContents"
-          :items-per-page="itemsPerPage"
-          hide-default-footer
-          :mobile-breakpoint="960"
-          :loading="isLoading"
+        v-if="isMobile"
+        :header="headers"
+        :items="tableContents"
+        :items-per-page="itemsPerPage"
+        hide-default-footer
+        :mobile-breakpoint="960"
+        :loading="isLoading"
       >
         <template v-slot:item="{item}">
           <tr style="background-color: transparent">

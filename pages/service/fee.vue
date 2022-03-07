@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import MainCard from "../../components/MainCard";
+import MainCard from "../../components/card/MainCard";
 export default {
   name: "fee",
   components: {MainCard},

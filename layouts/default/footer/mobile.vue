@@ -22,7 +22,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import CompanyLogoBtn from "../../../components/CompanyLogoBtn";
+import CompanyLogoBtn from "../../../components/button/CompanyLogoBtn";
 export default {
   name: "DefaultMobileFooter",
   components: {CompanyLogoBtn},

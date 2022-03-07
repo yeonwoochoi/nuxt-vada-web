@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import MainCard from "../../../components/MainCard";
+import MainCard from "../../../components/card/MainCard";
 export default {
   name: "index",
   components: {MainCard},

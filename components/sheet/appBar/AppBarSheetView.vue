@@ -22,7 +22,7 @@ export default {
     },
     imgSrc: {
       type: String,
-      default: () => require("../../assets/header/header_about.png")
+      default: () => require("../../../assets/header/header_about.png")
     },
     headerTitle: {
       type: String,
