@@ -27,36 +27,19 @@
               :step="n.step"
             >
               <v-form v-if="n.step === 1" ref="stepForm" v-model="n.valid" lazy-validation>
-                <sign-up-agreement-card />
+                <sign-up-agreement-card @nextStep="nextStep" />
               </v-form>
               <v-form v-if="n.step === 2" ref="stepForm" v-model="n.valid" lazy-validation>
-                <sign-up-user-type-card @setUserType="setUserType" />
+                <sign-up-user-type-card @setUserType="setUserType" @nextStep="nextStep" @prevStep="prevStep"/>
               </v-form>
-              <v-form v-if="n.step === 3" ref="stepForm" v-model="n.valid" lazy-validation>
-                <sign-up-user-info-input-card :user-type="userType"/>
-              </v-form>
+              <validation-observer v-if="n.step === 3" ref="stepForm">
+                <v-form>
+                  <sign-up-user-info-input-card :user-type="userType" @submit="submit" @prevStep="prevStep"/>
+                </v-form>
+              </validation-observer>
               <v-form v-if="n.step === 4" ref="stepForm" v-model="n.valid" lazy-validation>
-                <sign-up-done-card />
+                <sign-up-done-card @nextStep="nextStep"/>
               </v-form>
-
-
-              <div style="display: flex;" class="ml-12">
-                <v-btn
-                  color="primary"
-                  @click="validate(n)"
-
-                >
-                  {{ `${isLastStep ? '메인으로' : '계속하기'}` }}
-                </v-btn>
-
-                <v-btn
-                  text
-                  v-if="currentStep > 1"
-                  @click="prevStep(n.step)"
-                >
-                  이전으로
-                </v-btn>
-              </div>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
@@ -79,10 +62,10 @@ export default {
   data: () => ({
     currentStep: 1,
     steps: [
-      { step: 1, header: '회원가입 동의', valid: false, errorMsg: '모든 약관에 동의 하셔야 다음 단계로 진행 가능합니다.' },
-      { step: 2, header: '회원유형 확인', valid: false, errorMsg: '회원 유형을 선택 하셔야 다음 단계로 진행 가능합니다.' },
-      { step: 3, header: '회원정보 입력', valid: false, errorMsg: '오류가 발생했습니다. 입력한 정보를 확인하거나 다시 시도해주세요.' },
-      { step: 4, header: '회원가입 완료', valid: false, errorMsg: '' },
+      { step: 1, header: '회원가입 동의', valid: true, errorMsg: '모든 약관에 동의 하셔야 다음 단계로 진행 가능합니다.' },
+      { step: 2, header: '회원유형 확인', valid: true, errorMsg: '회원 유형을 선택 하셔야 다음 단계로 진행 가능합니다.' },
+      { step: 3, header: '회원정보 입력', valid: true, errorMsg: '입력한 정보를 확인해 주세요' },
+      { step: 4, header: '회원가입 완료', valid: true, errorMsg: '' },
     ],
     lastStep: 4,
     userType: '',
@@ -96,29 +79,42 @@ export default {
     isStepComplete(step) {
       return this.currentStep > step;
     },
-    nextStep(n) {
-      if (!this.isLastStep) {
-        this.currentStep = n + 1
-      }
-      else {
-        this.$router.push('/')
-      }
-    },
-    prevStep(n) {
+    prevStep(step) {
       if (this.currentStep > 1) {
-        this.currentStep = n - 1
+        this.currentStep = step - 1
       }
     },
-    validate(n) {
-      let index = n.step-1;
+    async nextStep(step) {
+      let index = step-1;
       this.steps[index].valid = false
-      let v = this.$refs.stepForm[index].validate()
+      let v = await this.$refs.stepForm[index].validate();
       if (v) {
         this.steps[index].valid = true
-        this.nextStep(n.step)
+        if (!this.isLastStep) {
+          this.currentStep = step + 1
+        }
+        else {
+          await this.$router.push('/')
+        }
       }
       else {
-        alert(n.errorMsg)
+        alert(this.steps[index].errorMsg)
+      }
+    },
+    async submit(params, errorMsg) {
+      let currentStep = 3;
+      let index = currentStep - 1;
+      this.steps[index].valid = false
+      let v = await this.$refs.stepForm[index].validate();
+      if (v) {
+        this.steps[index].valid = true
+        setTimeout(() => {
+          console.dir(params)
+          this.currentStep = currentStep + 1;
+        }, 3000)
+      }
+      else {
+        alert(errorMsg)
       }
     },
     stepStatus(step) {

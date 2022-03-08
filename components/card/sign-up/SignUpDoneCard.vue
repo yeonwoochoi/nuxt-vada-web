@@ -7,6 +7,14 @@
       <v-col cols="10" class="mb-6" style="display: flex; align-items: center; justify-content: center">
         <p class="ma-1 text-h6 text-center font-weight-medium">회원가입이 완료 되었습니다</p>
       </v-col>
+      <v-col cols="10" style="display: flex; align-items: center; justify-content: center">
+        <v-btn
+          color="primary"
+          @click="goNext"
+        >
+          메인으로
+        </v-btn>
+      </v-col>
     </v-row>
   </v-card>
 </template>
@@ -16,7 +24,12 @@ export default {
   name: "SignUpDoneCard",
   data: () => ({
     icon: require('../../../assets/icon_complete.png')
-  })
+  }),
+  methods: {
+    goNext() {
+      this.$emit('nextStep', 4)
+    }
+  }
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
-  <validation-observer ref="observer">
-    <validation-provider v-slot="{ errors }" name="이메일" rules="required|email">
-      <p class="white--text ma-1 subtitle-1 text-start font-weight-regular">Email</p>
+  <v-col cols="11" md="8">
+    <validation-provider v-slot="{ errors, valid }" name="이메일" rules="required|email">
+      <p class="ma-1 subtitle-1 text-start font-weight-regular">이메일</p>
       <div style="display:flex; flex-direction: row; justify-content: start; align-items: start">
         <v-text-field
           v-model="email"
@@ -13,99 +13,161 @@
           :disabled="isAuthorized"
         />
         <v-btn
-          @click="sendEmailAuthCode"
+          @click="sendEmailAuthCode(valid)"
           large
           class="font-weight-bold ml-4"
-          :disabled="isAuthorized"
+          :loading="loadingEmailAuth"
+          :disabled="isEmailAuthCodeSending"
+          style="height: 40px;"
         >
           이메일 인증
         </v-btn>
       </div>
     </validation-provider>
-    <validation-provider v-slot="{ errors }" name="이메일 인증번호" v-if="isEmailAuthCodeSending"></validation-provider>
-    <validation-provider v-slot="{ errors }" name="비밀번호" vid="password" rules="required|alpha-dash|min:8|max:20"></validation-provider>
-    <validation-provider v-slot="{ errors }" name="비밀번호 확인" rules="required|confirmed:password" data-vv-as="password"></validation-provider>
-    <validation-provider v-slot="{ errors }" name="이름" rules="required"></validation-provider>
-    <p class="white--text ma-1 subtitle-1 text-start font-weight-regular">연락처</p>
-    <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <v-select
-        v-model="phoneFirst"
-        :items="phoneFirstList"
-        :menu-props="{ closeOnClick: true, offsetY: true, bottom: true }"
-        style="width: 25%;"
+    <validation-provider v-slot="{ errors }" name="이메일 인증" :rules="`required|emailAuth:${emailAuthCode}`">
+      <div style="display:flex; flex-direction: row; justify-content: start; align-items: start" v-if="isEmailAuthCodeSending">
+        <v-text-field
+          v-model="emailAuth"
+          @keypress="isNumber($event)"
+          maxlength="6"
+          required
+          outlined
+          dense
+          filled
+          :disabled="isAuthorized"
+          hide-details
+        />
+        <v-btn
+          @click="checkEmailAuthCode(!errors)"
+          large
+          class="font-weight-bold ml-4"
+          :disabled="isAuthorized"
+        >
+          확인
+        </v-btn>
+      </div>
+    </validation-provider>
+    <validation-provider v-slot="{ errors }" name="비밀번호" vid="password" rules="required|alpha-dash|min:8|max:20">
+      <p class="ma-1 subtitle-1 text-start font-weight-regular">비밀번호</p>
+      <v-text-field
+        v-model="password"
+        :error-messages="errors"
+        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        @click:append="showPassword = !showPassword"
+        required
+        outlined
         dense
         filled
+        :type="showPassword ? 'text' : 'password'"
       />
-      <p class="white--text font-weight-bold title text-center mb-6 mx-5"> - </p>
+    </validation-provider>
+    <validation-provider v-slot="{ errors }" name="비밀번호 확인" rules="required|confirmed:password" data-vv-as="password">
+      <p class="ma-1 subtitle-1 text-start font-weight-regular">비밀번호 확인</p>
       <v-text-field
-        v-model="phoneMiddle"
-        @keypress="isNumber($event)"
-        style="width: 25%;"
-        maxlength="4"
+        v-model="passwordConfirm"
+        :error-messages="errors"
+        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        @click:append="showPassword = !showPassword"
+        required
+        outlined
+        dense
+        filled
+        :type="showPassword ? 'text' : 'password'"
+      />
+    </validation-provider>
+    <validation-provider v-slot="{ errors }" name="이름" rules="required">
+      <p class="ma-1 subtitle-1 text-start font-weight-regular">이름</p>
+      <v-text-field
+        v-model="username"
+        :error-messages="errors"
         required
         outlined
         dense
         filled
       />
-      <p class="white--text font-weight-bold title text-center mb-6 mx-5"> - </p>
+    </validation-provider>
+    <validation-provider v-slot="{ errors }" name="연락처" rules="required">
+      <p class="ma-1 subtitle-1 text-start font-weight-regular">연락처(-없이 번호만 입력)</p>
       <v-text-field
-        v-model="phoneLast"
+        v-model="phone"
+        :error-messages="errors"
         @keypress="isNumber($event)"
-        style="width: 25%;"
-        maxlength="4"
+        maxlength="12"
         required
         outlined
         dense
         filled
       />
+    </validation-provider>
+    <div class="mt-6" style="display: flex; align-items: center; justify-content: center">
+      <v-btn
+        color="primary"
+        @click="goNext"
+        :loading="loadingSubmit"
+      >
+        계속하기
+      </v-btn>
+
+      <v-btn
+        text
+        @click="goPrev"
+      >
+        이전으로
+      </v-btn>
     </div>
-  </validation-observer>
+  </v-col>
 </template>
 
 <script>
-import { required, email, between, confirmed, alpha_dash, integer, min, max } from 'vee-validate/dist/rules'
+import { required, email, confirmed } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from "vee-validate";
 
 setInteractionMode('eager')
 
 extend('required', {
   ...required,
-  message: '{_field_} can not be empty'
+  message: '{_field_}은/는 필수 입력란 입니다.'
 })
 
 extend('email', {
   ...email,
-  message: '{_field_} must be valid'
+  message: '{_value_}은/는 올바른 이메일 형식이 아닙니다.'
 })
 
 extend('confirmed', {
   ...confirmed,
-  message: '{_field_} must match'
-})
-
-extend('between', {
-  ...between,
-  message: '{_field_} must be between 8 and 20'
+  message: '비밀번호가 일치하지 않습니다.'
 })
 
 extend('alpha-dash', {
-  ...alpha_dash,
-  message: '{_field_} may contain alpha-numeric characters as well as dashes and underscores'
-})
-
-extend('integer', {
-  ...integer,
-  message: '{_field_} must be an integer'
+  validate(value) {
+    return /^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).*$/.test(value)
+  },
+  message: '{_field_}는 영문 대소문자와 최소 1개의 숫자 혹은 특수 문자를 포함해야 합니다.'
 })
 
 extend('min', {
-  ...min,
-  message: '{_field_} may not be less than 8 characters'
+  params: ['min'],
+  validate(value, { min }) {
+    return value.length >= parseInt(min);
+  },
+  message: '{_field_}는 {min}자 이상이어야 합니다.'
 })
 
 extend('max', {
-  ...max,
-  message: '{_field_} may not be greater than 20 characters'
+  params: ['max'],
+  validate(value, { max }) {
+    return value.length <= parseInt(max);
+  },
+  message: '{_field_}는 {max}자 이하이어야 합니다.'
+})
+
+extend('emailAuth', {
+  params: ['code'],
+  validate(value, { code }) {
+    return value === code
+  },
+  message: '인증번호가 일치하지 않습니다.'
 })
 
 export default {
@@ -120,23 +182,27 @@ export default {
     passwordConfirm: '',
     username: '',
     emailAuth: '',
-    phoneFirst: '010',
-    phoneMiddle: null,
-    phoneLast: null,
-    phoneFirstList: ['010','011','016','017','019','02','031','032','033','041','043','042','044','051','052','053','054','055','061','062','063','064','070'],
+    phone: '',
     showPassword: false,
     // 이메일 인증 여부
     isAuthorized: false,
     // 중복 클릭 안되게 (이메일 인증 버튼)
-    isClickingEmailAuthButton: false,
+    loadingEmailAuth: false,
+    loadingSubmit: false,
     // 인증코드 전송이 서버에서 완료되면 밑에 인증번호 입력칸 활성화됨
     isEmailAuthCodeSending: false,
     // TODO(temp): 임의로 만든거니까 서버 연결되면 삭제하기 - 서버에서 발송한 인증코드
     emailAuthCode: '',
   }),
   computed: {
-    phone() {
-      return `${this.phoneFirst}-${this.phoneMiddle}-${this.phoneLast}`
+    userInfo() {
+      return {
+        type: 'private',
+        email: this.email,
+        password: this.password,
+        username: this.username,
+        phone: this.phone
+      }
     }
   },
   methods: {
@@ -152,33 +218,58 @@ export default {
     reset() {
       this.isAuthorized = false;
       this.isEmailAuthCodeSending = false;
-      this.isClickingEmailAuthButton = false;
+      this.loadingEmailAuth = false;
       this.showPassword = false;
       this.email = '';
       this.password = '';
       this.passwordConfirm = '';
       this.username = '';
       this.emailAuth = '';
-      this.phoneFirst = '010';
-      this.phoneMiddle = null;
-      this.phoneLast = null;
+      this.phone = '';
     },
-    async sendEmailAuthCode() {
+    async sendEmailAuthCode(valid) {
       // email validate check
-      if (!this.isClickingEmailAuthButton) {
-        this.isClickingEmailAuthButton = true;
+      if (!this.loadingEmailAuth) {
+        this.loadingEmailAuth = true;
         if (!this.email) {
-          alert('Please input email.')
-          this.isClickingEmailAuthButton = false;
+          alert('이메일을 입력해주십시오.')
+          this.loadingEmailAuth = false;
         } else {
+          if (!valid) {
+            alert('이메일 형식이 올바르지 않습니다')
+            this.loadingEmailAuth = false;
+            return;
+          }
           // TODO (sign-up-private): 이메일 인증 코드 전송 api 서버랑 통신하는 부분
           setTimeout(() => {
+            this.loadingEmailAuth = false;
             this.isEmailAuthCodeSending = true;
-            this.emailAuthCode = '645273'
+            this.emailAuthCode = '111111'
           }, 3000)
         }
       }
     },
+    checkEmailAuthCode() {
+      if (`${this.emailAuth}` === this.emailAuthCode) {
+        alert("인증이 완료되었습니다.")
+        this.isAuthorized = true;
+      } else {
+        alert("잘못된 인증번호 입니다. 인증번호를 확인한 다음 다시 입력해 주세요.")
+      }
+    },
+    async goNext() {
+      if (this.loadingSubmit) return;
+      this.loadingSubmit = true;
+      let defaultErrorMsg = '입력한 정보를 확인해 주세요.';
+      let emailAuthErrorMsg = '이메일 인증이 필요합니다.'
+      let errorMsg = this.isAuthorized ? defaultErrorMsg : emailAuthErrorMsg;
+      await this.$emit('submitUserInfo', this.userInfo, errorMsg, () => {
+        this.loadingSubmit = false
+      });
+    },
+    goPrev() {
+      this.$emit('prevStep')
+    }
   }
 }
 </script>

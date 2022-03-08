@@ -1,10 +1,8 @@
 <template>
-  <v-card flat style="width: 100%; height: fit-content" class="elevation-0 mt-4 mb-8">
+  <v-card flat style="width: 100%; height: fit-content" class="elevation-0 mt-4 mb-4">
     <v-row align="center" justify="center" style="width: 100%; height: 100%;">
-      <v-col cols="11" class="py-0">
-        <sign-up-private-user-info-input v-if="isPrivate"/>
-        <sign-up-enterprise-user-info-input v-else/>
-      </v-col>
+      <sign-up-private-user-info-input v-if="isPrivate" @submitUserInfo="submit" @prevStep="goPrev"/>
+      <sign-up-enterprise-user-info-input v-else @submitCompanyInfo="submit" @prevStep="goPrev"/>
     </v-row>
   </v-card>
 </template>
@@ -45,8 +43,16 @@ export default {
   computed: {
     isPrivate() {
       return this.userType === 'private'
-    }
+    },
   },
+  methods: {
+    submit(params, errorMsg) {
+      this.$emit('submit', params, errorMsg);
+    },
+    goPrev() {
+      this.$emit('prevStep', 3)
+    }
+  }
 }
 </script>
 

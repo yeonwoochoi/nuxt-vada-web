@@ -1,5 +1,5 @@
 <template>
-  <v-card flat style="width: 100%; height: fit-content" class="elevation-0 mt-4 mb-8">
+  <v-card flat style="width: 100%; height: fit-content" class="elevation-0 mt-4 mb-4">
     <v-row align="center" justify="center" style="width: 100%; height: 100%;">
       <v-col cols="11" class="py-0">
         <v-checkbox
@@ -25,6 +25,14 @@
           :label="privacyPolicyCheckBoxLabel"
         />
       </v-col>
+      <div style="display: flex;">
+        <v-btn
+          color="primary"
+          @click="goNext"
+        >
+          계속하기
+        </v-btn>
+      </div>
     </v-row>
   </v-card>
 </template>
@@ -383,8 +391,13 @@ export default {
       if (!val && this.totalCheckBox) {
         this.totalCheckBox = false;
       }
-    }
+    },
   },
+  methods: {
+    goNext() {
+      this.$emit('nextStep', 1);
+    },
+  }
 }
 </script>
 

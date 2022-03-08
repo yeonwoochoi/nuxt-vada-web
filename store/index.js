@@ -12,8 +12,7 @@ export const state = () => ({
         { title: '요금안내', icon: 'mdi-currency-usd', link: '/service/fee' },
         { title: '특허검색', icon: 'mdi-book-open-blank-variant', link: '/service/search' },
         { title: '특허평가', icon: 'mdi-chart-bar', link: '/service/evaluation' },
-      ]
-    },
+      ]},
     { title: '고객센터', icon: 'mdi-account-tie-voice', link: '/support/news', items: [
         { title: '공지사항', icon: 'mdi-newspaper-variant-multiple', link: '/support/news' },
         { title: '문의하기', icon: 'mdi-message-question', link: '/support/qna' },

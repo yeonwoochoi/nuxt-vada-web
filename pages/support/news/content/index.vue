@@ -28,7 +28,7 @@ export default {
       drawerItems: 'drawerItems'
     }),
     returnPath() {
-      return this.drawerItems[4].link
+      return this.drawerItems[3].link
     }
   }
 }
