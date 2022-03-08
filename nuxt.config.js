@@ -27,7 +27,8 @@ export default {
   plugins: [
     { src: '~/plugins/vue-particles', ssr: false },
     { src: "~/plugins/google-maps", ssr: false },
-    { src: "~/plugins/vue-carousel", ssr: false }
+    { src: "~/plugins/vue-carousel", ssr: false },
+    { src: '~/plugins/vee-validate', ssr: false },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

@@ -1,12 +1,12 @@
 <template>
-  <p></p>
+  <p>enterprise</p>
 </template>
 
 <script>
 import { required, email, between, confirmed, alpha_dash, integer, min, max } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from "vee-validate";
 
-setInteractionMode('eager')
+setInteractionMode('aggressive')
 
 extend('required', {
   ...required,
@@ -64,8 +64,7 @@ export default {
     ip: '',
     emailAuth: '',
   }),
-  methods: {
-    isNumber: function(evt) {
+  methods: {isNumber: function(evt) {
       evt = (evt) ? evt : window.event;
       let charCode = (evt.which) ? evt.which : evt.keyCode;
       if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
@@ -74,7 +73,10 @@ export default {
         return true;
       }
     },
-    checkBusinessNumber( strBN ) {  // strBN = '0123456789'
+    checkIpAddressValidation: function (ip) {
+      return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip);
+    },
+    checkBusinessNumberValidation( strBN ) {  // strBN = '0123456789'
       let chkStep1 = 0;
       if ( strBN.length === 10 ) {
         const keyArr = [1, 3, 7, 1, 3, 7, 1, 3, 5]; // 인증키(고정)
@@ -95,8 +97,7 @@ export default {
       else {
         return true;
       }
-    }
-  }
+    }}
 }
 </script>
 

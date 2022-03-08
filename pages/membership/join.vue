@@ -33,7 +33,7 @@
                 <sign-up-user-type-card @setUserType="setUserType" />
               </v-form>
               <v-form v-if="n.step === 3" ref="stepForm" v-model="n.valid" lazy-validation>
-                <sign-up-user-info-input-card />
+                <sign-up-user-info-input-card :user-type="userType"/>
               </v-form>
               <v-form v-if="n.step === 4" ref="stepForm" v-model="n.valid" lazy-validation>
                 <sign-up-done-card />
@@ -43,8 +43,8 @@
               <div style="display: flex;" class="ml-12">
                 <v-btn
                   color="primary"
-                  @click="validate(n.step)"
-                  :disabled="!n.valid"
+                  @click="validate(n)"
+
                 >
                   {{ `${isLastStep ? '메인으로' : '계속하기'}` }}
                 </v-btn>
@@ -70,16 +70,19 @@ import SignUpAgreementCard from "../../components/card/sign-up/SignUpAgreementCa
 import SignUpUserTypeCard from "../../components/card/sign-up/SignUpUserTypeCard";
 import SignUpUserInfoInputCard from "../../components/card/sign-up/SignUpUserInfoInputCard";
 import SignUpDoneCard from "../../components/card/sign-up/SignUpDoneCard";
+import {ValidationObserver} from "vee-validate";
+
+
 export default {
   name: "join",
-  components: {SignUpDoneCard, SignUpUserInfoInputCard, SignUpUserTypeCard, SignUpAgreementCard},
+  components: {ValidationObserver, SignUpDoneCard, SignUpUserInfoInputCard, SignUpUserTypeCard, SignUpAgreementCard},
   data: () => ({
     currentStep: 1,
     steps: [
-      { step: 1, header: '회원가입 동의', valid: true },
-      { step: 2, header: '회원유형 확인', valid: true },
-      { step: 3, header: '회원정보 입력', valid: true },
-      { step: 4, header: '회원가입 완료', valid: true },
+      { step: 1, header: '회원가입 동의', valid: false, errorMsg: '모든 약관에 동의 하셔야 다음 단계로 진행 가능합니다.' },
+      { step: 2, header: '회원유형 확인', valid: false, errorMsg: '회원 유형을 선택 하셔야 다음 단계로 진행 가능합니다.' },
+      { step: 3, header: '회원정보 입력', valid: false, errorMsg: '오류가 발생했습니다. 입력한 정보를 확인하거나 다시 시도해주세요.' },
+      { step: 4, header: '회원가입 완료', valid: false, errorMsg: '' },
     ],
     lastStep: 4,
     userType: '',
@@ -91,7 +94,6 @@ export default {
   },
   methods: {
     isStepComplete(step) {
-      // TODO (Signup): 각 Step 완료되었는지 확인하는 code (ex. 약관 모두 동의 여부0
       return this.currentStep > step;
     },
     nextStep(n) {
@@ -108,12 +110,15 @@ export default {
       }
     },
     validate(n) {
-      let index = n-1;
+      let index = n.step-1;
       this.steps[index].valid = false
       let v = this.$refs.stepForm[index].validate()
       if (v) {
         this.steps[index].valid = true
-        this.nextStep(n)
+        this.nextStep(n.step)
+      }
+      else {
+        alert(n.errorMsg)
       }
     },
     stepStatus(step) {
