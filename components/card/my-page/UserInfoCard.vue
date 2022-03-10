@@ -1,71 +1,107 @@
 <template>
   <v-scroll-y-transition mode="out-in">
     <v-card
-      class="pt-6 mx-auto"
+      class="mx-auto"
       flat
-      max-width="400"
+      style="width: 100%; height: fit-content;"
     >
-      <v-card-text>
-        <v-avatar
-          size="88"
-        >
-          <v-img
-            src="https://avataaars.io/?accessoriesType=Blank&avatarStyle=Circle&clotheColor=PastelGreen&clotheType=ShirtScoopNeck&eyeType=Wink&eyebrowType=UnibrowNatural&facialHairColor=Black&facialHairType=MoustacheMagnum&hairColor=Platinum&mouthType=Concerned&skinColor=Tanned&topType=Turban"
-            class="mb-6"
-          ></v-img>
-        </v-avatar>
-        <h3 class="text-h5 mb-2">
-          rud527
-        </h3>
-        <div class="blue--text mb-2">
-          chldusdn20@gmail.com
-        </div>
-        <div class="blue--text subheading font-weight-bold">
-          최연우
-        </div>
-      </v-card-text>
-      <v-divider></v-divider>
-      <v-row
-        class="text-left"
-        tag="v-card-text"
-      >
-        <v-col
-          class="text-right mr-4 mb-2"
-          tag="strong"
-          cols="5"
-        >
-          Company:
+      <v-card-title class="pb-0">
+        <p class="font-weight-medium display-1">
+          {{ header }}
+        </p>
+      </v-card-title>
+      <v-divider style="background-color:#555555; border-width: 1px !important;"/>
+      <!--
+      <v-row align="center" justify="center" class="text-center" style="width: 100%; margin-top: 50px;">
+        <v-col cols="12">
+          <p class="font-weight-bold title">
+            비밀번호 재확인
+          </p>
+          <p class="font-weight-medium subtitle-1">
+            본인 확인을 위해 비밀번호를 입력해 주세요.
+          </p>
         </v-col>
-        <v-col>Run-i Studio</v-col>
-        <v-col
-          class="text-right mr-4 mb-2"
-          tag="strong"
-          cols="5"
-        >
-          Website:
+        <v-col cols="12" align="center">
+          <v-text-field
+            v-model="password"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
+            required
+            outlined
+            dense
+            filled
+            :type="showPassword ? 'text' : 'password'"
+            background-color="transparent"
+            style="max-width: 400px"
+            class="mb-4"
+          />
+          <custom-button
+            :width="'200'"
+            :text="`확인`"
+            @submit="checkPwd"
+          />
         </v-col>
-        <v-col>
-          <a
-            href="https://vuetifyjs.com/en/components/treeview/#selected-color"
-            target="_blank"
-          >바로가기</a>
-        </v-col>
-        <v-col
-          class="text-right mr-4 mb-2"
-          tag="strong"
-          cols="5"
-        >
-          Phone:
-        </v-col>
-        <v-col>010-8560-3465</v-col>
       </v-row>
+      -->
+      <v-card-subtitle class="mt-6">
+        <p class="font-weight-bold subtitle-1">
+          본인 확인을 위해 비밀번호를 입력해 주세요.
+        </p>
+      </v-card-subtitle>
+      <v-card-text>
+        <v-text-field
+          v-model="password"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="showPassword = !showPassword"
+          required
+          outlined
+          dense
+          filled
+          :type="showPassword ? 'text' : 'password'"
+          background-color="transparent"
+          style="max-width: 400px"
+          class="mb-4"
+        />
+        <custom-button
+          :width="'200'"
+          :text="`확인`"
+          @submit="checkPwd"
+        />
+      </v-card-text>
     </v-card>
   </v-scroll-y-transition>
 </template>
 
 <script>
+import CustomButton from "../../button/CustomButton";
 export default {
   name: "UserInfoCard",
+  components: {CustomButton},
+  props: {
+    userPwd: {
+      type: String,
+      default: () => '111111'
+    },
+    header: {
+      type: String,
+      default: () => ''
+    }
+  },
+  data: () => ({
+    password: '',
+    showPassword: false,
+  }),
+  methods: {
+    checkPwd() {
+      if (this.userPwd === `${this.password}`) {
+        // TODO (my-page): 회원 정보 인증되면 어떻게 할 건지
+        this.$router.push('/')
+      }
+      else {
+        alert('비밀번호가 올바르지 않습니다.')
+      }
+    }
+  }
 }
 </script>
 
