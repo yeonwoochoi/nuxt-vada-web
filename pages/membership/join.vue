@@ -2,8 +2,8 @@
   <v-container fluid>
     <v-row align="center" justify="center">
       <v-card class="sign-up-card">
-        <v-stepper v-model="currentStep" alt-labels class="pb-4">
-          <v-stepper-header>
+        <v-stepper v-model="currentStep" alt-labels class="pb-4 elevation-0">
+          <v-stepper-header class="elevation-0" style="border-bottom: 1px lightgrey solid">
             <template v-for="n in steps">
               <v-stepper-step
                 :key="`${n.step}-step`"
@@ -109,9 +109,9 @@ export default {
       if (v) {
         this.steps[index].valid = true
         setTimeout(() => {
-          console.dir(params)
           this.currentStep = currentStep + 1;
         }, 3000)
+        console.dir(params);
       }
       else {
         alert(errorMsg)
