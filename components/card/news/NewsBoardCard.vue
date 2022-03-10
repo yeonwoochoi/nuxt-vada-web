@@ -290,8 +290,6 @@ export default {
         }
       }
       this.sortableItems = result;
-
-
       // 검색 범위 설정할 때, 검색 가능한 Header만 추려서 설정
       result = [];
       result.push('전체')
@@ -300,13 +298,10 @@ export default {
       }
       this.searchableItems = result;
       this.searchBy = this.searchableItems[0];
-
-
       // query에 있는 검색 조건, page 등을 받아옴
       this.currentPage = parseInt(this.$route.query.page)
       this.sortBy = this.$route.query.board_list_sort
       this.itemsPerPage = parseInt(this.$route.query.items_per_page)
-
       if (this.$route.query.keyword) {
         this.search = this.$route.query.keyword
         let searchBy = this.$route.query.target;
@@ -322,7 +317,6 @@ export default {
         this.searchBy = '전체';
       }
     },
-
     // query 값 중 page 값이 바뀌면 호출됨
     changePage() {
       let searchBy = this.searchBy === '전체' ? 'total' : this.searchableItemsRef.find(v => v.view === this.searchBy).value
@@ -335,27 +329,18 @@ export default {
           keyword: this.search,
           target: searchBy
         }
-      }).catch(err => {
-        // Ignore the vuex err regarding  navigating to the page they are already on.
-        if (
-          err.name !== 'NavigationDuplicated' &&
-          !err.message.includes('Avoided redundant navigation to current location')
-        ) { throw err }
-      });
+      })
     },
-
     // query 값 중 sortBy 값이 바뀌면 호출됨
     changeSortBy(sortBy) {
       let targetVal = this.sortableItemsRef.find(v => v.view === sortBy).value
       let target = this.headers.find(h => h.value === targetVal);
-
       if (!target) {
         this.sortBy = 'no'
       }
       else {
         this.sortBy = targetVal
       }
-
       this.$router.push({
         path: this.currentPath,
         query: {
@@ -363,22 +348,14 @@ export default {
           board_list_sort: this.sortBy,
           items_per_page: this.itemsPerPage
         }
-      }).catch(err => {
-        // Ignore the vuex err regarding  navigating to the page they are already on.
-        if (
-          err.name !== 'NavigationDuplicated' &&
-          !err.message.includes('Avoided redundant navigation to current location')
-        ) { throw err }
-      });
+      })
     },
-
     // searchBy v-menu 누르면 호출됨
     // 위에 sortBy나 page 값이 바뀌는 것과 다르게 검색하기 버튼을 누르지 않으면,
     // 따로 router push 할 필요가 없으니 그냥 searchBy만 바꿔주는 것임.
     changeSearchBy(searchBy) {
       this.searchBy = searchBy;
     },
-
     // 검색 버튼 눌렀을 때
     onClickSearchBtn () {
       this.search = this.searchInputText
@@ -393,15 +370,8 @@ export default {
           keyword: this.search,
           target: searchBy
         }
-      }).catch(err => {
-        // Ignore the vuex err regarding  navigating to the page they are already on.
-        if (
-          err.name !== 'NavigationDuplicated' &&
-          !err.message.includes('Avoided redundant navigation to current location')
-        ) { throw err }
-      });
+      })
     },
-
     // news content 중 하나 눌렀을 때
     onClickContent(item){
       let content_id = this.tableContents.find(v => v.no === item.no).idx;
@@ -410,13 +380,7 @@ export default {
         query: {
           uid: content_id
         }
-      }).catch(err => {
-        // Ignore the vuex err regarding  navigating to the page they are already on.
-        if (
-          err.name !== 'NavigationDuplicated' &&
-          !err.message.includes('Avoided redundant navigation to current location')
-        ) { throw err }
-      });
+      })
     },
   }
 }
@@ -428,16 +392,13 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .content-grey-font {
   font-family: "Roboto", sans-serif;
   font-weight: normal;
   color: rgba(1, 1, 1, 0.55);
   white-space: pre-wrap;
 }
-
 .button-border-grey {
   border: rgb(150, 150, 150) 0.01em solid;
 }
-
 </style>
