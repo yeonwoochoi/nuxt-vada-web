@@ -1,4 +1,5 @@
 <template>
+  <!--
   <v-container fluid>
     <v-row align="center" justify="center">
       <v-card style="width: 1200px; height: fit-content;" class="elevation-0">
@@ -39,6 +40,18 @@
       </v-card>
     </v-row>
   </v-container>
+  -->
+  <v-container fluid>
+    <v-row align="center" justify="center">
+      <v-card style="width: 1200px; height:fit-content;" class="elevation-0">
+        <main-card :header="header">
+          <template v-slot:body>
+            <my-page-card/>
+          </template>
+        </main-card>
+      </v-card>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -47,9 +60,10 @@ import InquiryListCard from "../../components/card/my-page/InquiryListCard";
 import UserInfoCard from "../../components/card/my-page/UserInfoCard";
 import PurchaseListCard from "../../components/card/my-page/PurchaseListCard";
 import WithdrawalCard from "../../components/card/my-page/WithdrawalCard";
+import MyPageCard from "../../components/card/my-page/MyPageCard";
 export default {
   name: "index",
-  components: {WithdrawalCard, PurchaseListCard, UserInfoCard, InquiryListCard, MainCard},
+  components: {MyPageCard, WithdrawalCard, PurchaseListCard, UserInfoCard, InquiryListCard, MainCard},
   data: () => ({
     header: '마이페이지',
     tabItems: [
