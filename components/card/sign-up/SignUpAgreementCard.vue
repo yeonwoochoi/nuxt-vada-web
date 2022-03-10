@@ -25,13 +25,14 @@
           :label="privacyPolicyCheckBoxLabel"
         />
       </v-col>
-      <div style="display: flex;">
-        <v-btn
-          color="primary"
-          @click="goNext"
-        >
-          계속하기
-        </v-btn>
+      <div style="display: flex;" class="my-4">
+        <custom-button
+          :width="`200`"
+          @submit="goNext"
+          :color="'primary'"
+          :text="`계속하기`"
+          class="darken-1"
+        />
       </div>
     </v-row>
   </v-card>
@@ -39,8 +40,10 @@
 
 <script>
 import {mapMutations} from 'vuex';
+import CustomButton from "../../button/CustomButton";
 export default {
   name: "SignUpAgreementCard",
+  components: {CustomButton},
   props: {
     valid: {
       type: Boolean,

@@ -7,31 +7,43 @@
           <v-radio label="기업/기관" value="enterprise"/>
         </v-radio-group>
       </v-col>
-      <div style="display: flex;" class="mt-4">
-        <v-btn
-          color="primary"
-          @click="goNext"
-        >
-          계속하기
-        </v-btn>
-
-        <v-btn
-          text
-          @click="goPrev"
-        >
-          이전으로
-        </v-btn>
+      <div style="display: flex;" class="mt-6 mb-4">
+        <custom-button
+          class="mx-1 darken-1"
+          :width="`${isMobile ? '49%' : '200'}`"
+          @submit="goNext"
+          :color="'primary'"
+          :text="`계속하기`"
+        />
+        <custom-button
+          class="mx-1"
+          :width="`${isMobile ? '49%' : '200'}`"
+          @submit="goPrev"
+          :color="'primary'"
+          :text="`이전으로`"
+        />
       </div>
     </v-row>
   </v-card>
 </template>
 
 <script>
+import CustomButton from "../../button/CustomButton";
 export default {
   name: "SignUpUserTypeCard",
+  components: {CustomButton},
   data: () => ({
     userType: '',
   }),
+  computed: {
+    isMobile() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return true
+        case 'sm': return true
+        default: return false
+      }
+    },
+  },
   watch: {
     userType(val) {
       this.$emit('setUserType', val);

@@ -1,7 +1,7 @@
 <template>
   <v-col cols="11" md="8">
     <validation-provider v-slot="{ errors, valid }" name="이메일" rules="required|email">
-      <p class="ma-1 subtitle-1 text-start font-weight-regular">이메일</p>
+      <p class="ma-1 subtitle-2 text-start">이메일</p>
       <div style="display:flex; flex-direction: row; justify-content: start; align-items: start">
         <v-text-field
           v-model="email"
@@ -11,14 +11,15 @@
           dense
           filled
           :disabled="isAuthorized"
+          background-color="transparent"
         />
         <v-btn
           @click="sendEmailAuthCode(valid)"
           large
-          class="font-weight-bold ml-4"
+          class="font-weight-bold ml-4 elevation-0"
           :loading="loadingEmailAuth"
           :disabled="isEmailAuthCodeSending"
-          style="height: 40px;"
+          style="height: 40px; border: 1px darkgrey solid"
         >
           이메일 인증
         </v-btn>
@@ -36,19 +37,21 @@
           filled
           :disabled="isAuthorized"
           hide-details
+          background-color="transparent"
         />
         <v-btn
           @click="checkEmailAuthCode(!errors)"
           large
-          class="font-weight-bold ml-4"
+          class="font-weight-bold ml-4 mb-4 elevation-0"
           :disabled="isAuthorized"
+          style="height: 40px; border: 1px darkgrey solid"
         >
           확인
         </v-btn>
       </div>
     </validation-provider>
     <validation-provider v-slot="{ errors }" name="비밀번호" vid="password" rules="required|alpha-dash|min:8|max:20">
-      <p class="ma-1 subtitle-1 text-start font-weight-regular">비밀번호</p>
+      <p class="ma-1 subtitle-2 text-start">비밀번호</p>
       <v-text-field
         v-model="password"
         :error-messages="errors"
@@ -59,10 +62,11 @@
         dense
         filled
         :type="showPassword ? 'text' : 'password'"
+        background-color="transparent"
       />
     </validation-provider>
     <validation-provider v-slot="{ errors }" name="비밀번호 확인" rules="required|confirmed:password" data-vv-as="password">
-      <p class="ma-1 subtitle-1 text-start font-weight-regular">비밀번호 확인</p>
+      <p class="ma-1 subtitle-2 text-start">비밀번호 확인</p>
       <v-text-field
         v-model="passwordConfirm"
         :error-messages="errors"
@@ -73,10 +77,11 @@
         dense
         filled
         :type="showPassword ? 'text' : 'password'"
+        background-color="transparent"
       />
     </validation-provider>
     <validation-provider v-slot="{ errors }" name="이름" rules="required">
-      <p class="ma-1 subtitle-1 text-start font-weight-regular">이름</p>
+      <p class="ma-1 subtitle-2 text-start">이름</p>
       <v-text-field
         v-model="username"
         :error-messages="errors"
@@ -84,10 +89,11 @@
         outlined
         dense
         filled
+        background-color="transparent"
       />
     </validation-provider>
     <validation-provider v-slot="{ errors }" name="연락처" rules="required">
-      <p class="ma-1 subtitle-1 text-start font-weight-regular">연락처(-없이 번호만 입력)</p>
+      <p class="ma-1 subtitle-2 text-start">연락처(-없이 번호만 입력)</p>
       <v-text-field
         v-model="phone"
         :error-messages="errors"
@@ -97,23 +103,25 @@
         outlined
         dense
         filled
+        background-color="transparent"
       />
     </validation-provider>
     <div class="mt-6" style="display: flex; align-items: center; justify-content: center">
-      <v-btn
-        color="primary"
-        @click="goNext"
+      <custom-button
+        class="mx-1 darken-1"
+        :width="`${isMobile ? '49%' : '200'}`"
+        @submit="goNext"
+        :color="'primary'"
+        :text="`계속하기`"
         :loading="loadingSubmit"
-      >
-        계속하기
-      </v-btn>
-
-      <v-btn
-        text
-        @click="goPrev"
-      >
-        이전으로
-      </v-btn>
+      />
+      <custom-button
+        class="mx-1"
+        :width="`${isMobile ? '49%' : '200'}`"
+        @submit="goPrev"
+        :color="'primary'"
+        :text="`이전으로`"
+      />
     </div>
   </v-col>
 </template>
@@ -121,6 +129,7 @@
 <script>
 import { required, email, confirmed } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from "vee-validate";
+import CustomButton from "../button/CustomButton";
 
 setInteractionMode('eager')
 
@@ -173,8 +182,12 @@ extend('emailAuth', {
 export default {
   name: "SignUpPrivateUserInfoInput",
   components: {
+    CustomButton,
     ValidationObserver,
     ValidationProvider,
+  },
+  mounted() {
+    this.reset();
   },
   data: () => ({
     email: '',
@@ -203,7 +216,14 @@ export default {
         username: this.username,
         phone: this.phone
       }
-    }
+    },
+    isMobile() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return true
+        case 'sm': return true
+        default: return false
+      }
+    },
   },
   methods: {
     isNumber: function(evt) {
@@ -218,6 +238,7 @@ export default {
     reset() {
       this.isAuthorized = false;
       this.isEmailAuthCodeSending = false;
+      this.loadingSubmit = false;
       this.loadingEmailAuth = false;
       this.showPassword = false;
       this.email = '';
@@ -261,11 +282,10 @@ export default {
       if (this.loadingSubmit) return;
       this.loadingSubmit = true;
       let defaultErrorMsg = '입력한 정보를 확인해 주세요.';
-      let emailAuthErrorMsg = '이메일 인증이 필요합니다.'
+      let emailAuthErrorMsg = '이메일 인증이 필요합니다.';
       let errorMsg = this.isAuthorized ? defaultErrorMsg : emailAuthErrorMsg;
-      await this.$emit('submitUserInfo', this.userInfo, errorMsg, () => {
-        this.loadingSubmit = false
-      });
+      await this.$emit('submitUserInfo', this.userInfo, errorMsg);
+      this.loadingSubmit = false;
     },
     goPrev() {
       this.$emit('prevStep')
@@ -275,5 +295,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
