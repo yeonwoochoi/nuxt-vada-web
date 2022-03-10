@@ -38,7 +38,7 @@
                 </v-form>
               </validation-observer>
               <v-form v-if="n.step === 4" ref="stepForm" v-model="n.valid" lazy-validation>
-                <sign-up-done-card @nextStep="nextStep"/>
+                <sign-up-done-card :user-type="userType" @nextStep="nextStep"/>
               </v-form>
             </v-stepper-content>
           </v-stepper-items>
