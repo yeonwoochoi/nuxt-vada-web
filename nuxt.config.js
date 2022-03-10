@@ -29,6 +29,7 @@ export default {
     { src: "~/plugins/google-maps", ssr: false },
     { src: "~/plugins/vue-carousel", ssr: false },
     { src: '~/plugins/vee-validate', ssr: false },
+    { src: '~/plugins/vue-json-csv', ssr: false },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
