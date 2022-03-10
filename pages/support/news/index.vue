@@ -25,26 +25,21 @@ export default {
   components: {NewsBoardCard, MainCard},
   created() {
     let refreshRoute = false;
-
     let page = this.$route.query.page;
     if (!page) {
       page = 1
       refreshRoute = true;
     }
-
     let itemsPerPage = this.$route.query.items_per_page
     if (!itemsPerPage) {
       itemsPerPage = 10
       refreshRoute = true;
     }
-
-
     let sort = this.$route.query.board_list_sort
     if (!sort) {
       sort = 'no'
       refreshRoute = true;
     }
-
     if (refreshRoute) {
       this.$router.push({
         path: this.$router.currentRoute.path,
@@ -239,11 +234,10 @@ export default {
         this.newsData = this.sampleData
         this.isLoading = false;
       }, 1000)
-    }
+    },
   }
 }
 </script>
 
 <style scoped>
-
 </style>

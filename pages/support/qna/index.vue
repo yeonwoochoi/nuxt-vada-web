@@ -25,17 +25,16 @@
                           />
                         </v-col>
                         <v-col cols="2" v-if="!isMobile" align-self="start">
-                          <v-subheader>이메일</v-subheader>
+                          <v-subheader>제목</v-subheader>
                         </v-col>
                         <v-col cols="12" md="9">
                           <v-text-field
-                            v-model="email"
-                            label="Email"
-                            ref="email"
+                            v-model="title"
+                            label="제목"
                             outlined
                             dense
                             required
-                            :rules="[rules.required, rules.email]"
+                            :rules="[rules.required]"
                           />
                         </v-col>
                         <v-col cols="2" v-if="!isMobile" align-self="start">
@@ -47,6 +46,7 @@
                             ref="content"
                             label="문의내용"
                             rows="8"
+                            :rules="[rules.required]"
                             outlined
                             no-resize
                             auto-grow
@@ -83,7 +83,9 @@ export default {
     header: '1:1 문의',
     type: '사용방법 문의',
     typeList: ['사용방법 문의', '기타'],
-    email: '',
+    //TODO (inquiry) : 처음 로그인 인증해보고 되어있으면 email 가져올거 아님. 가져온 후 설정 ㄱ
+    // 우선 임의로
+    email: 'rud57@naver.com',
     title: '',
     content: '',
   }),
@@ -116,10 +118,6 @@ export default {
 
     submit () {
       if (!this.valid) {
-        if (!!this.email) {
-          alert("올바른 형식의 값을 입력하세요")
-          return;
-        }
         alert("모든 값을 입력하세요")
       }
       else {
@@ -138,7 +136,4 @@ export default {
 </script>
 
 <style scoped>
-.no-hover-button::before {
-  display: none;
-}
 </style>
