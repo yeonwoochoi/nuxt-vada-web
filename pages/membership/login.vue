@@ -38,16 +38,14 @@
               />
             </div>
             <div>
-              <v-btn
-                @click="submit"
-                type="submit"
-                large
-                class="elevation-0 text-center white--text font-weight-bold subtitle-1 #DCDCDC mt-4"
-                style="width: 100%; background-color: #275191"
-              >
-                로그인
-              </v-btn>
-              <div class="d-flex mt-4" style="color: #888888; justify-content: center">
+              <custom-button
+                @submit="submit"
+                :width="`100%`"
+                :color="'primary'"
+                :text="`로그인`"
+                class="mt-2 darken-1"
+              />
+              <div class="d-flex mt-5" style="color: #888888; justify-content: center">
                 <span @click="goToPasswordFind" style="cursor: pointer;">비밀번호 재설정</span>
                 <v-divider
                   class="mx-4"
@@ -66,8 +64,10 @@
 </template>
 
 <script>
+import CustomButton from "../../components/button/CustomButton";
 export default {
   name: "login",
+  components: {CustomButton},
   data: () => ({
     header: '로그인',
     id: '',
@@ -83,7 +83,7 @@ export default {
       this.$router.push('/membership/join')
     },
     goToPasswordFind() {
-      this.$router.push('/membership/password-find')
+      this.$router.push('/membership/reset-password')
     }
   }
 }
