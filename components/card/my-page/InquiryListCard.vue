@@ -1,49 +1,65 @@
 <template>
-  <v-card flat style="height: fit-content">
-    <v-data-table
-      :headers="headers"
-      :items="inquiryList"
-      :single-expand="singleExpand"
-      :expanded.sync="expanded"
-      :items-per-page="inquiryList.length"
-      mobile-breakpoint="0"
-      item-key="no"
-      show-expand
-      hide-default-header
-      hide-default-footer
-      class='row-height-100'
+  <v-scroll-y-transition mode="out-in">
+    <v-card
+      flat
+      style="width: 100%; height: fit-content;"
     >
-      <template v-slot:expanded-item="{ headers, item }">
-        <td :colspan="headers.length">
-          <v-card flat width="100%" height="fit-content" style="background-color: rgb(245, 245, 245);" class="py-8 px-6">
-            <p>Q. {{item.data.content}}</p>
-            <v-divider v-if="item.isAnswered" class="my-6"/>
-            <div v-if="item.isAnswered">
-              <pre class="card-content mb-6" v-html="`A. ${item.data.answer.data}`"/>
-              <pre>{{item.data.answer.created_at}}</pre>
+      <v-card-title class="pb-0">
+        <p class="font-weight-medium display-1">
+          {{ header }}
+        </p>
+      </v-card-title>
+      <v-divider style="background-color:#555555; border-width: 1px !important;"/>
+      <v-data-table
+        :headers="headers"
+        :items="inquiryList"
+        :single-expand="singleExpand"
+        :expanded.sync="expanded"
+        :items-per-page="inquiryList.length"
+        mobile-breakpoint="0"
+        item-key="no"
+        show-expand
+        hide-default-header
+        hide-default-footer
+        class='row-height-100'
+        style="width: 100%"
+      >
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length">
+            <v-card flat width="100%" height="fit-content" style="background-color: rgb(245, 245, 245);" class="py-8 px-6">
+              <p>Q. {{item.data.content}}</p>
+              <v-divider v-if="item.isAnswered" class="my-6"/>
+              <div v-if="item.isAnswered">
+                <pre class="card-content mb-6" v-html="`A. ${item.data.answer.data}`"/>
+                <pre>{{item.data.answer.created_at}}</pre>
+              </div>
+            </v-card>
+          </td>
+        </template>
+        <template v-slot:item.isAnswered="{item}">
+          <td class="px-0">
+            <p
+              class="mb-0 text-center"
+              :class="`${item.isAnswered ? 'font-weight-bold' : 'font-weight-thin'}`"
+              style="min-width: 100px"
+            >
+              {{ !item.isAnswered ? '답변대기' : '답변완료' }}
+            </p>
+          </td>
+        </template>
+        <template v-slot:item.data="{item}">
+          <td class="text-start">
+            <div class="font-weight-bold mb-2">
+              [{{item.data.type}}] {{item.data.title}}
             </div>
-          </v-card>
-        </td>
-      </template>
-      <template v-slot:item.isAnswered="{item}">
-        <td class="px-0">
-          <p class="font-weight-medium mb-0 text-center" style="min-width: 100px">
-            {{ !item.isAnswered ? '답변대기' : '답변완료' }}
-          </p>
-        </td>
-      </template>
-      <template v-slot:item.data="{item}">
-        <td class="text-start">
-          <div class="font-weight-bold mb-2">
-            [{{item.data.type}}] {{item.data.title}}
-          </div>
-          <div>
-            {{item.data.created_at}}
-          </div>
-        </td>
-      </template>
-    </v-data-table>
-  </v-card>
+            <div>
+              {{item.data.created_at}}
+            </div>
+          </td>
+        </template>
+      </v-data-table>
+    </v-card>
+  </v-scroll-y-transition>
 </template>
 
 <script>
@@ -135,21 +151,24 @@ export default {
           isAnswered: false,
           data: {
             type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
+            title: '출원 중인 특허도 평가가 가능한가요?',
+            content: '등록일로부터 2~3개월 후 평가 가능한가요?',
             created_at: '2022-03-04 13:14',
             answer: {}
           }
         },
         {
           no: 4,
-          isAnswered: false,
+          isAnswered: true,
           data: {
             type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
+            title: '등록된 특허인데 평가결과가 조회되지 않는 경우가 있나요?',
             content: '기업 회원은 어떻게 하나요?',
             created_at: '2022-03-04 13:14',
-            answer: {}
+            answer: {
+              data: '안녕하세요,Vada Partners 최연우 입니다.\n\n특허가 등록되어도 공보 발행 전이거나 등록 후 VADA 평가에 반영기간(2~3개월) 전인 경우에 평가결과가 조회되지 않습니다.',
+              created_at: '2022-03-04 17:14'
+            }
           }
         },
         {
@@ -163,128 +182,11 @@ export default {
             answer: {}
           }
         },
-        {
-          no: 6,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 7,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 8,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 9,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 10,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 11,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 12,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 13,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 14,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 15,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
-        {
-          no: 16,
-          isAnswered: false,
-          data: {
-            type: '기타',
-            title: '기업 회원 가입은 어떻게 하나요?',
-            content: '기업 회원은 어떻게 하나요?',
-            created_at: '2022-03-04 13:14',
-            answer: {}
-          }
-        },
       ]
+    },
+    header: {
+      type: String,
+      default: () => ''
     }
   },
   data: () => ({
@@ -326,6 +228,5 @@ export default {
 
 .v-data-table.row-height-100 td {
   height: 100px !important;
-
 }
 </style>
