@@ -82,7 +82,7 @@ export default {
     valid: false,
     header: '1:1 문의',
     type: '사용방법 문의',
-    typeList: ['사용방법 문의', '기타'],
+    typeList: ['사용방법 문의', '서비스 이용방법 문의', '기타'],
     //TODO (inquiry) : 처음 로그인 인증해보고 되어있으면 email 가져올거 아님. 가져온 후 설정 ㄱ
     // 우선 임의로
     email: 'rud57@naver.com',
