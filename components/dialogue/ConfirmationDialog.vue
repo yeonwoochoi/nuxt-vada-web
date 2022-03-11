@@ -1,7 +1,8 @@
 <template>
-  <v-card>
-    <v-card-title class="text-h5">
+  <v-card style="height: fit-content">
+    <v-card-title class="text-h5" style="display: block">
       {{ title }}
+      <v-divider class="mt-2 mb-1 px-2"/>
     </v-card-title>
     <v-card-text>{{ comment }}</v-card-text>
     <v-card-actions>
@@ -39,11 +40,11 @@ export default {
   },
   methods: {
     onClickOkBtn() {
-      this.$emit("onClickOkButton")
+      this.$emit("ok")
       this.closeDialog()
     },
     closeDialog() {
-      this.$emit("close")
+      this.$emit("cancel")
     }
   }
 }

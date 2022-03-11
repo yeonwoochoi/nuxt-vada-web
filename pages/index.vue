@@ -83,10 +83,8 @@
 </template>
 
 <script>
-import HomeCard from "../components/card/home/HomeCard";
 export default {
   name: "index",
-  components: {HomeCard},
   /*
   async asyncData({$axios}) {
     const {data} = await $axios.get('http://127.0.0.1:3000/projects/readAll');

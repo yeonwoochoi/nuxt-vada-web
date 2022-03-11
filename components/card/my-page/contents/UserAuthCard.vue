@@ -73,9 +73,9 @@
 </template>
 
 <script>
-import CustomButton from "../../button/CustomButton";
+import CustomButton from "../../../button/CustomButton";
 export default {
-  name: "UserInfoCard",
+  name: "UserAuthCard",
   components: {CustomButton},
   props: {
     userPwd: {
@@ -95,7 +95,6 @@ export default {
     checkPwd() {
       if (this.userPwd === `${this.password}`) {
         // TODO (my-page): 회원 정보 인증되면 어떻게 할 건지
-        this.$router.push('/')
       }
       else {
         alert('비밀번호가 올바르지 않습니다.')

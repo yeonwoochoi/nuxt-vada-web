@@ -1,52 +1,30 @@
 <template>
-  <!--
-  <v-container fluid>
-    <v-row align="center" justify="center">
-      <v-card style="width: 1200px; height: fit-content;" class="elevation-0">
-        <main-card :header="header">
-          <template v-slot:body>
-            <v-tabs
-              :vertical="!isMobile"
-              active-class="active-tab black--text"
-              hide-slider
-              icons-and-text
-            >
-              <v-tab
-                v-for="(tab, index) in tabItems"
-                :key="`tab-item-${index}`"
-                class="my-1"
-              >
-                <v-icon v-if="!isMobile" left>{{tab.icon}}</v-icon>
-                <p class="mb-0 mt-1 subtitle-1 font-weight-medium">
-                  {{tab.text}}
-                </p>
-                <v-icon v-if="isMobile">{{tab.icon}}</v-icon>
-              </v-tab>
-              <v-tab-item>
-                <user-info-card/>
-              </v-tab-item>
-              <v-tab-item>
-                <inquiry-list-card />
-              </v-tab-item>
-              <v-tab-item>
-                <purchase-list-card/>
-              </v-tab-item>
-              <v-tab-item>
-                <withdrawal-card/>
-              </v-tab-item>
-            </v-tabs>
-          </template>
-        </main-card>
-      </v-card>
-    </v-row>
-  </v-container>
-  -->
   <v-container fluid>
     <v-row align="center" justify="center">
       <v-card style="width: 1200px; height:fit-content;" class="elevation-0">
         <main-card :header="header">
           <template v-slot:body>
-            <my-page-card/>
+            <my-page-card :tab-items="tabItems" @openTabContent="openTabContent">
+              <template v-slot:body>
+                <edit-user-info-card
+                  v-if="activeIndex === 0"
+                  v-model="userInfo"
+                  :header="'회원정보'"
+                  :isAuthorize="isAuthorized"
+                  @selfAuth="selfAuthentication"
+                  @edit="editUserInfo"
+                />
+                <inquiry-list-card :header="'문의목록'" v-if="activeIndex === 1"/>
+                <purchase-list-card :header="'구매내역'" v-if="activeIndex === 2"/>
+                <withdrawal-card
+                  v-if="activeIndex === 3"
+                  :header="'회원탈퇴'"
+                  :isAuthorize="isAuthorized"
+                  @selfAuth="selfAuthentication"
+                  @delete="deleteUserInfo"
+                />
+              </template>
+            </my-page-card>
           </template>
         </main-card>
       </v-card>
@@ -55,15 +33,17 @@
 </template>
 
 <script>
+
 import MainCard from "../../components/card/MainCard";
-import InquiryListCard from "../../components/card/my-page/InquiryListCard";
-import UserInfoCard from "../../components/card/my-page/UserInfoCard";
-import PurchaseListCard from "../../components/card/my-page/PurchaseListCard";
-import WithdrawalCard from "../../components/card/my-page/WithdrawalCard";
 import MyPageCard from "../../components/card/my-page/MyPageCard";
+import EditUserInfoCard from "../../components/card/my-page/contents/EditUserInfoCard";
+import InquiryListCard from "../../components/card/my-page/contents/InquiryListCard";
+import PurchaseListCard from "../../components/card/my-page/contents/PurchaseListCard";
+import WithdrawalCard from "../../components/card/my-page/contents/WithdrawalCard";
+
 export default {
   name: "index",
-  components: {MyPageCard, WithdrawalCard, PurchaseListCard, UserInfoCard, InquiryListCard, MainCard},
+  components: {WithdrawalCard, PurchaseListCard, InquiryListCard, EditUserInfoCard, MyPageCard, MainCard},
   data: () => ({
     header: '마이페이지',
     tabItems: [
@@ -84,15 +64,50 @@ export default {
           icon: 'mdi-delete'
         }
       ],
-
+    activeIndex: 0,
+    password: '',
+    showPassword: false,
+    isAuthorized: false,
+    userInfo: {}
   }),
-  computed: {
-    isMobile() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return true
-        case 'sm': return true
-        default: return false
+  methods: {
+    openTabContent(index) {
+      this.activeIndex = index
+    },
+    async selfAuthentication(pwd) {
+      if (!pwd) {
+        alert("값을 입력해주십시오.")
+        return;
       }
+      // TODO (my-page): 임시로..
+      setTimeout(() => {
+        if (pwd === '123123a') {
+          this.userInfo = {
+            email: 'rud527@naver.com',
+            name: '최연우',
+            phone: '01085603465',
+            password: this.password
+          }
+          this.isAuthorized = true;
+        }
+        else {
+          this.isAuthorized = false
+          alert("비밀번호가 올바르지 않습니다.")
+        }
+      }, 1000)
+    },
+    async editUserInfo(info) {
+      //TODO (MyPage): 본인 확인 서버 통신해서
+      setTimeout(() => {
+        this.$router.push('/')
+      }, 1000)
+    },
+    async deleteUserInfo(info) {
+      //TODO (MyPage): 본인 확인 서버 통신해서
+      setTimeout(() => {
+        alert("회원탈퇴가 정상적으로 되었습니다.")
+        this.$router.push('/')
+      }, 1000)
     }
   }
 }
