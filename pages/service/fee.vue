@@ -11,24 +11,18 @@
                     <v-card-title class="font-weight-medium mb-4" style="font-size: 25px;">
                       • 건별 요금제
                     </v-card-title>
-                    <v-data-table
-                      :headers="incidentPlanHeader"
-                      :items="incidentPlanData"
-                      hide-default-footer
-                      class="text-center"
-                      mobile-breakpoint="0"
+                    <simple-data-table
+                      :table-header="incidentPlanHeader"
+                      :table-content="incidentPlanData"
                     />
                   </div>
                   <div class="my-6">
                     <v-card-title class="font-weight-medium mb-4" style="font-size: 25px;">
                       • 연간 요금제
                     </v-card-title>
-                    <v-data-table
-                      :headers="annualPlanHeader"
-                      :items="annualPlanData"
-                      hide-default-footer
-                      class="text-center"
-                      mobile-breakpoint="0"
+                    <simple-data-table
+                      :table-header="annualPlanHeader"
+                      :table-content="annualPlanData"
                     />
                   </div>
                 </v-card>
@@ -43,9 +37,10 @@
 
 <script>
 import MainCard from "../../components/card/MainCard";
+import SimpleDataTable from "../../components/table/SimpleDataTable";
 export default {
   name: "fee",
-  components: {MainCard},
+  components: {SimpleDataTable, MainCard},
   data: () => ({
     header: '요금안내',
     incidentPlanHeader: [
