@@ -36,8 +36,8 @@
 </template>
 
 <script>
-import CustomButton from "../../components/button/CustomButton";
-import ResetPwdCard from "../../components/card/reset-password/ResetPwdCard";
+import CustomButton from "../../../components/button/CustomButton";
+import ResetPwdCard from "../../../components/card/reset-password/ResetPwdCard";
 export default {
   name: "ResetPassword",
   components: {ResetPwdCard, CustomButton},
