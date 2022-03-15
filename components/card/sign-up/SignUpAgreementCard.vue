@@ -32,6 +32,7 @@
           :color="'primary'"
           :text="`계속하기`"
           class="darken-1"
+          :isDisable="!termsOfUseCheckBox || !privacyPolicyCheckBox"
         />
       </div>
     </v-row>
@@ -374,6 +375,7 @@ export default {
           this.privacyPolicyCheckBox = false;
         }
       }
+      console.log(this.totalCheckBox)
     },
     termsOfUseCheckBox (val) {
       if (val && this.privacyPolicyCheckBox) {
