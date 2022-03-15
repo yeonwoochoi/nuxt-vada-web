@@ -57,7 +57,7 @@ export default {
     this.fetchData()
   },
   data: () => ({
-    header: 'News',
+    header: '공지사항',
     isLoading: true,
     newsData: [],
     sampleData: [
