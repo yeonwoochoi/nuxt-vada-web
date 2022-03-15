@@ -165,6 +165,7 @@
 import CustomButton from "../button/CustomButton";
 import { required, email, confirmed } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from "vee-validate";
+import DownloadButton from "../button/DownloadButton";
 
 setInteractionMode('eager')
 
@@ -253,6 +254,7 @@ extend('ip', {
 export default {
   name: "SignUpEnterpriseUserInfoInput",
   components: {
+    DownloadButton,
     ValidationObserver,
     ValidationProvider,
     CustomButton
@@ -278,7 +280,6 @@ export default {
     isEmailAuthCodeSending: false,
     // TODO(temp): 임의로 만든거니까 서버 연결되면 삭제하기 - 서버에서 발송한 인증코드
     emailAuthCode: '',
-
     isUploading: false,
     contentLimit: 500,
     previewImgUrl: null,
@@ -346,6 +347,7 @@ export default {
           setTimeout(() => {
             this.loadingEmailAuth = false;
             this.isEmailAuthCodeSending = true;
+            this.isRedirectAuthCode = true;
             this.emailAuthCode = '111111'
           }, 3000)
         }
@@ -446,4 +448,7 @@ export default {
 </script>
 
 <style scoped>
+.no-background-hover::before {
+  background-color: transparent !important;
+}
 </style>
