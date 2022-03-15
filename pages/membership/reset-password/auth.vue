@@ -9,7 +9,7 @@
           인증코드 입력 후 비밀번호를 새로 설정해 주세요.
         </p>
       </template>
-      <template v-slot:body>
+      <template v-slot:body style="display: flex; align-items: start">
         <v-text-field
           v-model="emailAuth"
           flat
@@ -22,7 +22,22 @@
           @keypress="isNumber($event)"
           maxlength="6"
           class="mb-4"
-        />
+        >
+          <template v-slot:append-outer>
+            <v-btn
+              large
+              @click="resendAuthCode"
+              class="font-weight-bold"
+              color="primary"
+              width="fit-content"
+              :loading="isSendLoading"
+              height="52"
+              style="letter-spacing: 1px; text-transform: none; margin-top: 0.1em"
+            >
+              재전송
+            </v-btn>
+          </template>
+        </v-text-field>
         <v-text-field
           v-model="password"
           flat
@@ -48,11 +63,14 @@
 </template>
 
 <script>
-import CustomButton from "../../components/button/CustomButton";
-import ResetPwdCard from "../../components/card/reset-password/ResetPwdCard";
+import CustomButton from "../../../components/button/CustomButton";
+import ResetPwdCard from "../../../components/card/reset-password/ResetPwdCard";
 export default {
   name: "ResetPasswordAuth",
   components: {ResetPwdCard, CustomButton},
+  props: {
+
+  },
   data: () => ({
     // TODO(ResetPwdAuth): Vuex같은데 저장된 값들임. 불러왔다치고 하는거임.
     email: 'rud527@naver.com',
@@ -60,6 +78,7 @@ export default {
     emailAuth: '',
     password: '',
     isLoading: false,
+    isSendLoading: false,
     valid: false,
   }),
   computed: {
@@ -80,7 +99,7 @@ export default {
           //TODO (resetPwdAuth): 여기서 서버에 재설정 api 호출하고나서..
           setTimeout(() => {
             this.isLoading = false;
-            this.$router.push('/membership/reset-password-done')
+            this.$router.push('/membership/reset-password/done')
           }, 3000)
         }
         else {
@@ -91,6 +110,21 @@ export default {
       else {
         alert('입력한 정보를 확인해 주세요')
         this.isLoading = false;
+      }
+    },
+    //TODO (Email auth): 재전송 코드 수정
+    async resendAuthCode() {
+      if (this.isSendLoading) return;
+      this.isSendLoading = true;
+      if (!!this.email) {
+        setTimeout(() => {
+          alert("인증코드가 전송되었습니다.")
+          this.isSendLoading = false;
+        }, 3000)
+      }
+      else {
+        alert('오류가 발생했습니다. 다시 시도해주세요.')
+        this.isSendLoading = false;
       }
     },
     isNumber: function(evt) {
@@ -107,4 +141,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>
