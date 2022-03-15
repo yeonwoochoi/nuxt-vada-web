@@ -15,7 +15,12 @@
                   @edit="editUserInfo"
                 />
                 <inquiry-list-card :header="'문의목록'" v-if="activeIndex === 1"/>
-                <purchase-list-card :header="'구매내역'" v-if="activeIndex === 2"/>
+                <purchase-list-card
+                  :header="'구매내역'"
+                  v-if="activeIndex === 2"
+                  :table-header="purchaseListHeader"
+                  :table-content="purchaseListContents"
+                />
                 <withdrawal-card
                   v-if="activeIndex === 3"
                   :header="'회원탈퇴'"
@@ -68,7 +73,88 @@ export default {
     password: '',
     showPassword: false,
     isAuthorized: false,
-    userInfo: {}
+    userInfo: {},
+    purchaseListHeader: [
+      {
+        text: 'No',
+        value: 'index',
+        sortable: false,
+        align: 'center'
+      },
+      {
+        text: '상태',
+        value: 'state',
+        sortable: false,
+        align: 'center'
+      },
+      {
+        text: '결제유형',
+        value: 'paymentType',
+        sortable: false,
+        align: 'center'
+      },
+      {
+        text: '요금제',
+        value: 'plan',
+        sortable: false,
+        align: 'center'
+      },
+      {
+        text: '신청금액',
+        value: 'price',
+        sortable: false,
+        align: 'center'
+      },
+      {
+        text: '신청일',
+        value: 'date',
+        sortable: false,
+        align: 'center'
+      },
+    ],
+    // TODO (구매내역): 데이터는 서버에서 받아오기
+    purchaseListContents: [
+      {
+        index: 1,
+        state: '결제완료',
+        paymentType: '신용카드',
+        plan: 'Vada1',
+        price: '1000 KRW',
+        date: '2022/02/22'
+      },
+      {
+        index: 2,
+        state: '결제완료',
+        paymentType: '신용카드',
+        plan: 'Vada1',
+        price: '1000 KRW',
+        date: '2022/02/22'
+      },
+      {
+        index: 3,
+        state: '결제완료',
+        paymentType: '신용카드',
+        plan: 'Vada1',
+        price: '1000 KRW',
+        date: '2022/02/22'
+      },
+      {
+        index: 4,
+        state: '결제완료',
+        paymentType: '신용카드',
+        plan: 'Vada1',
+        price: '1000 KRW',
+        date: '2022/02/22'
+      },
+      {
+        index: 5,
+        state: '결제완료',
+        paymentType: '신용카드',
+        plan: 'Vada1',
+        price: '1000 KRW',
+        date: '2022/02/22'
+      },
+    ]
   }),
   methods: {
     openTabContent(index) {
