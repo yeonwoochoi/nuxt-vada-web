@@ -67,7 +67,7 @@ export default {
         setTimeout(() => {
           alert("인증코드가 전송되었습니다.")
           this.isLoading = false;
-          this.$router.push('/membership/reset-password-auth')
+          this.$router.push('/membership/reset-password/auth')
         }, 3000)
       }
       else {
