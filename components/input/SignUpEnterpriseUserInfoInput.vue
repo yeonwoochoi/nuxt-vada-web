@@ -48,7 +48,7 @@
           outlined
           dense
           filled
-          :disabled="isAuthorized"
+          :disabled="isAuthorized || isEmailAuthCodeSending"
           background-color="transparent"
         />
         <v-btn
@@ -56,10 +56,10 @@
           large
           class="font-weight-bold ml-4 elevation-0"
           :loading="loadingEmailAuth"
-          :disabled="isEmailAuthCodeSending"
+          :disabled="isAuthorized"
           style="height: 40px; border: 1px darkgrey solid"
         >
-          이메일 인증
+          {{ !isRedirectAuthCode ? '이메일 인증' : '재전송' }}
         </v-btn>
       </div>
     </validation-provider>
