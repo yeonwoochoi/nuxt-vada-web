@@ -6,6 +6,7 @@
     :color="color"
     :width="width"
     :loading="loading"
+    :disabled="isDisable"
     height="52px"
     style="letter-spacing: 1px; text-transform: none;"
   >
@@ -32,7 +33,11 @@ export default {
     loading: {
       type: Boolean,
       default: () => false
-    }
+    },
+    isDisable: {
+      type: Boolean,
+      default: () => false
+    },
   },
   methods: {
     submit() {
