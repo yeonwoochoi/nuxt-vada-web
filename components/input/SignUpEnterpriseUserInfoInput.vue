@@ -102,13 +102,29 @@
         background-color="transparent"
       />
     </validation-provider>
-    <validation-provider v-slot="{ errors }" name="IP" :rules="`fileRequired:${ipFile}`">
+    <validation-provider v-slot="{ errors }" name="IP" :rules="`fileRequired:${ipFile}`" style="display: flex; align-items: center;">
       <v-file-input
         v-model="ipFile"
         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-        placeholder="IP"
-        label="IP"
+        placeholder="IP (Internet Protocol) 주소 파일"
+        label="IP (Internet Protocol) 주소 파일"
+        class="pr-4"
       />
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <download-button
+            :link="`ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`"
+          >
+            <template>
+              <span v-bind="attrs" v-on="on">
+                <v-icon>mdi-file-download</v-icon>
+                양식 다운로드
+              </span>
+            </template>
+          </download-button>
+        </template>
+        <span style="white-space: pre-line">{{ipTooltip}}</span>
+      </v-tooltip>
     </validation-provider>
     <validation-provider v-slot="{ errors }" name="사업자등록증" :rules="`fileRequired:${businessRegistrationFile}`">
       <v-file-input
