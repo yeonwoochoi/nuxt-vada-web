@@ -285,7 +285,7 @@ export default {
     isUploading: false,
     contentLimit: 500,
     previewImgUrl: null,
-
+    ipTooltip: 'IP (Internet Protocol) 주소란 네트워크가 연결된 모든 기계가 가지는 고유 번호입니다.\n 아래 샘플 csv 파일 형식에 맞게 작성해 업로드 해주십시오.'
   }),
   computed: {
     companyInfo() {
