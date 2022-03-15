@@ -131,8 +131,8 @@
         v-model="businessRegistrationFile"
         ref="registrationImage"
         accept="image/*"
-        placeholder="사업자등록증"
-        label="사업자등록증"
+        placeholder="사업자등록증 (이미지 파일)"
+        label="사업자등록증 (이미지 파일)"
         @change="handleImageFileSelect"
       />
       <v-row align="start" justify="start" v-if="previewImgUrl">
