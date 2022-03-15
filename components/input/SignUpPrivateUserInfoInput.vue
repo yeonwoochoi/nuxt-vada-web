@@ -18,10 +18,10 @@
           large
           class="font-weight-bold ml-4 elevation-0"
           :loading="loadingEmailAuth"
-          :disabled="isEmailAuthCodeSending"
+          :disabled="isAuthorized"
           style="height: 40px; border: 1px darkgrey solid"
         >
-          이메일 인증
+          {{ !isRedirectAuthCode ? '이메일 인증' : '재전송' }}
         </v-btn>
       </div>
     </validation-provider>
@@ -57,11 +57,11 @@
         :error-messages="errors"
         :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
         required
         outlined
         dense
         filled
-        :type="showPassword ? 'text' : 'password'"
         background-color="transparent"
       />
     </validation-provider>
@@ -72,11 +72,11 @@
         :error-messages="errors"
         :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
         required
         outlined
         dense
         filled
-        :type="showPassword ? 'text' : 'password'"
         background-color="transparent"
       />
     </validation-provider>
@@ -204,6 +204,8 @@ export default {
     loadingSubmit: false,
     // 인증코드 전송이 서버에서 완료되면 밑에 인증번호 입력칸 활성화됨
     isEmailAuthCodeSending: false,
+    // 이메일 인증코드 재전송 여부
+    isRedirectAuthCode: false,
     // TODO(temp): 임의로 만든거니까 서버 연결되면 삭제하기 - 서버에서 발송한 인증코드
     emailAuthCode: '',
   }),
@@ -261,12 +263,15 @@ export default {
             this.loadingEmailAuth = false;
             return;
           }
+
           // TODO (sign-up-private): 이메일 인증 코드 전송 api 서버랑 통신하는 부분
           setTimeout(() => {
             this.loadingEmailAuth = false;
             this.isEmailAuthCodeSending = true;
+            this.isRedirectAuthCode = true;
             this.emailAuthCode = '111111'
           }, 3000)
+
         }
       }
     },
