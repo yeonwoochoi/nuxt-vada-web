@@ -14,6 +14,7 @@
           @submit="goNext"
           :color="'primary'"
           :text="`계속하기`"
+          :is-disable="!userType"
         />
         <custom-button
           class="mx-1"
