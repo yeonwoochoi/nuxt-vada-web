@@ -22,13 +22,13 @@
 </template>
 
 <script>
-import ResetPwdCard from "../../components/card/reset-password/ResetPwdCard";
-import CustomButton from "../../components/button/CustomButton";
+import ResetPwdCard from "../../../components/card/reset-password/ResetPwdCard";
+import CustomButton from "../../../components/button/CustomButton";
 export default {
   name: "reset-password-done",
   components: {CustomButton, ResetPwdCard},
   data: () => ({
-    icon: require('../../assets/icon_complete.png'),
+    icon: require('../../../assets/icon_complete.png'),
     guide: '비밀번호가 재설정되었습니다.'
   }),
   methods: {
