@@ -76,14 +76,13 @@ export default {
   }),
   methods: {
     submit() {
-      alert("로그인")
-      this.$router.push('/')
+      this.$router.push('change-password')
     },
     goToSignUp() {
-      this.$router.push('/membership/join')
+      this.$router.push('join')
     },
     goToPasswordFind() {
-      this.$router.push('/membership/reset-password')
+      this.$router.push('reset-password')
     }
   }
 }
