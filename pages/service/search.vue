@@ -91,18 +91,18 @@
               <v-col cols="12">
                 <v-data-table
                   v-model="selected"
-                  :header="searchResultHeaders"
+                  :headers="searchResultHeaders"
                   :items="sampleData"
                   :items-per-page="itemsPerPage"
                   hide-default-footer
-                  :mobile-breakpoint="960"
+                  :mobile-breakpoint="600"
                   :loading="isLoading"
                   show-select
                   item-key="indexNo"
                 >
                   <template v-slot:top>
                     <v-btn
-                      class="elevation-0"
+                      class="elevation-0 mt-4 mb-6"
                       color="primary"
                       @click="evaluateSelectedAll"
                     >
@@ -110,29 +110,54 @@
                     </v-btn>
                   </template>
                   <template v-slot:item.content="{item}">
-                    <td class="text-start ellipsis" @click="showDetailsInKipris(item)" style="cursor:pointer; max-width: 400px; font-size: 13px;">
-                      <div class="ellipsis font-weight-medium">
-                        {{ item['inventionTitle'] }}
-                      </div>
-                      <div class="pt-1">
-                        <div style="display: flex; height: fit-content; overflow-x: hidden; text-overflow: ellipsis" class="content-grey-font caption">
-                          <p class="my-0 mr-2" style="white-space: nowrap">{{ item['applicationNumber'] }}</p>
-                          <p class="my-0 mr-2"><v-divider vertical/></p>
-                          <p class="my-0 mr-2" style="white-space: nowrap">{{ item['registerNumber'] }}</p>
-                          <p class="my-0 mr-2"><v-divider vertical/></p>
-                          <p class="my-0 mr-2" style="white-space: nowrap">{{ item['registerDate'] }}</p>
-                        </div>
-                        <div style="display: flex; height: fit-content; overflow-x: hidden; text-overflow: ellipsis" class="content-grey-font caption">
-                          <p class="my-0 mr-2" style="white-space: nowrap">{{ item['applicantName'] }}</p>
-                          <p class="my-0 mr-2"><v-divider vertical/></p>
-                          <p class="my-0 mr-2" style="white-space: nowrap">{{ item['personName'] }}</p>
-                        </div>
-                      </div>
+                    <td class="text-start ellipsis" style="font-size: 13px;">
+                      <v-row align="center" justify="start" class="py-4">
+                        <v-col cols="12" class="pb-0">
+                          <a
+                            class="ellipsis"
+                            style="font-size: 1.125em; font-weight: 600; text-decoration: none; color: black;"
+                            :onClick="`window.open('${item.content.link}', '_blank', 'width=960, height=700')`"
+                          >
+                            {{ item.content.inventionTitle }}
+                          </a>
+                        </v-col>
+                        <v-col lg="3" md="4" cols="12" class="pb-0">
+                          <span>
+                            <em class="mr-1">출원번호</em>
+                            {{ item.content.applicationNumber }}
+                          </span>
+                        </v-col>
+                        <v-col lg="3" md="4" cols="12" class="pb-0">
+                          <span>
+                            <em class="mr-1">등록번호</em>
+                            {{ item.content.registerNumber }}
+                          </span>
+                        </v-col>
+                        <v-col lg="3" md="4" cols="12" class="pb-0">
+                          <span>
+                            <em class="mr-1">등록일</em>
+                            {{ item.content.registerDate }}
+                          </span>
+                        </v-col>
+                        <v-col md="6" cols="12" class="pb-0 pb-md-3">
+                          <span>
+                            <em class="mr-1">출원인</em>
+                            {{ item.content.applicantName }}
+                          </span>
+                        </v-col>
+                        <v-col md="6" cols="12" class="">
+                          <span>
+                            <em class="mr-1">권리자명</em>
+                            {{ item.content.personName }}
+                          </span>
+                        </v-col>
+                      </v-row>
                     </td>
                   </template>
                   <template v-slot:item.evaluation="{item}">
                     <v-btn
-                      class="elevation-0"
+                      class="elevation-0 pa-0 no-background-hover"
+                      :ripple="false"
                       @click="evaluateIndividual(item)"
                       color="transparent"
                     >
@@ -142,7 +167,8 @@
                   </template>
                   <template v-slot:item.detail="{item}">
                     <v-btn
-                      class="elevation-0"
+                      class="elevation-0 pa-0 no-background-hover"
+                      :ripple="false"
                       @click="showDetails(item)"
                       color="transparent"
                     >
@@ -185,6 +211,12 @@ export default {
     search: null,
     chipColor: 'grey lighten-3',
     searchFile: null,
+    currentPage: 1,
+    itemsPerPage: 10,
+    totalPage: 1,
+    //TODO (특허검색): 전체 페이지 수 서버 통신해 받기
+    isLoading: false,
+    selected: [],
     searchResultHeaders: [
       {
         text: '내용',
@@ -208,25 +240,34 @@ export default {
         value: 'detail',
       },
     ],
-    currentPage: 1,
-    itemsPerPage: 10,
-    //TODO (특허검색): 전체 페이지 수 서버 통신해 받기
-    totalPage: 1,
-    isLoading: false,
-    selected: [],
     //TODO (특허검색): 서버로 받기.. 임시 data
     sampleData: [
       {
         indexNo: 1,
-        inventionTitle: '이미지센서 셀, 상기 이미지센서 셀들을 복수 개 구비하는 이미지센서 어레이를 구비하는 이미지센서 및\n' +
-          '                    상기 이미지센서를 구비하는 카메라시스템(Image sensor cell, image sensor including image\n' +
-          '                    sensor array including plurality of the image sensor cells and camera\n' +
-          '                    system including the image sensor)',
-        registerNumber: '1019870006388',
-        registerDate: '1987/07/11',
-        applicationNumber: '1020147002912',
-        applicantName: '삼성전자주식회사',
-        personName: '권리자명',
+        content: {
+          inventionTitle: '이미지센서 셀, 상기 이미지센서 셀들을 복수 개 구비하는 이미지센서 어레이를 구비하는 이미지센서 및\n' +
+            '                    상기 이미지센서를 구비하는 카메라시스템(Image sensor cell, image sensor including image\n' +
+            '                    sensor array including plurality of the image sensor cells and camera\n' +
+            '                    system including the image sensor)',
+          registerNumber: '1019870006388',
+          registerDate: '1987/07/11',
+          applicationNumber: '1020147002912',
+          applicantName: '삼성전자주식회사',
+          personName: '권리자명',
+          link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020160148671&index=0&start=fulltext&openPageId=View03'
+        }
+      },
+      {
+        indexNo: 2,
+        content: {
+          inventionTitle: '에스트로겐 수용체 억제제로서의 벤조티오펜 유도체',
+          registerNumber: '10-2016-7002876',
+          registerDate: '1987/07/11',
+          applicationNumber: '1020147002912',
+          applicantName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
+          personName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
+          link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020207007034&index=0&start=fulltext&openPageId=View03'
+        }
       },
     ]
   }),
@@ -268,13 +309,9 @@ export default {
     searchByFile(event) {
       console.dir(event.target.files[0])
     },
-    // 키프리스 상세보기
-    showDetailsInKipris(item) {
-      console.dir(item)
-    },
     // 자체 사이트 상세보기
     showDetails(item) {
-      console.dir(item)
+      this.$router.push('analysis/'+item.indexNo)
     },
     // 개별 평가
     evaluateIndividual(item) {
@@ -285,7 +322,7 @@ export default {
       console.dir(this.selected)
     },
     changePage() {
-
+      console.dir(`page: ${this.currentPage}`)
     }
   }
 }
@@ -321,8 +358,28 @@ export default {
   white-space: pre-wrap;
 }
 
+.no-background-hover::before {
+  background-color: transparent !important;
+}
+
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+p {
+  margin-bottom: 0;
+}
+
+em {
+  font-size: 0.95em;
+  display: inline-block;
+  background-color: #e5e5e5;
+  margin-right: 0.25em;
+  padding: 0 0.4em;
+  border-radius: 20px;
+  text-align: center;
+  width: fit-content;
+  font-style: normal;
 }
 </style>
