@@ -10,7 +10,7 @@
         />
       </v-col>
       <v-col cols="11">
-        <p class="pa-6 subtitle-2 text-start agreement-info-card" v-html="termsOfUse" />
+        <p class="pa-6 subtitle-2 text-start scroll-y-info-card" v-html="termsOfUse" />
         <v-checkbox
           class="ml-3"
           v-model="termsOfUseCheckBox"
@@ -18,7 +18,7 @@
         />
       </v-col>
       <v-col cols="11">
-        <p class="pa-6 subtitle-2 text-start agreement-info-card" v-html="privacyPolicy" />
+        <p class="pa-6 subtitle-2 text-start scroll-y-info-card" v-html="privacyPolicy" />
         <v-checkbox
           class="ml-3"
           v-model="privacyPolicyCheckBox"
@@ -407,7 +407,7 @@ export default {
 </script>
 
 <style scoped>
- .agreement-info-card {
+ .scroll-y-info-card {
    border: 1px solid rgba(0, 0, 0, 0.25);
    height: 250px;
    width: 100%;
