@@ -156,18 +156,18 @@ extend('alpha-dash', {
 })
 
 extend('min', {
-  params: ['min'],
   validate(value, { min }) {
     return value.length >= parseInt(min);
   },
+  params: ["min"],
   message: '{_field_}는 {min}자 이상이어야 합니다.'
 })
 
 extend('max', {
-  params: ['max'],
   validate(value, { max }) {
     return value.length <= parseInt(max);
   },
+  params: ["max"],
   message: '{_field_}는 {max}자 이하이어야 합니다.'
 })
 
