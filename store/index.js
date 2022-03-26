@@ -15,6 +15,7 @@ export const state = () => ({
       ]},
     { title: '고객센터', icon: 'mdi-account-tie-voice', link: '/support/news', items: [
         { title: '공지사항', icon: 'mdi-newspaper-variant-multiple', link: '/support/news' },
+        { title: 'FAQ', icon: 'mdi-frequently-asked-questions', link: '/support/faq' },
         { title: '문의하기', icon: 'mdi-message-question', link: '/support/qna' },
         { title: '오시는 길', icon: 'mdi-map', link: '/support/location' },
       ]
