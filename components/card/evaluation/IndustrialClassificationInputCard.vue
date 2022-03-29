@@ -1,5 +1,5 @@
 <template>
-  <v-card flat style="width: 100%; height: fit-content" class="elevation-0 mt-4 mb-4" :loading="loading">
+  <v-card flat style="width: 100%; height: fit-content" class="elevation-0 mt-4 mb-4">
     <v-row align="center" justify="center" style="width: 100%; height: 100%;">
       <v-col cols="11" class="text-center pt-6 font-weight-bold headline">
         <p>{{title}}</p>
@@ -14,6 +14,7 @@
       </v-col>
       <div style="display: flex;" class="mt-6 mb-4">
         <custom-button
+          :loading="value"
           class="mx-1 darken-1"
           :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
           @submit="goNext"
@@ -37,8 +38,13 @@ import CustomButton from "../../button/CustomButton";
 export default {
   name: "IndustrialClassificationInputCard",
   components: {CustomButton},
+  props: {
+    value: {
+      type: Boolean,
+      default: () => false
+    }
+  },
   data: () => ({
-    loading: true,
     title: '산업분류코드를 입력해주세요',
     classification: '',
     sampleData: [

@@ -4,14 +4,11 @@
       <v-col cols="11" class="text-center pt-6 font-weight-bold headline">
         <p>{{title}}</p>
       </v-col>
-      <v-col cols="11" class="py-0">
-        <v-data-table
-          :headers="summaryHeader"
-          :items="summaryContent"
-          hide-default-header
-          hide-default-footer
-          class="text-start"
-          :mobile-breakpoint="0"
+      <v-col cols="11" class="mt-1 mb-3">
+        <vertical-header-table
+          v-if="!isLoading"
+          :table-header="summaryHeader"
+          :table-items="summaryContent"
         />
       </v-col>
       <div style="display: flex;" class="mt-6 mb-4">
@@ -43,48 +40,104 @@
 <script>
 import CustomButton from "../../button/CustomButton";
 import DownloadButton from "../../button/DownloadButton";
+import VerticalHeaderTable from "../../table/VerticalHeaderTable";
 
 export default {
   name: "ResultSummaryCard",
-  components: {DownloadButton, CustomButton},
+  components: {VerticalHeaderTable, DownloadButton, CustomButton},
   props: {
     downloadLink: {
       type: String,
+    },
+    summaryData: {
+      type: Object,
+      default: () => { return {} }
+    },
+    isLoading: {
+      type: Boolean,
+      default: () => true
     }
   },
   data: () => ({
     title: '요약 보고서',
     summaryHeader: [
       {
-        text: 'Header',
-        value: 'header',
-        align: 'center'
+        text: '평가의 목적',
+        value: 'purpose',
       },
       {
-        text: 'Value',
-        value: 'value',
-        align: 'start'
+        text: '평가대상특허',
+        value: 'targetPatent',
+      },
+      {
+        text: '기술의 경제적\n수명 산정',
+        value: 'techLife',
+      },
+      {
+        text: '로열티율',
+        value: 'loyaltyRate',
+      },
+      {
+        text: '할인율',
+        value: 'discountRate',
+      },
+      {
+        text: '기술가치',
+        value: 'techPrice',
       },
     ],
-    summaryContent: [
-      {
-        header: '기술가치 금액',
-        value: '1,472~1,472 백만원'
-      },
-      {
-        header: '평가의 목적',
-        value: '평가용도: 기술 가치금액 참고용'
-      },
-      {
-        header: '평가대상특허',
-        value: '평가대상 특허: 등록 1건\nKR 10-0107367'
-      },
-    ],
-    isLoading: false,
   }),
+  computed: {
+    targetPatent() {
+      let sample = this.summaryData.targetPatentList
+      let result = `평가대상 특허 : 등록 ${sample.length}건\n`
+      for (let i = 0; i < sample.length; i++) {
+        let temp = sample[i];
+        result += `\n<span class="mb-0 light-blue--text">${temp}</span>`
+      }
+      return result
+    },
+
+    techLife() {
+      // TODO: Sample
+      let sample = this.summaryData.techLife
+      return `기술의 경제적 수명 : <span class="light-blue--text">${sample}</span>년\n`
+    },
+
+    cashFlow() {
+      let sample = this.summaryData
+      return `현금흐름 추정기간 : <span class="light-blue--text">${sample.cashFlowFrom} ~ ${sample.cashFlowTo}</span>`
+    },
+
+    loyaltyRate() {
+      let sample = this.summaryData.loyalty
+      return `매출액 추정 : 직접 추정 (시장 점유율법)\n로열티 : 업종별 상관행법 X 로열티율 조정계수 = <span class="light-blue--text">${sample}%</span>`
+    },
+
+    discountRate() {
+      return `할인율 : <span class="light-blue--text">${this.summaryData.discountRate}%</span>\n업종 : <span class="light-blue--text">${this.summaryData.industrialCode}</span>\n기업분류 : <span class="light-blue--text">${this.summaryData.enterpriseType}</span>`
+    },
+
+    techPrice() {
+      return `기술가치 = <span class="light-blue--text">${this.summaryData.techPriceFrom} ~ ${this.summaryData.techPriceTo}</span> 백만원 (구매를 하지 않은 경우 임의의 수가 생성됩니다.)`
+    },
+
+    summaryContent() {
+      return [
+        {
+          purpose: '평가용도 : 기술 가치금액 참고용',
+          targetPatent: this.targetPatent,
+          techLife: this.techLife + this.cashFlow,
+          loyaltyRate: this.loyaltyRate,
+          discountRate: this.discountRate,
+          techPrice: this.techPrice
+        }
+      ]
+    }
+  },
   methods: {
 
-  }
+  },
 }
 </script>
 

@@ -43,11 +43,15 @@
                       </validation-observer>
                       <validation-observer v-if="n.step === 4" ref="stepForm">
                         <v-form>
-                          <industrial-classification-input-card @nextStep="nextStep" @prevStep="prevStep"/>
+                          <industrial-classification-input-card @nextStep="nextStep" @prevStep="prevStep" v-model="loading"/>
                         </v-form>
                       </validation-observer>
                       <v-form v-if="n.step === 5" ref="stepForm" v-model="n.valid" lazy-validation>
-                        <result-summary-card :download-link="`ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`"/>
+                        <result-summary-card
+                          :download-link="`ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`"
+                          :summary-data="sampleSummaryData"
+                          :is-loading="(loading || currentStep !== 5)"
+                        />
                       </v-form>
                     </v-stepper-content>
                   </v-stepper-items>
@@ -87,6 +91,8 @@ export default {
       { step: 5, header: '분석 결과 요약', valid: true, errorMsg: '' },
     ],
     lastStep: 5,
+    loading: false,
+    sampleSummaryData: null
   }),
   computed: {
     isLastStep() {
@@ -109,7 +115,10 @@ export default {
       if (v) {
         this.steps[index].valid = true
         if (!this.isLastStep) {
-          this.currentStep = step + 1
+          //this.currentStep = step + 1
+          this.fetchSummaryData(step, () => {
+            this.currentStep = step + 1;
+          })
         }
         else {
           await this.$router.push('/')
@@ -119,24 +128,38 @@ export default {
         alert(this.steps[index].errorMsg)
       }
     },
-    async submit(params, errorMsg) {
-      let currentStep = 3;
-      let index = currentStep - 1;
-      this.steps[index].valid = false
-      let v = await this.$refs.stepForm[index].validate();
-      if (v) {
-        this.steps[index].valid = true
-        setTimeout(() => {
-          this.currentStep = currentStep + 1;
-        }, 3000)
-      }
-      else {
-        alert(errorMsg)
-      }
-    },
     stepStatus(step) {
       return this.currentStep > step ? 'green' : 'blue'
     },
+    fetchSummaryData(prevStep, callback) {
+      if (parseInt(prevStep + 1) < 5) {
+        callback();
+        return;
+      }
+      this.loading = true
+      setTimeout(() => {
+        let randomNumber = Math.floor(Math.random() * 10000) + 1;
+        this.sampleSummaryData =  {
+          targetPatentList: [
+            'KR 10-0107367',
+          ],
+          techLife: 9,
+          cashFlowFrom: '2020',
+          cashFlowTo: '2028',
+          loyalty: '3.15',
+          discountRate: '10.85',
+          industrialCode: '기타 기계 및 장비 제조업 (C29)',
+          enterpriseType: '비상장 창업기업',
+          techPriceFrom: randomNumber,
+          techPriceTo: randomNumber + 1,
+        }
+        this.loading = false
+        callback();
+      }, 3000)
+    },
+  },
+  mounted() {
+
   }
 }
 </script>
