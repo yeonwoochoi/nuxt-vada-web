@@ -215,7 +215,6 @@ export default {
     searchFile: null,
     currentPage: 1,
     itemsPerPage: 10,
-    totalPage: 1,
     //TODO (특허검색): 전체 페이지 수 서버 통신해 받기
     isLoading: false,
     selected: [],
@@ -375,6 +374,11 @@ export default {
       })
     },
   },
+  computed: {
+    totalPage() {
+      return Math.ceil(this.sampleData.length / this.itemsPerPage);
+    }
+  },
   methods: {
     filter (item, queryText, itemText) {
       if (item.header) return false
@@ -410,7 +414,7 @@ export default {
     },
     changePage() {
       console.dir(`page: ${this.currentPage}`)
-    }
+    },
   }
 }
 </script>
