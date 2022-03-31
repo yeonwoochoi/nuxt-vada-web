@@ -11,7 +11,7 @@
             <pre v-html="header.text"/>
           </td>
           <td v-for="item in items" class="py-4 pl-8" style="line-height: 1.8em;">
-            <pre v-html="item[header.value]" :class="`${header.value === 'techPrice' ? 'blurEffect no-drag' : ''}`"/>
+            <pre v-html="item[header.value]" :class="`${(header.value === 'techPrice' && isBlur) ? 'blurEffect no-drag' : ''}`"/>
           </td>
         </tr>
       </tbody>
@@ -56,6 +56,10 @@ export default {
       type: Array,
       default: () => []
     },
+    isBlur: {
+      type: Boolean,
+      default: () => true
+    }
   }
 }
 </script>
