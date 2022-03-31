@@ -121,10 +121,9 @@ import CustomButton from "../../../components/button/CustomButton";
 export default {
   name: "Analysis",
   components: {CustomButton, SimpleDataTable, MainCard},
-  asyncData({params, query}) {
+  asyncData({params}) {
     return {
       idx: params.id,
-      pwd: query.pwd
     };
   },
   // 정수 값만 param으로 받음.
