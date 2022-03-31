@@ -67,13 +67,13 @@
 </template>
 
 <script>
-import MainCard from "../../components/card/MainCard";
-import SalesInputCard from "../../components/card/evaluation/SalesInputCard";
-import PatentNumberInputCard from "../../components/card/evaluation/PatentNumberInputCard";
-import CompanyLogoBtn from "../../components/button/CompanyLogoBtn";
-import BusinessScaleInputCard from "../../components/card/evaluation/BusinessScaleInputCard";
-import IndustrialClassificationInputCard from "../../components/card/evaluation/IndustrialClassificationInputCard";
-import ResultSummaryCard from "../../components/card/evaluation/ResultSummaryCard";
+import MainCard from "../../../components/card/MainCard";
+import SalesInputCard from "../../../components/card/evaluation/SalesInputCard";
+import PatentNumberInputCard from "../../../components/card/evaluation/PatentNumberInputCard";
+import CompanyLogoBtn from "../../../components/button/CompanyLogoBtn";
+import BusinessScaleInputCard from "../../../components/card/evaluation/BusinessScaleInputCard";
+import IndustrialClassificationInputCard from "../../../components/card/evaluation/IndustrialClassificationInputCard";
+import ResultSummaryCard from "../../../components/card/evaluation/ResultSummaryCard";
 export default {
   name: "evaluation",
   components: {
