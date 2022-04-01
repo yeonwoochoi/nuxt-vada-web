@@ -64,8 +64,8 @@
                         </v-col>
                         <v-col md="6" cols="12" class="pb-0">
                           <span>
-                            <em class="mr-1">등록번호</em>
-                            {{ item.content.registerNumber }}
+                            <em class="mr-1">출원인</em>
+                            {{ item.content.applicantName }}
                           </span>
                         </v-col>
                         <v-col md="6" cols="12" class="pb-0 pb-md-3">
@@ -166,7 +166,7 @@ export default {
 
     isLoading: true,
 
-    itemsPerPage: 1,
+    itemsPerPage: 10,
     totalPage: 1,
 
     searchResultHeaders: [
