@@ -118,7 +118,7 @@
                           <a
                             class="ellipsis"
                             style="font-size: 1.125em; font-weight: 600; text-decoration: none; color: black;"
-                            :onClick="`window.open('${item.content.link}', '_blank', 'width=960, height=700')`"
+                            :onClick="`window.open('${kiprisDoiLink + item.content.applicationNumber}', '_blank', 'width=960, height=700')`"
                           >
                             {{ item.content.inventionTitle }}
                           </a>
@@ -207,6 +207,7 @@ export default {
   name: "search",
   components: {DownloadButton, CustomButton, MainCard},
   data: () => ({
+    kiprisDoiLink: 'https://doi.org/10.8080/',
     header: '특허검색',
     searchData: [],
     nonce: 1,
@@ -263,7 +264,6 @@ export default {
           applicationNumber: '1020147002912',
           applicantName: '삼성전자주식회사',
           personName: '권리자명',
-          link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020160148671&index=0&start=fulltext&openPageId=View03'
         }
       },
       {
@@ -275,7 +275,6 @@ export default {
           applicationNumber: '1020147002912',
           applicantName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
           personName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
-          link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020207007034&index=0&start=fulltext&openPageId=View03'
         }
       },
     ],
@@ -340,7 +339,6 @@ export default {
             "country": "대한민국"
           }
         ],
-        "link": "http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020160148671&index=0&start=fulltext&openPageId=View03",
         "claim": [
           "고무 중합체, 방향족 비닐 화합물 및 비닐 시안 화합물을 유화중합하여 제조된 ABS계 수지 라텍스에 산(acid)\n응집제를 투입하여 응집시키는 산응집 단계; 상기 산응집된 슬러리를 숙성시키는 숙성 단계; 상기 숙성된 슬러\n리에 염기(base)를 투입하여 pH를 8 내지 12로 조절하는 염기처리 단계; 및 상기 염기처리된 슬러리를 탈수한\n다음, 건조하여 ABS계 수지 분체를 수득하는 수지 분체 수득 단계;를 포함하되,\n상기 ABS계 수지 분체는 잔류 유화제 함량이 5,000ppm 이하이고, 산-프리(acid-fee)이며,\n상기 산응집된 슬러리의 pH는 2.5 내지 4 이고,\n상기 수지 분체의 함수율은 0.1 내지 0.5 중량%인 것을 특징으로 하는 ABS계 수지 분체의 제조방법.",
           "제 1항에 있어서,\n상기 염기처리 단계는 30 내지 90℃의 온도에서 수행되는 것을 특징으로 하는 ABS계 수지 분체의 제조방법.",
