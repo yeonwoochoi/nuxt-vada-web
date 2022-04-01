@@ -21,7 +21,7 @@
           prepend-inner-icon="mdi-focus-field-horizontal"
           @keypress="isNumber($event)"
           maxlength="6"
-          class="mb-4"
+          class="mb-3"
         >
           <template v-slot:append-outer>
             <v-btn
@@ -43,9 +43,28 @@
           flat
           solo
           outlined
+          hide-details
           label="새 비밀번호"
-          :rules="[rules.password]"
+          :rules="[rules.required, rules.password]"
+          class="my-3"
           prepend-inner-icon="mdi-lock-outline"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="showPassword = !showPassword"
+          :type="showPassword ? 'text' : 'password'"
+        />
+        <v-text-field
+          v-model="passwordConfirm"
+          flat
+          solo
+          outlined
+          hide-details
+          label="새 비밀번호 확인"
+          :rules="[rules.required, rules.passwordConfirm]"
+          class="my-3"
+          prepend-inner-icon="mdi-lock-check-outline"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="showPassword = !showPassword"
+          :type="showPassword ? 'text' : 'password'"
         />
       </template>
       <template v-slot:button>
@@ -77,6 +96,8 @@ export default {
     code: '111111',
     emailAuth: '',
     password: '',
+    passwordConfirm: '',
+    showPassword: false,
     isLoading: false,
     isSendLoading: false,
     valid: false,
@@ -86,6 +107,7 @@ export default {
       return {
         required: value => !!value || '값을 입력해주세요',
         password: value => /^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).*$/.test(value) || '영문 대소문자와 최소 1개의 숫자 혹은 특수 문자를 포함해야 합니다.',
+        passwordConfirm: value => value === this.password || '비밀번호가 일치하지 않습니다.',
       }
     },
   },
@@ -108,8 +130,22 @@ export default {
         }
       }
       else {
-        alert('입력한 정보를 확인해 주세요')
+        this.showAlert()
         this.isLoading = false;
+      }
+    },
+    showAlert() {
+      if (!this.password || !this.passwordConfirm || !this.emailAuth) {
+        alert("값을 모두 입력해주세요.")
+      }
+      else if (!/^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).*$/.test(this.password)) {
+        alert('영문 대소문자와 최소 1개의 숫자 혹은 특수 문자를 포함해야 합니다.')
+      }
+      else if (this.password !== this.passwordConfirm) {
+        alert('비밀번호가 일치하지 않습니다.')
+      }
+      else {
+        alert('입력한 정보를 확인해 주세요')
       }
     },
     //TODO (Email auth): 재전송 코드 수정
