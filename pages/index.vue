@@ -17,7 +17,11 @@
               <p v-text="item" class="mb-1"/>
             </div>
           </div>
-          <v-btn :class="`${breakpoint === 'xs' ? 'caption' : 'subtitle-2'} px-1 mt-4 no-background-hover elevation-0 font-weight-bold`" style="background-color: transparent">
+          <v-btn
+            to="/about"
+            :class="`${breakpoint === 'xs' ? 'caption' : 'subtitle-2'} px-1 mt-4 no-background-hover elevation-0 font-weight-bold`"
+            style="background-color: transparent"
+          >
             {{ detailInfoBtnText }}
             <v-icon class="ml-3" :small="breakpoint === 'xs'">mdi-arrow-right</v-icon>
           </v-btn>
@@ -52,6 +56,7 @@
               </div>
             </div>
             <v-btn
+              to="/about"
               class="px-1 mt-4 no-background-hover elevation-0 font-weight-medium white--text"
               :style="`font-size: ${isMobile ? 13 : 15}px; background-color: transparent`"
             >
@@ -66,7 +71,11 @@
       <v-row align="start" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-9' : ''}`">
         <v-col cols="12" md="4" style="text-align: start" class="pr-8">
           <p class="mb-1 font-weight-regular" :style="`font-size: ${isMobile ? 35 : 40}px;`">{{ noticeHeader }}</p>
-          <v-btn class="pl-1 my-3 no-background-hover elevation-0 font-weight-bold" style="background-color: transparent">
+          <v-btn
+            to="/support/news"
+            class="pl-1 my-3 no-background-hover elevation-0 font-weight-bold"
+            style="background-color: transparent"
+          >
             {{ noticeDetailBtnText }}
             <v-icon class="ml-3">mdi-arrow-right</v-icon>
           </v-btn>
@@ -103,10 +112,10 @@ export default {
     noticeDetailBtnText: '새로운 소식',
     //TODO (Sample)
     noticeSampleData: [
-      { text: '시스템 점검에 따른 서비스 일시 정지 안내(1.20일, 18시00분~24시)', link: '/service'},
-      { text: '창립기념일 임시휴무(2021.10.18(월)) 안내', link: '/service'},
-      { text: '[공지] 한국특허 평가보고서 생성기능 일시 정지 안내(2021-03-30 10시~ 24시)', link: '/service'},
-      { text: '[공지] 전기설비 정기점검에 따른 서비스 중단안내( 2020년11월 06일(금) 20:00 ~ 11월 07일(토) 12:00 )', link: '/service'},
+      { text: '시스템 점검에 따른 서비스 일시 정지 안내(1.20일, 18시00분~24시)', link: 'support/news/content?uid=1'},
+      { text: '창립기념일 임시휴무(2021.10.18(월)) 안내', link: 'support/news/content?uid=2'},
+      { text: '[공지] 한국특허 평가보고서 생성기능 일시 정지 안내(2021-03-30 10시~ 24시)', link: 'support/news/content?uid=3'},
+      { text: '[공지] 전기설비 정기점검에 따른 서비스 중단안내( 2020년11월 06일(금) 20:00 ~ 11월 07일(토) 12:00 )', link: 'support/news/content?uid=4'},
     ],
     detailInfoBtnText: '자세히보기',
   }),
