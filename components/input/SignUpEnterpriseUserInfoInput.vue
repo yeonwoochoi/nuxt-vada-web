@@ -88,6 +88,36 @@
         </v-btn>
       </div>
     </validation-provider>
+    <validation-provider v-slot="{ errors }" name="비밀번호" vid="password" rules="required|alpha-dash|min:8|max:20">
+      <p class="ma-1 subtitle-2 text-start">매니저 계정 비밀번호</p>
+      <v-text-field
+        v-model="password"
+        :error-messages="errors"
+        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
+        required
+        outlined
+        dense
+        filled
+        background-color="transparent"
+      />
+    </validation-provider>
+    <validation-provider v-slot="{ errors }" name="비밀번호 확인" rules="required|confirmed:password" data-vv-as="password">
+      <p class="ma-1 subtitle-2 text-start">매니저 계정 비밀번호 확인</p>
+      <v-text-field
+        v-model="passwordConfirm"
+        :error-messages="errors"
+        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
+        required
+        outlined
+        dense
+        filled
+        background-color="transparent"
+      />
+    </validation-provider>
     <validation-provider v-slot="{ errors }" name="연락처" rules="required">
       <p class="ma-1 subtitle-2 text-start">담당자 연락처(-없이 번호만 입력)</p>
       <v-text-field
@@ -192,18 +222,18 @@ extend('alpha-dash', {
 })
 
 extend('min', {
-  params: ['min'],
   validate(value, { min }) {
     return value.length >= parseInt(min);
   },
+  params: ["min"],
   message: '{_field_}는 {min}자 이상이어야 합니다.'
 })
 
 extend('max', {
-  params: ['max'],
   validate(value, { max }) {
     return value.length <= parseInt(max);
   },
+  params: ["max"],
   message: '{_field_}는 {max}자 이하이어야 합니다.'
 })
 
@@ -268,6 +298,9 @@ export default {
     businessRegistrationFile: null,
     managerName: '',
     managerEmail: '',
+    password: '',
+    passwordConfirm: '',
+    showPassword: false,
     managerPhone: '',
     managerEmailAuth: '',
     ipFile: null,
@@ -322,9 +355,12 @@ export default {
       this.isEmailAuthCodeSending = false;
       this.loadingSubmit = false;
       this.loadingEmailAuth = false;
+      this.showPassword = false;
 
       this.companyName = '';
       this.businessNumber = '';
+      this.password = '';
+      this.passwordConfirm = '';
       this.businessRegistrationFile = null;
       this.managerName = '';
       this.managerEmail = '';
@@ -389,6 +425,7 @@ export default {
       form.append("businessRegistrationFile", this.businessRegistrationFile);
       form.append("managerName", this.managerName);
       form.append("managerEmail", this.managerEmail);
+      form.append("password", this.password);
       form.append("ipFile", this.ipFile);
 
       await this.$emit('submitCompanyInfo', form, errorMsg);
