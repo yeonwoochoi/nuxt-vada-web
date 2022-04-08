@@ -11,6 +11,8 @@ import JSZip from 'jszip';
 import JSzipUtils from 'jszip-utils';
 import saveAs from 'file-saver';
 import PizZip from "pizzip";
+import getReportData from "./report";
+
 let PizZipUtils = null;
 if (typeof window !== "undefined") {
   import("pizzip/utils/index.js").then(function (r) {
@@ -38,26 +40,19 @@ export default {
           linebreaks: true,
         });
         // Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
-        doc.render({
-          first_name: "John",
-          last_name: "Doe",
-          phone: "0652455478",
-          description: "New Website",
-        });
+        doc.render(getReportData());
 
         let out = doc.getZip().generate({
           type: "blob",
           mimeType:
-            //"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            "application/pdf;charset=utf-8",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            //"application/pdf;charset=utf-8",
           // compression: DEFLATE adds a compression step.
             // For a 50MB output document, expect 500ms additional CPU time
           compression: "DEFLATE",
         });
-        console.log(typeof out)
-        console.dir(out)
         // Output the document using Data-URI
-        saveAs(out, "output.pdf");
+        saveAs(out, "output.docx");
       });
     },
     // 이 아래 코드는 pizzip이 아닌 jszip@2 를 이용하는 코드임.
