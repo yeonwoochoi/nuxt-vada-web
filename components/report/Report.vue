@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="file" ref="selectedFile">
+    <table style="width: 100%; text-align: center;"><tr style="background-color: #3C4552; color: white; font-weight: bold;"><th style="outline: black 1px solid; padding: 5px 0;">구분</th><td style="outline: black 1px solid;">2022</td><td style="outline: black 1px solid;">2023</td><td style="outline: black 1px solid;">2024</td><td style="outline: black 1px solid;">2025</td><td style="outline: black 1px solid;">2026</td><td style="outline: black 1px solid;">2027</td><td style="outline: black 1px solid;">2028</td><td style="outline: black 1px solid;">2029</td></tr><tr><th style="outline: black 1px solid; padding: 5px 0;">매출액</th><td style="outline: black 1px solid;">0</td><td style="outline: black 1px solid;">0</td><td style="outline: black 1px solid;">455</td><td style="outline: black 1px solid;">1,536</td><td style="outline: black 1px solid;">13,821</td><td style="outline: black 1px solid;">21,852</td><td style="outline: black 1px solid;">27,942</td><td style="outline: black 1px solid;">25,236</td></tr></table>
     <v-btn @click="generate" color="primary">Download Word Document</v-btn>
   </div>
 </template>
@@ -11,7 +11,7 @@ import JSZip from 'jszip';
 import JSzipUtils from 'jszip-utils';
 import saveAs from 'file-saver';
 import PizZip from "pizzip";
-import getReportData from "./report";
+import getReportData from "./reportData";
 
 let PizZipUtils = null;
 if (typeof window !== "undefined") {
@@ -20,17 +20,23 @@ if (typeof window !== "undefined") {
   });
 }
 
+function loadFile(url, callback) {
+  PizZipUtils.getBinaryContent(url, callback);
+}
+
 export default {
   name: "Report",
+  mounted() {
+    let d = getReportData()
+    console.dir(d)
+  },
   data: () => ({
 
   }),
   methods: {
-    loadFile(url, callback) {
-      PizZipUtils.getBinaryContent(url, callback);
-    },
     generate() {
-      this.loadFile("https://docxtemplater.com/tag-example.docx", function (error, content) {
+      console.dir(getReportData())
+      loadFile('http://ai.kunsan.ac.kr:3000/uploads/files-1649585907843.docx', function (error, content) {
         if (error) {
           throw error;
         }
@@ -46,9 +52,9 @@ export default {
           type: "blob",
           mimeType:
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            //"application/pdf;charset=utf-8",
+          //"application/pdf;charset=utf-8",
           // compression: DEFLATE adds a compression step.
-            // For a 50MB output document, expect 500ms additional CPU time
+          // For a 50MB output document, expect 500ms additional CPU time
           compression: "DEFLATE",
         });
         // Output the document using Data-URI

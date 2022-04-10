@@ -1,11 +1,11 @@
 export default function getReportData() {
-    return {
-      ...reportBaseData,
-      ...getEstimatedSalesTableData(),
-      ...getTlafTableData(),
-      ...getConfirmationFactorTableData(),
-      ...getDiscountRateTableData()
-    }
+  return {
+    ...reportBaseData,
+    ...getEstimatedSalesTableData(),
+    ...getTlafTableData(),
+    ...getConfirmationFactorTableData(),
+    ...getDiscountRateTableData()
+  }
 }
 
 let reportBaseData = {
@@ -297,7 +297,7 @@ function getConfirmationFactorTableData() {
   for (let column = 0; column < columnCount; column++) {
     for (let row = 0; row < rowCount; row++) {
       let key = `cf_${column}${row}`;
-      result[key] = (inputData[column] === row) ? '' : ''
+      result[key] = (inputData[column] === row) ? 'O' : ''
     }
   }
 
@@ -359,18 +359,18 @@ function getDiscountRateTableData() {
 
   for (let row = 0; row < rowCount; row++) {
     let key = `ds_${row}`
-    result[`${key}${0}`] = input['industry_code']
-    result[`${key}${1}`] = input['capm']
-    result[`${key}${2}`] = input['major_prev']
-    result[`${key}${3}`] = input['medium_prev']
-    result[`${key}${4}`] = input['small_prev']
-    result[`${key}${5}`] = input['startUp_prev']
-    result[`${key}${6}`] = input['capital_mine_rate']
-    result[`${key}${7}`] = input['public']
-    result[`${key}${8}`] = input['major']
-    result[`${key}${9}`] = input['medium']
-    result[`${key}${10}`] = input['small']
-    result[`${key}${11}`] = input['startUp']
+    result[`${key}${0}`] = input[row]['industry_code']
+    result[`${key}${1}`] = input[row]['capm']
+    result[`${key}${2}`] = input[row]['major_prev']
+    result[`${key}${3}`] = input[row]['medium_prev']
+    result[`${key}${4}`] = input[row]['small_prev']
+    result[`${key}${5}`] = input[row]['startUp_prev']
+    result[`${key}${6}`] = input[row]['capital_mine_rate']
+    result[`${key}${7}`] = input[row]['public']
+    result[`${key}${8}`] = input[row]['major']
+    result[`${key}${9}`] = input[row]['medium']
+    result[`${key}${10}`] = input[row]['small']
+    result[`${key}${11}`] = input[row]['startUp']
   }
 
   return result;
