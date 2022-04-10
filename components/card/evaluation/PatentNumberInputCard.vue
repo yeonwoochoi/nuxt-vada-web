@@ -4,14 +4,22 @@
       <v-col cols="11" class="text-center pt-6 font-weight-bold headline">
         <p>{{title}}</p>
       </v-col>
-      <v-col cols="8" class="pb-8">
+      <v-col cols="3" md="2" class="pb-8 pr-0">
+        <v-select
+          v-model="type"
+          :items="items"
+          label="Outlined style"
+          outlined
+        />
+      </v-col>
+      <v-col cols="8" md="6" class="pb-8">
         <v-text-field
           v-model="patentNumber"
-          :label="`등록/출원번호`"
+          :label="type"
           flat
           filled
           outlined
-          :rules="[rules.required]"
+          :rules="[rules.required, rules.length]"
         />
       </v-col>
       <div style="display: flex;" class="mb-4">
@@ -41,17 +49,31 @@ export default {
   components: {CustomButton},
   data: () => ({
     title: '특허번호를 입력해주세요.',
-    patentNumber: ''
+    patentNumber: '',
+    items: [
+      '출원번호',
+      '등록번호'
+    ],
+    type: '출원번호'
   }),
   computed: {
     rules() {
       return {
         required: value => !!value || '값을 입력해주세요',
+        length: value => value.length === 13 || '출원, 등록번호는 13자리로 이루어져 있습니다.',
       }
     }
   },
   methods: {
     goNext() {
+      if (this.type === '등록번호') {
+        if (this.patentNumber.length === 13) {
+          if (this.patentNumber.substring(9) !== '0000') {
+            alert("유효한 등록번호를 입력해주십시오.")
+            return;
+          }
+        }
+      }
       this.$emit('nextStep', 2);
     },
     goPrev() {
