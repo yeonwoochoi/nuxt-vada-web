@@ -34,7 +34,7 @@ export default {
   }),
   methods: {
     generate() {
-      loadFile('http://ai.kunsan.ac.kr:3000/uploads/files-1649653731255.docx', function (error, content) {
+      loadFile('http://ai.kunsan.ac.kr:3000/uploads/files-1649683014263.docx', function (error, content) {
         if (error) {
           throw error;
         }

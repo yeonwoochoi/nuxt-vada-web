@@ -281,7 +281,7 @@ function getTlafTableData() {
 function getConfirmationFactorTableData() {
   // TODO: input parameter 형식이 이렇게 되어야함
   const input = [
-    0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0
+    0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0
   ]
 
   const columnCount = 17    // 행
