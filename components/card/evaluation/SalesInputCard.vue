@@ -4,7 +4,7 @@
       <v-col cols="11" class="pt-6 font-weight-bold headline">
         <p>{{title}}</p>
       </v-col>
-      <v-col cols="11" class="py-0">
+      <v-col cols="11">
         <div style="width: 100%; display: flex; justify-content: center">
           <v-radio-group v-model="hasSales" row>
             <v-radio :value="true" :label="'매출액 있음'"/>
@@ -13,7 +13,7 @@
         </div>
       </v-col>
       <v-expand-transition mode="out-in">
-        <v-col cols="11" v-if="hasSales">
+        <v-col cols="11" md="8" v-if="hasSales">
           <div style="display: flex; align-items: center; justify-content: space-around">
             <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
               {{currentYear-2 + '년'}}
@@ -28,26 +28,6 @@
               outlined
               :rules="[rules.required]"
             />
-            <v-text-field
-              @keypress="isNumber($event)"
-              class="pl-2"
-              v-model="salesData.year1.percent"
-              label="매출액 차지 비중"
-              suffix="%"
-              flat
-              outlined
-              :rules="[rules.required]"
-              style="max-width: 200px"
-            >
-              <template v-slot:append-outer>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-icon v-on="on" v-bind="attrs">mdi-information</v-icon>
-                  </template>
-                  <span>{{ toolTip }}</span>
-                </v-tooltip>
-              </template>
-            </v-text-field>
           </div>
           <div style="display: flex; align-items: center; justify-content: space-around">
             <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
@@ -63,26 +43,6 @@
               outlined
               :rules="[rules.required]"
             />
-            <v-text-field
-              @keypress="isNumber($event)"
-              class="pl-2"
-              v-model="salesData.year2.percent"
-              label="매출액 차지 비중"
-              suffix="%"
-              flat
-              outlined
-              :rules="[rules.required]"
-              style="max-width: 200px"
-            >
-              <template v-slot:append-outer>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-icon v-on="on" v-bind="attrs">mdi-information</v-icon>
-                  </template>
-                  <span>{{ toolTip }}</span>
-                </v-tooltip>
-              </template>
-            </v-text-field>
           </div>
           <div style="display: flex; align-items: center; justify-content: space-around">
             <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
@@ -98,16 +58,21 @@
               outlined
               :rules="[rules.required]"
             />
+          </div>
+          <v-divider class="mb-8"/>
+          <div style="display: flex; align-items: center; justify-content: space-around">
+            <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
+              매출액 차지 비중
+            </v-subheader>
             <v-text-field
               @keypress="isNumber($event)"
               class="pl-2"
-              v-model="salesData.year3.percent"
+              v-model="salesData.year1.percent"
               label="매출액 차지 비중"
               suffix="%"
               flat
               outlined
               :rules="[rules.required]"
-              style="max-width: 200px"
             >
               <template v-slot:append-outer>
                 <v-tooltip bottom>
@@ -124,16 +89,18 @@
           </div>
         </v-col>
       </v-expand-transition>
-      <div style="display: flex;" class="my-4">
-        <custom-button
-          :width="`200`"
-          @submit="goNext"
-          :color="'primary'"
-          :text="`계속하기`"
-          class="darken-1"
-          :isDisable="!valid"
-        />
-      </div>
+      <v-col cols="12">
+        <div style="display: flex; justify-content: center;" class="mb-4">
+          <custom-button
+            :width="`200`"
+            @submit="goNext"
+            :color="'primary'"
+            :text="`계속하기`"
+            class="darken-1"
+            :isDisable="!valid"
+          />
+        </div>
+      </v-col>
     </v-row>
   </v-card>
 </template>
