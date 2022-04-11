@@ -1,6 +1,5 @@
 <template>
   <div>
-    <table style="width: 100%; text-align: center;"><tr style="background-color: #3C4552; color: white; font-weight: bold;"><th style="outline: black 1px solid; padding: 5px 0;">구분</th><td style="outline: black 1px solid;">2022</td><td style="outline: black 1px solid;">2023</td><td style="outline: black 1px solid;">2024</td><td style="outline: black 1px solid;">2025</td><td style="outline: black 1px solid;">2026</td><td style="outline: black 1px solid;">2027</td><td style="outline: black 1px solid;">2028</td><td style="outline: black 1px solid;">2029</td></tr><tr><th style="outline: black 1px solid; padding: 5px 0;">매출액</th><td style="outline: black 1px solid;">0</td><td style="outline: black 1px solid;">0</td><td style="outline: black 1px solid;">455</td><td style="outline: black 1px solid;">1,536</td><td style="outline: black 1px solid;">13,821</td><td style="outline: black 1px solid;">21,852</td><td style="outline: black 1px solid;">27,942</td><td style="outline: black 1px solid;">25,236</td></tr></table>
     <v-btn @click="generate" color="primary">Download Word Document</v-btn>
   </div>
 </template>
@@ -35,8 +34,7 @@ export default {
   }),
   methods: {
     generate() {
-      console.dir(getReportData())
-      loadFile('http://ai.kunsan.ac.kr:3000/uploads/files-1649585907843.docx', function (error, content) {
+      loadFile('http://ai.kunsan.ac.kr:3000/uploads/files-1649653731255.docx', function (error, content) {
         if (error) {
           throw error;
         }
@@ -89,7 +87,7 @@ export default {
       * template named "template1.docx" .
       * */
       // this.loadFile("https://docxtemplater.com/tag-example.docx",function(error: any,content : any){
-      this.loadFile('https://docxtemplater.com/tag-example.docx',function(error, content){
+      this.loadFile('http://ai.kunsan.ac.kr:3000/uploads/files-1649653312067.docx',function(error, content){
         if (error) {
           throw error
         }
