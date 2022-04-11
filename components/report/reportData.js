@@ -224,6 +224,7 @@ function getEstimatedSalesTableData() {
     },
   ]
 
+  /*
   let result = '<table style="width: 100%; text-align: center;"><tr style="background-color: #3C4552; color: white; font-weight: bold;">'
 
   result += `<th style="outline: black 1px solid; padding: 5px 0;">구분</th>`
@@ -239,9 +240,10 @@ function getEstimatedSalesTableData() {
   }
 
   result += '</tr></table>'
+  */
 
   return {
-    estimated_sales_table: result
+    estimated_sales_table: input
   };
 }
 
@@ -268,7 +270,7 @@ function getTlafTableData() {
   for (let column = 0; column < columnCount; column++) {
     for (let row = 0; row < rowCount; row++) {
       let key = `tlaf_${column}${row}`;
-      result[key] = (inputData[column] === row) ? '' : ''
+      result[key] = (inputData[column] === row) ? 'O' : ''
     }
   }
 
