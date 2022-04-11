@@ -84,7 +84,7 @@ export default {
     header: '특허 평가',
     currentStep: 1,
     steps: [
-      { step: 1, header: '3년 매출액', valid: true, errorMsg: '모든 약관에 동의 하셔야 다음 단계로 진행 가능합니다.' },
+      { step: 1, header: '3년 매출액', valid: true, errorMsg: '모든 값을 입력해야 다음 단계로 진행 가능합니다.' },
       { step: 2, header: '특허 번호', valid: true, errorMsg: '유효한 특허번호를 입력해주십시오.' },
       { step: 3, header: '기업 규모', valid: true, errorMsg: '기업 규모를 선택해 주셔야 다음 단계로 진행 가능합니다.' },
       { step: 4, header: '산업분류코드', valid: true, errorMsg: '산업분류코드를 선택해 주셔야 다음 단계로 진행 가능합니다.' },
