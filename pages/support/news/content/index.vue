@@ -20,6 +20,9 @@ import {mapState} from "vuex";
 export default {
   name: "index",
   components: {MainCard, NewsBoardContentCard},
+  created() {
+    this.$store.commit('setSheetTitle', '공지사항')
+  },
   data: () => ({
     header: 'News',
   }),

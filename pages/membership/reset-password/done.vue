@@ -27,6 +27,9 @@ import CustomButton from "../../../components/button/CustomButton";
 export default {
   name: "reset-password-done",
   components: {CustomButton, ResetPwdCard},
+  created() {
+    this.$store.commit('setSheetTitle', '비밀번호 재설정')
+  },
   data: () => ({
     icon: require('../../../assets/icon_complete.png'),
     guide: '비밀번호가 재설정되었습니다.'

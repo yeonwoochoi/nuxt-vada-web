@@ -78,6 +78,9 @@ import MainCard from "../../../components/card/MainCard";
 export default {
   name: "index",
   components: {MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '문의하기')
+  },
   data: () => ({
     valid: false,
     header: '1:1 문의',

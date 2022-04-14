@@ -150,7 +150,8 @@ export default {
       companyWhiteLogo: 'companyWhiteLogo'
     }),
     ...mapGetters({
-      toolbarItems: 'toolbarItems'
+      toolbarItems: 'toolbarItems',
+      sheetTitle: 'getSheetTitle'
     }),
     getColor() {
       return this.isActive ? 'rgba(255, 255, 255, 255)' : 'rgba(255, 255, 255, 0)'
@@ -185,17 +186,7 @@ export default {
     },
     appBarSheetTitle() {
       //TODO (appBarSheetTitle)
-      return '';
-      let pathArr = this.$route.path.split('/');
-      if (!pathArr) {
-        return '';
-      }
-      else {
-        let result = '';
-        const target = `/${pathArr[pathArr.length-1]}`;
-        result = this.toolbarItems.find(v => v.link === target)
-        return result.toUpperCase();
-      }
+      return this.sheetTitle
     },
   },
   methods: {

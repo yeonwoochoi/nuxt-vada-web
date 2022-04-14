@@ -121,6 +121,9 @@ import CustomButton from "../../../components/button/CustomButton";
 export default {
   name: "Analysis",
   components: {CustomButton, SimpleDataTable, MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '특허분석')
+  },
   asyncData({params}) {
     return {
       idx: params.id,

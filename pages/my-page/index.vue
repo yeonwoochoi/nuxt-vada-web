@@ -49,6 +49,9 @@ import WithdrawalCard from "../../components/card/my-page/contents/WithdrawalCar
 export default {
   name: "index",
   components: {WithdrawalCard, PurchaseListCard, InquiryListCard, EditUserInfoCard, MyPageCard, MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '마이페이지')
+  },
   data: () => ({
     header: '마이페이지',
     tabItems: [

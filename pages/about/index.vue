@@ -65,6 +65,9 @@
 <script>
 export default {
   name: "index",
+  created() {
+    this.$store.commit('setSheetTitle', '기업소개')
+  },
   data: () => ({
     companyImg: require('../../assets/about/about_company.png'),
     techImg: require('../../assets/about/about_tech.png'),

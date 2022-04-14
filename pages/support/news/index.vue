@@ -32,8 +32,9 @@ export default {
     };
   },
   created() {
-    let refreshRoute = false;
+    this.$store.commit('setSheetTitle', '공지사항')
 
+    let refreshRoute = false;
     let page = this.currentPage;
     if (!page) {
       page = 1

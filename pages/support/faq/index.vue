@@ -50,6 +50,9 @@ import MainCard from "../../../components/card/MainCard";
 export default {
   name: "index",
   components: {MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', 'FAQ')
+  },
   data: () => ({
     header: '자주 묻는 질문',
     headers: [

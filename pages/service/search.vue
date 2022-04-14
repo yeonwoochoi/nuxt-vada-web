@@ -206,6 +206,9 @@ import DownloadButton from "../../components/button/DownloadButton";
 export default {
   name: "search",
   components: {DownloadButton, CustomButton, MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '특허검색')
+  },
   data: () => ({
     kiprisDoiLink: 'https://doi.org/10.8080/',
     header: '특허검색',

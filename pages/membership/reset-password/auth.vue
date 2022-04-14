@@ -87,8 +87,8 @@ import ResetPwdCard from "../../../components/card/reset-password/ResetPwdCard";
 export default {
   name: "ResetPasswordAuth",
   components: {ResetPwdCard, CustomButton},
-  props: {
-
+  created() {
+    this.$store.commit('setSheetTitle', '비밀번호 재설정')
   },
   data: () => ({
     // TODO(ResetPwdAuth): Vuex같은데 저장된 값들임. 불러왔다치고 하는거임.

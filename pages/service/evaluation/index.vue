@@ -80,6 +80,9 @@ export default {
     ResultSummaryCard,
     IndustrialClassificationInputCard,
     BusinessScaleInputCard, CompanyLogoBtn, PatentNumberInputCard, SalesInputCard, MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '특허평가')
+  },
   data: () => ({
     header: '특허 평가',
     currentStep: 1,

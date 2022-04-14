@@ -41,6 +41,9 @@ import SimpleDataTable from "../../components/table/SimpleDataTable";
 export default {
   name: "fee",
   components: {SimpleDataTable, MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '요금안내')
+  },
   data: () => ({
     header: '요금안내',
     incidentPlanHeader: [

@@ -35,6 +35,9 @@ import CustomButton from "../../../../components/button/CustomButton";
 export default {
   name: "evaluationSummary",
   components: {CustomButton, VerticalHeaderTable, MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '특허평가')
+  },
   asyncData({params}) {
     return {
       idx: params.id,

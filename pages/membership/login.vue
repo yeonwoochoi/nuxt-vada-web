@@ -68,6 +68,9 @@ import CustomButton from "../../components/button/CustomButton";
 export default {
   name: "login",
   components: {CustomButton},
+  created() {
+    this.$store.commit('setSheetTitle', '로그인')
+  },
   data: () => ({
     header: '로그인',
     id: '',

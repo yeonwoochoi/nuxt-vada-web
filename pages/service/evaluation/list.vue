@@ -140,6 +140,9 @@ import CustomButton from "../../../components/button/CustomButton";
 export default {
   name: "evaluationList",
   components: {CustomButton, DownloadButton, MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '평가목록조회')
+  },
   asyncData({ from, query }) {
     let result = {
       currentPage: 1,

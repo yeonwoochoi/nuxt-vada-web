@@ -4,6 +4,7 @@ export const state = () => ({
   companyDefaultLogo: require('assets/logo/logo_vada_black.png'),
   companyWhiteLogo: require('assets/logo/logo_vada_white.png'),
   toolbarItems: [],
+  sheetTitle: '',
   drawer: false,
   drawerItems: [
     { title: '메인', icon: 'mdi-home', link: '/', items:[] },
@@ -49,6 +50,7 @@ export const getters = {
     }
     return result;
   },
+  getSheetTitle: state => state.sheetTitle,
 }
 
 export const mutations = {
@@ -57,6 +59,9 @@ export const mutations = {
   },
   setSelected: (state, data) => {
     state.selected = data
+  },
+  setSheetTitle: (state, data) => {
+    state.sheetTitle = data
   },
   resetSelected: (state) => {
     state.selected = []
