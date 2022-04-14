@@ -52,7 +52,7 @@
                   v-bind="attrs"
                   v-on="on"
                   style="font-size: 18px; letter-spacing: -0.5px; width: 150px;"
-                  :style="`height: 100px; color: ${isActive ? 'rgb(0, 33, 69)' : 'white'}`"
+                  :style="`height: 100px; color: ${isActive ? 'rgb(0, 36, 69)' : 'white'}`"
                   text
                   tile
                 >
@@ -71,7 +71,7 @@
                   active-class="font-weight-bold"
                   :ripple="false"
                   :to="item.link"
-                  :style="`color: rgb(0, 33, 69); font-size: 17px; letter-spacing: -0.5px; min-height: 55px;`"
+                  :style="`color: rgb(0, 36, 69); font-size: 17px; letter-spacing: -0.5px; min-height: 55px;`"
                   text
                 >
                   {{item.title}}
@@ -84,7 +84,7 @@
               class="no-background-hover elevation-0 font-weight-bold"
               :ripple="false"
               @click="onClickLogIn"
-              :style="`padding: 20px; font-size: 18px; width: 120px; color: ${isActive ? 'rgb(0, 33, 69)' : 'white'}; border: ${isActive ? 'rgb(0, 33, 69)' : 'white'} 0.15em solid; border-radius: 5px;`"
+              :style="`padding: 20px; font-size: 18px; width: 120px; color: ${isActive ? 'rgb(0, 36, 69)' : 'white'}; border: ${isActive ? 'rgb(0, 36, 69)' : 'white'} 0.15em solid; border-radius: 5px;`"
               text
             >
               {{loginBtnText}}
@@ -105,7 +105,7 @@
               :class="`elevation-0 subtitle-1 ${isActive ? 'black--text' : 'white--text'} font-weight-medium`"
               :ripple="false"
               @click="onClickLogIn"
-              :style="`border: ${isActive ? 'rgb(0, 33, 69)' : 'white'} 0.15em solid; border-radius: 5px; background-color: transparent; width: 100px;`"
+              :style="`border: ${isActive ? 'rgb(0, 36, 69)' : 'white'} 0.15em solid; border-radius: 5px; background-color: transparent; width: 100px;`"
               text
               tile
             >
