@@ -19,6 +19,7 @@
           flat
           filled
           outlined
+          :disabled="loading"
           :rules="[rules.required, rules.length]"
         />
       </v-col>
@@ -46,6 +47,7 @@
 <script>
 import CustomButton from "../../button/CustomButton";
 import mapper from "../../../data/ipcKsicMapper.json"
+import ksicList from "../../../data/ksic.json"
 
 export default {
   name: "PatentInfoInputCard",
@@ -83,7 +85,7 @@ export default {
         })
 
         // TODO: 서버 통신해서 IPC 코드 받아와야함
-        let targetKsic = this.getKsicFromIpc('A01K')
+        let targetKsic = this.getKsicFromIpc('A42B')
 
         this.$store.commit('evaluation/setKsic', targetKsic)
         this.loading = false
@@ -107,9 +109,8 @@ export default {
 
     getKsicFromIpc(ipc) {
       let target = mapper.find(v => v.ipc === ipc).ksic;
-      let ksicList = this.$store.getters["evaluation/getKsicList"];
       return ksicList.find(v => v.code === target)
-    }
+    },
   }
 }
 </script>
