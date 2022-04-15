@@ -21,7 +21,7 @@
             <v-text-field
               @keypress="isNumber($event)"
               class="pr-2"
-              v-model="salesData.year1.sales"
+              v-model="salesData.year1"
               :label="`${currentYear-2}년 매출액`"
               suffix="백만원"
               flat
@@ -36,7 +36,7 @@
             <v-text-field
               @keypress="isNumber($event)"
               class="pr-2"
-              v-model="salesData.year2.sales"
+              v-model="salesData.year2"
               :label="`${currentYear-1}년 매출액`"
               suffix="백만원"
               flat
@@ -51,7 +51,7 @@
             <v-text-field
               @keypress="isNumber($event)"
               class="pr-2"
-              v-model="salesData.year3.sales"
+              v-model="salesData.year3"
               :label="`${currentYear}년 매출액`"
               suffix="백만원"
               flat
@@ -67,7 +67,7 @@
             <v-text-field
               @keypress="isNumber($event)"
               class="pl-2"
-              v-model="salesData.year1.percent"
+              v-model="salesData.percent"
               label="매출액 차지 비중"
               suffix="%"
               flat
@@ -97,7 +97,6 @@
             :color="'primary'"
             :text="`계속하기`"
             class="darken-1"
-            :isDisable="!valid"
           />
         </div>
       </v-col>
@@ -107,6 +106,7 @@
 
 <script>
 import CustomButton from "../../button/CustomButton";
+import {mapMutations} from "vuex";
 export default {
   name: "SalesInputCard",
   components: {CustomButton},
@@ -114,26 +114,15 @@ export default {
     hasSales: false,
     title: '3개년 매출 여부와 금액을 입력해주세요.',
     salesData: {
-      year1: {
-        sales: null,
-        percent: null
-      },
-      year2: {
-        sales: null,
-        percent: null
-      },
-      year3: {
-        sales: null,
-        percent: null
-      },
+      year1: '',
+      year2: '',
+      year3: '',
+      percent: '',
     },
     toolTip: '귀사의 매출에서 특허가 차지하는 비중을 입력해주세요.',
     precaution: '＊실제 매출과 다르게 적을 경우 결과가 다르게 나올 수 있습니다.'
   }),
   computed: {
-    valid() {
-      return true;
-    },
     currentYear() {
       return parseInt(new Date().getFullYear())
     },
@@ -144,8 +133,12 @@ export default {
     }
   },
   methods: {
+    ...mapMutations("evaluation", {
+      setSalesData: 'setSalesData'
+    }),
     goNext() {
       this.$emit('nextStep', 1);
+      this.setSalesData(this.hasSales ? this.salesData : null)
     },
     isNumber: function(evt) {
       evt = (evt) ? evt : window.event;

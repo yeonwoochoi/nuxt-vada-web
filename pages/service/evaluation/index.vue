@@ -34,16 +34,16 @@
                         <sales-input-card @nextStep="nextStep" />
                       </v-form>
                       <v-form v-if="n.step === 2" ref="stepForm" v-model="n.valid" lazy-validation>
-                        <patent-number-input-card @nextStep="nextStep" @prevStep="prevStep"/>
+                        <patent-info-input-card @nextStep="nextStep" @prevStep="prevStep"/>
                       </v-form>
                       <validation-observer v-if="n.step === 3" ref="stepForm">
                         <v-form>
-                          <ksic-input-card @nextStep="nextStep" @prevStep="prevStep" v-model="loading"/>
+                          <ksic-input-card @nextStep="nextStep" @prevStep="prevStep"/>
                         </v-form>
                       </validation-observer>
                       <validation-observer v-if="n.step === 4" ref="stepForm">
                         <v-form>
-                          <business-scale-input-card @nextStep="nextStep" @prevStep="prevStep"/>
+                          <business-scale-input-card @nextStep="nextStep" @prevStep="prevStep" v-model="loading"/>
                         </v-form>
                       </validation-observer>
                       <v-form v-if="n.step === 5" ref="stepForm" v-model="n.valid" lazy-validation>
@@ -69,7 +69,7 @@
 <script>
 import MainCard from "../../../components/card/MainCard";
 import SalesInputCard from "../../../components/card/evaluation/SalesInputCard";
-import PatentNumberInputCard from "../../../components/card/evaluation/PatentNumberInputCard";
+import PatentInfoInputCard from "../../../components/card/evaluation/PatentInfoInputCard";
 import CompanyLogoBtn from "../../../components/button/CompanyLogoBtn";
 import BusinessScaleInputCard from "../../../components/card/evaluation/BusinessScaleInputCard";
 import KsicInputCard from "../../../components/card/evaluation/KsicInputCard";
@@ -79,8 +79,9 @@ export default {
   components: {
     ResultSummaryCard,
     KsicInputCard,
-    BusinessScaleInputCard, CompanyLogoBtn, PatentNumberInputCard, SalesInputCard, MainCard},
+    BusinessScaleInputCard, CompanyLogoBtn, PatentInfoInputCard, SalesInputCard, MainCard},
   created() {
+    this.$store.commit('evaluation/resetEvalData')
     this.$store.commit('setSheetTitle', '특허평가')
   },
   data: () => ({

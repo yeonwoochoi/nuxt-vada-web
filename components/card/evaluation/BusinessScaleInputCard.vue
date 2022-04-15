@@ -14,6 +14,7 @@
       </v-col>
       <div style="display: flex;" class="mt-6 mb-4">
         <custom-button
+          :loading="value"
           class="mx-1 darken-1"
           :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
           @submit="goNext"
@@ -34,12 +35,18 @@
 
 <script>
 import CustomButton from "../../button/CustomButton";
+
 export default {
   name: "BusinessScaleInputCard",
   components: {CustomButton},
+  props: {
+    value: {
+      type: Boolean,
+      default: () => false
+    },
+  },
   data: () => ({
     title: '기업 규모를 선택해주세요',
-    businessScale: '상장 기업',
     businessScaleItems: [
       '상장 기업',
       '비상장 대기업',
@@ -49,12 +56,22 @@ export default {
       '학교, 기관'
     ]
   }),
+  computed: {
+    businessScale: {
+      get () {
+        return this.$store.getters['evaluation/getEvaluationData'].businessScale
+      },
+      set (value) {
+        return this.$store.commit('evaluation/setBusinessScale', value)
+      }
+    }
+  },
   methods: {
     goNext() {
-      this.$emit('nextStep', 3);
+      this.$emit('nextStep', 4);
     },
     goPrev() {
-      this.$emit('prevStep', 3)
+      this.$emit('prevStep', 4)
     }
   }
 }

@@ -6,8 +6,8 @@
       </v-col>
       <v-col cols="3" md="2" class="pb-8 pr-0">
         <v-select
-          v-model="type"
-          :items="items"
+          v-model="patentType"
+          :items="patentTypes"
           label="Outlined style"
           outlined
         />
@@ -15,7 +15,7 @@
       <v-col cols="8" md="6" class="pb-8">
         <v-text-field
           v-model="patentNumber"
-          :label="type"
+          :label="patentType"
           flat
           filled
           outlined
@@ -29,6 +29,7 @@
           @submit="goNext"
           :color="'primary'"
           :text="`계속하기`"
+          :loading="loading"
         />
         <custom-button
           class="mx-1"
@@ -44,17 +45,20 @@
 
 <script>
 import CustomButton from "../../button/CustomButton";
+import mapper from "../../../data/ipcKsicMapper.json"
+
 export default {
-  name: "PatentNumberInputCard",
+  name: "PatentInfoInputCard",
   components: {CustomButton},
   data: () => ({
     title: '특허번호를 입력해주세요.',
     patentNumber: '',
-    items: [
+    patentTypes: [
       '출원번호',
       '등록번호'
     ],
-    type: '출원번호'
+    patentType: '출원번호',
+    loading: false,
   }),
   computed: {
     rules() {
@@ -66,18 +70,45 @@ export default {
   },
   methods: {
     goNext() {
-      if (this.type === '등록번호') {
-        if (this.patentNumber.length === 13) {
-          if (this.patentNumber.substring(9) !== '0000') {
-            alert("유효한 등록번호를 입력해주십시오.")
-            return;
-          }
-        }
+      if (!this.checkPatentValidation()) {
+        alert("유효한 등록번호를 입력해주십시오.")
+        return;
       }
-      this.$emit('nextStep', 2);
+      this.loading = true;
+      setTimeout(() => {
+        this.$emit('nextStep', 2);
+        this.$store.commit('evaluation/setPatentInfo', {
+          type: this.patentType,
+          number: this.patentNumber
+        })
+
+        // TODO: 서버 통신해서 IPC 코드 받아와야함
+        let targetKsic = this.getKsicFromIpc('A01K')
+
+        this.$store.commit('evaluation/setKsic', targetKsic)
+        this.loading = false
+      }, 3000)
     },
     goPrev() {
       this.$emit('prevStep', 2)
+    },
+
+    // 등록번호 유효성 확인
+    checkPatentValidation() {
+      if (this.patentType === '등록번호') {
+        if (this.patentNumber.length === 13) {
+          if (this.patentNumber.substring(9) !== '0000') {
+            return false
+          }
+        }
+      }
+      return true;
+    },
+
+    getKsicFromIpc(ipc) {
+      let target = mapper.find(v => v.ipc === ipc).ksic;
+      let ksicList = this.$store.getters["evaluation/getKsicList"];
+      return ksicList.find(v => v.code === target)
     }
   }
 }
