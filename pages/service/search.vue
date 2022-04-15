@@ -58,6 +58,7 @@
                     <custom-button
                       :width="`100`"
                       :text="`검색`"
+                      class="my-4"
                       @submit="searchByInput"
                     />
                   </v-card-title>
@@ -281,7 +282,6 @@ export default {
         }
       },
     ],
-
     // TODO (개별특허분석): 임시 데이터 (이 template 에서 쓰이진 않지만 가장 포괄적인 data)
     tableContent: [
       {
@@ -361,14 +361,12 @@ export default {
   watch: {
     searchData (val, prev) {
       if (val.length === prev.length) return
-
       this.searchData = val.map(v => {
         if (typeof v === 'string') {
           v = {
             text: v,
             color: 'grey'
           }
-
           this.nonce++
         }
         return v
@@ -410,6 +408,7 @@ export default {
       console.dir(item)
     },
     // 일괄 평가
+    // 기능에서 뺌 (checkbox로 선택해서 하려고 했는데)
     evaluateSelectedAll() {
       console.dir(this.selected)
     },
