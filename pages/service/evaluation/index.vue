@@ -38,7 +38,7 @@
                       </v-form>
                       <validation-observer v-if="n.step === 3" ref="stepForm">
                         <v-form>
-                          <ksic-input-card @nextStep="nextStep" @prevStep="prevStep"/>
+                          <ksic-input-card @nextStep="nextStep" @prevStep="prevStep" ref="ksicRef"/>
                         </v-form>
                       </validation-observer>
                       <validation-observer v-if="n.step === 4" ref="stepForm">
@@ -96,7 +96,8 @@ export default {
     ],
     lastStep: 5,
     loading: false,
-    sampleSummaryData: null
+    sampleSummaryData: null,
+    ksic: {},
   }),
   computed: {
     isLastStep() {
@@ -112,16 +113,15 @@ export default {
         this.currentStep = step - 1
       }
     },
-    async nextStep(step) {
-      let index = step-1;
+    async nextStep(currentStep) {
+      let index = currentStep-1;
       this.steps[index].valid = false
       let v = await this.$refs.stepForm[index].validate();
       if (v) {
         this.steps[index].valid = true
         if (!this.isLastStep) {
-          //this.currentStep = step + 1
-          this.fetchSummaryData(step, () => {
-            this.currentStep = step + 1;
+          this.fetchData(currentStep, () => {
+            this.currentStep = currentStep + 1;
           })
         }
         else {
@@ -135,11 +135,22 @@ export default {
     stepStatus(step) {
       return this.currentStep > step ? 'green' : 'blue'
     },
-    fetchSummaryData(prevStep, callback) {
+
+    fetchData(prevStep, callback) {
+
+      // 나머지 step
       if (parseInt(prevStep + 1) < this.lastStep) {
+
+        // 3번째 (index = 2) step 에서 fetchData 호출
+        if (prevStep === 2) {
+          this.$refs.ksicRef[0].fetchData();
+        }
+
         callback();
         return;
       }
+
+      // 마지막 step (요약문 fetch data)
       this.loading = true
       setTimeout(() => {
         let randomNumber = Math.floor(Math.random() * 10000) + 1;
