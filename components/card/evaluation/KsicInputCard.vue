@@ -4,6 +4,15 @@
       <v-col cols="11" class="text-center pt-6 font-weight-bold headline">
         <p>{{title}}</p>
       </v-col>
+      <v-col cols="11" class="text-center pt-6 font-weight-bold subtitle-1">
+        <p>{{subtitle}}</p>
+      </v-col>
+      <v-col cols="11" md="8" class="pb-0">
+        <v-radio-group v-model="isValidCode" row>
+          <v-radio :value="true" label="확인"/>
+          <v-radio :value="false" label="수정"/>
+        </v-radio-group>
+      </v-col>
       <v-col cols="11" md="8" class="pb-0">
         <v-select
           v-model="classification"
@@ -36,7 +45,7 @@
 <script>
 import CustomButton from "../../button/CustomButton";
 export default {
-  name: "IndustrialClassificationInputCard",
+  name: "KsicInputCard",
   components: {CustomButton},
   props: {
     value: {
@@ -45,7 +54,9 @@ export default {
     }
   },
   data: () => ({
-    title: '산업분류코드를 입력해주세요',
+    title: '산업분류코드(KSIC)를 확인해주세요',
+    subtitle: '수정하시겠습니까?',
+    isValidCode: true,
     classification: '',
     sampleData: [
       { code: 'A01', title: '농업'},
