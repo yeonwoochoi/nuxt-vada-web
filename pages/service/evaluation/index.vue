@@ -38,12 +38,12 @@
                       </v-form>
                       <validation-observer v-if="n.step === 3" ref="stepForm">
                         <v-form>
-                          <business-scale-input-card @nextStep="nextStep" @prevStep="prevStep"/>
+                          <ksic-input-card @nextStep="nextStep" @prevStep="prevStep" v-model="loading"/>
                         </v-form>
                       </validation-observer>
                       <validation-observer v-if="n.step === 4" ref="stepForm">
                         <v-form>
-                          <industrial-classification-input-card @nextStep="nextStep" @prevStep="prevStep" v-model="loading"/>
+                          <business-scale-input-card @nextStep="nextStep" @prevStep="prevStep"/>
                         </v-form>
                       </validation-observer>
                       <v-form v-if="n.step === 5" ref="stepForm" v-model="n.valid" lazy-validation>
@@ -72,13 +72,13 @@ import SalesInputCard from "../../../components/card/evaluation/SalesInputCard";
 import PatentNumberInputCard from "../../../components/card/evaluation/PatentNumberInputCard";
 import CompanyLogoBtn from "../../../components/button/CompanyLogoBtn";
 import BusinessScaleInputCard from "../../../components/card/evaluation/BusinessScaleInputCard";
-import IndustrialClassificationInputCard from "../../../components/card/evaluation/IndustrialClassificationInputCard";
+import KsicInputCard from "../../../components/card/evaluation/KsicInputCard";
 import ResultSummaryCard from "../../../components/card/evaluation/ResultSummaryCard";
 export default {
   name: "evaluation",
   components: {
     ResultSummaryCard,
-    IndustrialClassificationInputCard,
+    KsicInputCard,
     BusinessScaleInputCard, CompanyLogoBtn, PatentNumberInputCard, SalesInputCard, MainCard},
   created() {
     this.$store.commit('setSheetTitle', '특허평가')
@@ -89,8 +89,8 @@ export default {
     steps: [
       { step: 1, header: '3년 매출액', valid: true, errorMsg: '모든 값을 입력해야 다음 단계로 진행 가능합니다.' },
       { step: 2, header: '특허 번호', valid: true, errorMsg: '유효한 특허번호를 입력해주십시오.' },
-      { step: 3, header: '기업 규모', valid: true, errorMsg: '기업 규모를 선택해 주셔야 다음 단계로 진행 가능합니다.' },
-      { step: 4, header: '산업분류코드', valid: true, errorMsg: '산업분류코드를 선택해 주셔야 다음 단계로 진행 가능합니다.' },
+      { step: 3, header: '산업분류코드', valid: true, errorMsg: '산업분류코드를 선택해 주셔야 다음 단계로 진행 가능합니다.' },
+      { step: 4, header: '기업 규모', valid: true, errorMsg: '기업 규모를 선택해 주셔야 다음 단계로 진행 가능합니다.' },
       { step: 5, header: '분석 결과 요약', valid: true, errorMsg: '' },
     ],
     lastStep: 5,
