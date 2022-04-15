@@ -135,7 +135,7 @@ export default {
       return this.currentStep > step ? 'green' : 'blue'
     },
     fetchSummaryData(prevStep, callback) {
-      if (parseInt(prevStep + 1) < 5) {
+      if (parseInt(prevStep + 1) < this.lastStep) {
         callback();
         return;
       }
