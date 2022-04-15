@@ -23,11 +23,11 @@
       </v-col>
       <v-col cols="11" md="8" class="pb-0" v-if="!isValidCode">
         <v-select
-          v-model="classification"
+          v-model="tempKsic"
           outlined
           filled
           :items="classificationItems"
-          item-value="code"
+          return-object
           :item-text="item => item.code + ' ' + item.title"
         />
       </v-col>
@@ -55,20 +55,38 @@
 import CustomButton from "../../button/CustomButton";
 import VerticalHeaderTable from "../../table/VerticalHeaderTable";
 import {mapGetters} from "vuex";
+import ksicList from "../../../data/ksic.json"
+
 export default {
   name: "KsicInputCard",
   components: {VerticalHeaderTable, CustomButton},
+  props: {
+    prevKsic: {
+      type: Object,
+      default: () => ksicList[0]
+    }
+  },
   data: () => ({
     title: '산업분류코드(KSIC)를 확인해주세요',
     subtitle: '수정하시겠습니까?',
     isValidCode: true,
-    classification: null,
+    tempKsic: null
   }),
   computed: {
     ...mapGetters("evaluation", {
-      classificationItems: 'getKsicList',
       evaluationData: 'getEvaluationData'
     }),
+    classification: {
+      get() {
+        return this.$store.getters["evaluation/getEvaluationData"].ksic
+      },
+      set(value) {
+        return this.$store.commit('evaluation/setKsic', value)
+      }
+    },
+    classificationItems() {
+      return ksicList
+    },
     ksicHeader() {
       return [
         {
@@ -93,17 +111,15 @@ export default {
   methods: {
     goNext() {
       this.$emit('nextStep', 3);
-      if (!this.isValidCode) {
-        this.$store.commit('evaluation/setKsic', this.classification)
-      }
+      this.classification = this.tempKsic
     },
     goPrev() {
       this.$emit('prevStep', 3)
     },
+    fetchData() {
+      this.tempKsic = this.classification
+    }
   },
-  mounted() {
-    this.classification = !this.evaluationData.ksic ? this.classificationItems[0] : this.evaluationData.ksic
-  }
 }
 </script>
 
