@@ -40,7 +40,7 @@ export default {
         },
         {
           text: '로열티율',
-          value: 'loyaltyRate',
+          value: 'royaltyRate',
         },
         {
           text: '할인율',
