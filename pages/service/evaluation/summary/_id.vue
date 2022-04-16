@@ -75,7 +75,7 @@ export default {
       },
       {
         text: '로열티율',
-        value: 'loyaltyRate',
+        value: 'royaltyRate',
       },
       {
         text: '할인율',
@@ -112,8 +112,8 @@ export default {
       return `현금흐름 추정기간 : <span class="light-blue--text">${sample.cashFlowFrom} ~ ${sample.cashFlowTo}</span>`
     },
 
-    loyaltyRate() {
-      let sample = this.summaryData.loyalty
+    royaltyRate() {
+      let sample = this.summaryData.royalty
       return `매출액 추정 : 직접 추정 (시장 점유율법)\n로열티 : 업종별 상관행법 X 로열티율 조정계수 = <span class="light-blue--text">${sample}%</span>`
     },
 
@@ -138,7 +138,7 @@ export default {
           techLife: 9,
           cashFlowFrom: '2020',
           cashFlowTo: '2028',
-          loyalty: '3.15',
+          royalty: '3.15',
           discountRate: '10.85',
           industrialCode: '기타 기계 및 장비 제조업 (C29)',
           enterpriseType: '비상장 창업기업',
@@ -153,7 +153,7 @@ export default {
             purpose: '평가용도 : 기술 가치금액 참고용',
             targetPatent: this.targetPatent,
             techLife: this.techLife + this.cashFlow,
-            loyaltyRate: this.loyaltyRate,
+            royaltyRate: this.royaltyRate,
             discountRate: this.discountRate,
             techPrice: this.techPrice
           }
