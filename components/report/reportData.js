@@ -17,8 +17,8 @@ let reportBaseData = {
   tech_life: '6',   // 기술의 경제적 수명 (기간)
   tech_life_to: '2027',  // 기술 경제적 수명 To (연도)
   preparation_period: '2',    // 사업화 준비기간
-  loyalty_rate_final: '16.13',    // 적정(합리적) 로열티율
-  loyalty_rate_base: '3.84',    // 기준 로열티율
+  royalty_rate_final: '16.13',    // 적정(합리적) 로열티율
+  royalty_rate_base: '3.84',    // 기준 로열티율
   discount_rate: '11.48',   // 할인율
   industry_code: '기타 기계 및 장비 제조업 (C29)',    // 업종
   enterprise_size: '비상장 소기업',   // 기업분류 (규모)
@@ -36,7 +36,7 @@ let reportBaseData = {
   tlaf_score_total: '121.0',    // 기술수명 영향요인 총점
   tlaf_output: '59.0',    // 기술수명 영향요인 산출값 (획득값)
   tech_weight: '35.0',    // 기술의 비중
-  industry_loyalty_median: '3.00',    // 업종 로열티율 중앙값
+  industry_royalty_median: '3.00',    // 업종 로열티율 중앙값
   pioneer_rate: '10',   // 개척률
   risk_score_total: '34',   // 기술사업화 위험프리미엄 점수 합계
   risk_premium: '3.80',   // 기술사업화 위험프리미엄
@@ -70,80 +70,80 @@ let reportBaseData = {
     {
       year: '2022',   // 연도
       sales: '0',   // 매출액
-      loyalty_rate: '16.13',    // 로열티율
-      loyalty_income: '0',    // 로열티 수입
+      royalty_rate: '16.13',    // 로열티율
+      royalty_income: '0',    // 로열티 수입
       corporate_tax: '0',   // 법인세 등
-      loyalty_after_tax: '0',   // 세후 로열티
+      royalty_after_tax: '0',   // 세후 로열티
       suspension: '0.9052',   // 현가계수
       present_value: '0'    // 현재가치
     },
     {
       year: '2023',
       sales: '0',
-      loyalty_rate: '16.13',
-      loyalty_income: '0',
+      royalty_rate: '16.13',
+      royalty_income: '0',
       corporate_tax: '0',
-      loyalty_after_tax: '0',
+      royalty_after_tax: '0',
       suspension: '0.8120',
       present_value: '0'
     },
     {
       year: '2024',
       sales: '455',
-      loyalty_rate: '16.13',
-      loyalty_income: '0.7',
+      royalty_rate: '16.13',
+      royalty_income: '0.7',
       corporate_tax: '0.1',
-      loyalty_after_tax: '0.6',
+      royalty_after_tax: '0.6',
       suspension: '0.7284',
       present_value: '0.5'
     },
     {
       year: '2025',
       sales: '1,536',
-      loyalty_rate: '16.13',
-      loyalty_income: '2.5',
+      royalty_rate: '16.13',
+      royalty_income: '2.5',
       corporate_tax: '0.3',
-      loyalty_after_tax: '2.2',
+      royalty_after_tax: '2.2',
       suspension: '0.6534',
       present_value: '1.4'
     },
     {
       year: '2026',
       sales: '13,821',
-      loyalty_rate: '16.13',
-      loyalty_income: '22.3',
+      royalty_rate: '16.13',
+      royalty_income: '22.3',
       corporate_tax: '2.5',
-      loyalty_after_tax: '19.8',
+      royalty_after_tax: '19.8',
       suspension: '0.5862',
       present_value: '11.6'
     },
     {
       year: '2027',
       sales: '21,852',
-      loyalty_rate: '16.13',
-      loyalty_income: '35.2',
+      royalty_rate: '16.13',
+      royalty_income: '35.2',
       corporate_tax: '3.9',
-      loyalty_after_tax: '31.4',
+      royalty_after_tax: '31.4',
       suspension: '0.5258',
       present_value: '16.5'
     },
     {
       year: '2028',
       sales: '27,942',
-      loyalty_rate: '16.13',
-      loyalty_income: '45.1',
+      royalty_rate: '16.13',
+      royalty_income: '45.1',
       corporate_tax: '5.0',
-      loyalty_after_tax: '40.1',
+      royalty_after_tax: '40.1',
       suspension: '0.4717',
       present_value: '18.9'
     },
     {
       year: '2029',
       sales: '25,236',
-      loyalty_rate: '16.13',
-      loyalty_income: '40.7',
+      royalty_rate: '16.13',
+      royalty_income: '40.7',
       corporate_tax: '4.5',
-      loyalty_after_tax: '36.2',
+      royalty_after_tax: '36.2',
       suspension: '0.4231',
       present_value: '15.3'
     },
