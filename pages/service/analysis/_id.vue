@@ -29,6 +29,7 @@
 
               <v-col cols="12" class="py-2"><v-divider/></v-col>
 
+              <!--
               <v-col cols="12" sm="2" class="text-sm-center pb-0">
                 <p class="analysis-header">권리자명</p>
               </v-col>
@@ -37,6 +38,7 @@
               </v-col>
 
               <v-col cols="12" class="py-2"><v-divider/></v-col>
+              -->
 
               <v-col cols="12" sm="2" class="text-sm-center pb-0">
                 <p class="analysis-header">출원인명</p>
@@ -48,19 +50,19 @@
               <v-col cols="12" class="py-2"><v-divider/></v-col>
 
               <v-col cols="12" sm="2" class="text-sm-center pb-0">
-                <p class="analysis-header">PQI 등급</p>
+                <p class="analysis-header">발명자</p>
               </v-col>
               <v-col cols="12" sm="9">
-                <p class="analysis-content">{{ pqiRank }}</p>
+                <p class="analysis-content">{{ inventors }}</p>
               </v-col>
 
               <v-col cols="12" class="py-2"><v-divider/></v-col>
 
               <v-col cols="12" sm="2" class="text-sm-center pb-0">
-                <p class="analysis-header">발명자</p>
+                <p class="analysis-header">PQI 등급</p>
               </v-col>
               <v-col cols="12" sm="9">
-                <p class="analysis-content">{{ inventors }}</p>
+                <p class="analysis-content">{{ pqiRank }}</p>
               </v-col>
 
               <v-col cols="12" class="py-2"><v-divider/></v-col>
@@ -193,10 +195,10 @@ export default {
       return this.sampleData.inventionTitle;
     },
     applicationInfo() {
-      return `${this.sampleData['applicationNumber']}(${this.sampleData['applicationDate']})`
+      return `${this.sampleData['applicationNumber']} (${this.sampleData['applicationDate']})`
     },
     registerInfo() {
-      return `${this.sampleData['registerNumber']}(${this.sampleData['registerDate']})`
+      return `${this.sampleData['registerNumber']} (${this.sampleData['registerDate']})`
     },
     lastRightHolderName() {
       return this.sampleData.registrationLastRightHolderInfo.lastRightHolderName
