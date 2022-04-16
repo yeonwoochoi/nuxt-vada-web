@@ -6,7 +6,7 @@
       </v-col>
       <v-col cols="11" class="mt-1 mb-3">
         <vertical-header-table
-          v-if="!isLoading"
+          v-if="!!summaryData"
           :table-header="summaryHeader"
           :table-items="summaryContent"
         />
@@ -53,10 +53,6 @@ export default {
       type: Object,
       default: () => { return {} }
     },
-    isLoading: {
-      type: Boolean,
-      default: () => true
-    }
   },
   data: () => ({
     title: '요약 보고서',
@@ -75,7 +71,7 @@ export default {
       },
       {
         text: '로열티율',
-        value: 'loyaltyRate',
+        value: 'royaltyRate',
       },
       {
         text: '할인율',
@@ -109,8 +105,8 @@ export default {
       return `현금흐름 추정기간 : <span class="light-blue--text">${sample.cashFlowFrom} ~ ${sample.cashFlowTo}</span>`
     },
 
-    loyaltyRate() {
-      let sample = this.summaryData.loyalty
+    royaltyRate() {
+      let sample = this.summaryData.royalty
       return `매출액 추정 : 직접 추정 (시장 점유율법)\n로열티 : 업종별 상관행법 X 로열티율 조정계수 = <span class="light-blue--text">${sample}%</span>`
     },
 
@@ -128,7 +124,7 @@ export default {
           purpose: '평가용도 : 기술 가치금액 참고용',
           targetPatent: this.targetPatent,
           techLife: this.techLife + this.cashFlow,
-          loyaltyRate: this.loyaltyRate,
+          royaltyRate: this.royaltyRate,
           discountRate: this.discountRate,
           techPrice: this.techPrice
         }
