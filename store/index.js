@@ -35,12 +35,10 @@ export const state = () => ({
     }
   ],
   copyright: 'COPYRIGHT 바다파트너스 2020. ALL RIGHTS RESERVED',
-  selected: [],
 })
 
 export const getters = {
   getDrawer: state => state.drawer,
-  getSelected: state => state.selected,
   toolbarItems: state => {
     let result = [];
     for (let i = 1; i < state.drawerItems.length; i++) {
@@ -51,20 +49,19 @@ export const getters = {
     return result;
   },
   getSheetTitle: state => state.sheetTitle,
+  logout(state, data) {
+    state.auth.user = {}
+    state.auth.loggedIn = false;
+  }
 }
 
 export const mutations = {
   setDrawer: (state, data) => {
     state.drawer = data
   },
-  setSelected: (state, data) => {
-    state.selected = data
-  },
+
   setSheetTitle: (state, data) => {
     state.sheetTitle = data
-  },
-  resetSelected: (state) => {
-    state.selected = []
   }
 }
 

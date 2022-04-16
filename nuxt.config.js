@@ -46,8 +46,13 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     'cookie-universal-nuxt',
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
+
+  router: {
+    middleware: 'auth'
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -63,10 +68,51 @@ export default {
     vendor: ['vue-notifications'],
     transpile: [/^vue2-google-maps($|\/)/, 'vee-validate/dist/rules']
   },
-  server: {
-    port: 8765
+
+  auth: {
+    // default value
+    redirect: {
+      login: '/membership/login', // 로그인이 필요할 때 이동할 path
+      logout: '/', // 로그아웃 후 이동할 path
+      callback: '/membership/login', // 로그인 후에 이동할 path
+      home: '/' // 로그인 후에 이동할 path
+    },
+    strategies: {
+      local: {
+        scheme: 'refresh',
+        token: {
+          property: 'token.access_token',
+          type: 'Bearer',
+          name: 'Authorization',
+          global: true,   // request header 에 authentication 으로 자동 포함됨
+          maxAge: 60  // 30분
+          //maxAge: 1800  // 30분
+        },
+        refreshToken: {
+          property: 'token.refresh_token',
+          data: 'refresh_token',
+          maxAge: 60 * 60 * 24 * 30 // 30일
+        },
+        user: {
+          property: 'user',
+          data: 'user'
+        },
+        endpoints: {
+          login: { url: '/user/login', method: 'post', },
+          refresh: { url: '/user/refresh-token', method: 'post' },
+          user: { url: '/user/login-email', method: 'get' },
+        },
+        // autoLogout: false
+      }
+    }
   },
+
+  server: {
+    port: 8765,
+    host: '127.0.0.1'
+  },
+
   axios: {
-    baseURL: process.env.BASE_URL || '127.0.0.1:3000'
+    baseURL: 'http://127.0.0.1:3000'
   }
 }

@@ -1,4 +1,5 @@
 export const state = () => ({
+  selectedEval: [],
   evaluationData: {
     patent: {
       type: '출원번호', // 출원번호, 등록번호
@@ -90,6 +91,7 @@ export const state = () => ({
 export const getters = {
   getKsicList: (state) => state.ksicList,
   getEvaluationData: (state) => state.evaluationData,
+  getSelectedEval: state => state.selectedEval,
 }
 
 
@@ -116,6 +118,12 @@ export const mutations = {
       sales: null, // can be null
       businessScale: '상장 기업' // default value
     }
+  },
+  setSelectedEval: (state, data) => {
+    state.selectedEval = data
+  },
+  resetSelectedEval: (state) => {
+    state.selectedEval = []
   },
 }
 
