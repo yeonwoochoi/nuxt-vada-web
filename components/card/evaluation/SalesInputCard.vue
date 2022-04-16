@@ -16,13 +16,13 @@
         <v-col cols="11" md="8" v-if="hasSales">
           <div style="display: flex; align-items: center; justify-content: space-around">
             <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
-              {{currentYear-2 + '년'}}
+              {{recentYear-2 + '년'}}
             </v-subheader>
             <v-text-field
               @keypress="isNumber($event)"
               class="pr-2"
-              v-model="salesData.year1"
-              :label="`${currentYear-2}년 매출액`"
+              v-model="salesData.firstRevenue"
+              :label="`${recentYear-2}년 매출액`"
               suffix="백만원"
               flat
               outlined
@@ -31,13 +31,13 @@
           </div>
           <div style="display: flex; align-items: center; justify-content: space-around">
             <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
-              {{currentYear-1 + '년'}}
+              {{recentYear-1 + '년'}}
             </v-subheader>
             <v-text-field
               @keypress="isNumber($event)"
               class="pr-2"
-              v-model="salesData.year2"
-              :label="`${currentYear-1}년 매출액`"
+              v-model="salesData.secondRevenue"
+              :label="`${recentYear-1}년 매출액`"
               suffix="백만원"
               flat
               outlined
@@ -46,13 +46,13 @@
           </div>
           <div style="display: flex; align-items: center; justify-content: space-around">
             <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
-              {{currentYear + '년'}}
+              {{recentYear + '년'}}
             </v-subheader>
             <v-text-field
               @keypress="isNumber($event)"
               class="pr-2"
-              v-model="salesData.year3"
-              :label="`${currentYear}년 매출액`"
+              v-model="salesData.thirdRevenue"
+              :label="`${recentYear}년 매출액`"
               suffix="백만원"
               flat
               outlined
@@ -67,7 +67,7 @@
             <v-text-field
               @keypress="isNumber($event)"
               class="pl-2"
-              v-model="salesData.percent"
+              v-model="salesData.revenueRoyaltyRatio"
               label="매출액 차지 비중"
               suffix="%"
               flat
@@ -114,17 +114,17 @@ export default {
     hasSales: false,
     title: '3개년 매출 여부와 금액을 입력해주세요.',
     salesData: {
-      year1: '',
-      year2: '',
-      year3: '',
-      percent: '',
+      firstRevenue: '',
+      secondRevenue: '',
+      thirdRevenue: '',
+      revenueRoyaltyRatio: '',
     },
     toolTip: '귀사의 매출에서 특허가 차지하는 비중을 입력해주세요.',
     precaution: '＊실제 매출과 다르게 적을 경우 결과가 다르게 나올 수 있습니다.'
   }),
   computed: {
-    currentYear() {
-      return parseInt(new Date().getFullYear())
+    recentYear() {
+      return parseInt(new Date().getFullYear())-1
     },
     rules() {
       return {
@@ -138,7 +138,12 @@ export default {
     }),
     goNext() {
       this.$emit('nextStep', 1);
-      this.setSalesData(this.hasSales ? this.salesData : null)
+      this.setSalesData(this.hasSales ? this.salesData : {
+        firstRevenue: null,
+        secondRevenue: null,
+        thirdRevenue: null,
+        revenueRoyaltyRatio: null,
+      })
     },
     isNumber: function(evt) {
       evt = (evt) ? evt : window.event;
