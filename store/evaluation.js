@@ -1,122 +1,51 @@
+import mapper from "../data/ipcKsicMapper.json";
+import ksicList from "../data/ksic.json";
+
 export const state = () => ({
   selectedEval: [],
-  evaluationData: {
-    patent: {
-      type: '출원번호', // 출원번호, 등록번호
-      number: ''
-    },
+  businessScaleRef: [
+    { original: '상장 기업', data: '' },
+    { original: '비상장 대기업', data: 'BIG' },
+    { original: '비상장 중기업', data: 'MEDIUM' },
+    { original: '비상장 소기업', data: 'SMALL' },
+    { original: '비상장 창업기업', data: '' },
+    { original: '학교, 기관', data: '' },
+  ],
+  tempEvalData: {
+    patentNumber: '',
     ksic: null,
     sales: null, // can be null
-    businessScale: '상장 기업'
+    businessScale: { original: '비상장 대기업', data: 'BIG' }
   },
-  ksicList: [
-    { code: 'A01', title: '농업'},
-    { code: 'A02', title: '임업'},
-    { code: 'A03', title: '어업'},
-    { code: 'B05', title: '석탄, 원유 및 천연가스 광업'},
-    { code: 'B06', title: '금속 광업'},
-    { code: 'B07', title: '비금속광물 광업;연료용 제외'},
-    { code: 'B08', title: '광업 지원 서비스업'},
-    { code: 'C10', title: '식료품 제조업'},
-    { code: 'C11', title: '음료 제조업'},
-    { code: 'C12', title: '담배 제조업'},
-    { code: 'C13', title: '섬유제품 제조업; 의복제외'},
-    { code: 'C14', title: '의복, 의복액세서리 및 모피제품 제조업'},
-    { code: 'C15', title: '가죽, 가방 및 신발 제조업'},
-    { code: 'C16', title: '목재 및 나무제품 제조업;가구제외'},
-    { code: 'C17', title: '펄프, 종이 및 종이제품 제조업'},
-    { code: 'C18', title: '인쇄 및 기록매체 복제업'},
-    { code: 'C19', title: '코크스, 연탄 및 석유정제품 제조업'},
-    { code: 'C20', title: '화학물질 및 화학제품 제조업;의약품 제외'},
-    { code: 'C21', title: '의료용 물질 및 의약품 제조업'},
-    { code: 'C22', title: '고무제품 및 플라스틱제품 제조업'},
-    { code: 'C23', title: '비금속 광물제품 제조업'},
-    { code: 'C24', title: '1차 금속 제조업'},
-    { code: 'C25', title: '금속가공제품 제조업;기계 및 가구 제외'},
-    { code: 'C26', title: '전자부품, 컴퓨터, 영상, 음향 및 통신장비 제조업'},
-    { code: 'C27', title: '의료, 정밀, 광학기기 및 시계 제조업'},
-    { code: 'C28', title: '전기장비 제조업'},
-    { code: 'C29', title: '기타 기계 및 장비 제조업'},
-    { code: 'C30', title: '자동차 및 트레일러 제조업'},
-    { code: 'C31', title: '기타 운송장비 제조업'},
-    { code: 'C32', title: '가구 제조업'},
-    { code: 'C33', title: '기타 제품 제조업'},
-    { code: 'C34', title: '산업용 기계 및 장비 수리업'},
-    { code: 'D35', title: '전기, 가스, 증기 및 공기조절 공급업'},
-    { code: 'E36', title: '수도업'},
-    { code: 'E37', title: '하수, 폐수 및 분뇨 처리업'},
-    { code: 'E38', title: '폐기물 수집운반, 처리 및 원료재생업'},
-    { code: 'E39', title: '환경 정화 및 복원업'},
-    { code: 'F41', title: '종합 건설업'},
-    { code: 'F42', title: '전문직별 공사업'},
-    { code: 'G45', title: '자동차 및 부품 판매업'},
-    { code: 'G46', title: '도매 및 상품중개업'},
-    { code: 'G47', title: '소매업; 자동차 제외'},
-    { code: 'H49', title: '육상운송 및 파이프라인 운송업'},
-    { code: 'H50', title: '수상 운송업'},
-    { code: 'H51', title: '항공 운송업'},
-    { code: 'H52', title: '창고 및 운송관련 서비스업'},
-    { code: 'I55', title: '숙박업'},
-    { code: 'I56', title: '음식점 및 주점업'},
-    { code: 'J581', title: '서적, 잡지 및 기타 인쇄물 출판업'},
-    { code: 'J582', title: '소프트웨어 개발 및 공급업'},
-    { code: 'J59', title: '영상·오디오 기록물 제작 및 배급업'},
-    { code: 'J60', title: '방송업'},
-    { code: 'J61', title: '통신업'},
-    { code: 'J62', title: '컴퓨터 프로그래밍, 시스템 통합 및 관리업'},
-    { code: 'J63', title: '정보서비스업'},
-    { code: 'K64', title: '금융업'},
-    { code: 'K65', title: '보험 및 연금업'},
-    { code: 'K66', title: '금융 및 보험 관련 서비스업'},
-    { code: 'L68', title: '부동산업'},
-    { code: 'M70', title: '연구개발업'},
-    { code: 'M71', title: '전문서비스업'},
-    { code: 'M72', title: '건축기술, 엔지니어링 및 기타 과학기술 서비스업'},
-    { code: 'M73', title: '기타 전문, 과학 및 기술 서비스업'},
-    { code: 'N74', title: '사업시설 관리 및 조경 서비스업'},
-    { code: 'N75', title: '사업지원 서비스업'},
-    { code: 'N76', title: '임대업'},
-    { code: 'O84', title: '공공행정, 국방 및 사회보장 행정'},
-    { code: 'P85', title: '교육 서비스업'},
-    { code: 'Q86', title: '보건업'},
-    { code: 'Q87', title: '사회복지 서비스업'},
-    { code: 'R90', title: '창작, 예술 및 여가관련 서비스업'},
-    { code: 'R91', title: '스포츠 및 오락관련 서비스업'},
-    { code: 'S94', title: '협회 및 단체'},
-    { code: 'S95', title: '수리업'},
-    { code: 'S96', title: '기타 개인 서비스업'},
-  ],
+  evalData: null
 })
 
 export const getters = {
-  getKsicList: (state) => state.ksicList,
-  getEvaluationData: (state) => state.evaluationData,
+  getTempEvalData: (state) => state.tempEvalData,
   getSelectedEval: state => state.selectedEval,
+  getBusinessScaleList: state => state.businessScaleRef,
 }
 
 
 export const mutations = {
-  setPatentInfo: (state, data) => {
-    state.evaluationData.patent = data
+  setPatentNumber: (state, data) => {
+    state.tempEvalData.patentNumber = data
   },
   setKsic: (state, data) => {
-    state.evaluationData.ksic = data
+    state.tempEvalData.ksic = data
   },
   setSalesData: (state, data) => {
-    state.evaluationData.sales = data
+    state.tempEvalData.sales = data
   },
   setBusinessScale: (state, data) => {
-    state.evaluationData.businessScale = data
+    state.tempEvalData.businessScale = data
   },
-  resetEvalData: (state) => {
-    state.evaluationData = {
-      patent: {
-        type: '출원번호', // default value
-        number: ''
-      },
+  resetTempEvalData: (state) => {
+    state.tempEvalData = {
+      patentNumber: '',
       ksic: '',
       sales: null, // can be null
-      businessScale: '상장 기업' // default value
+      businessScale: { original: '비상장 대기업', data: 'BIG' } // default value
     }
   },
   setSelectedEval: (state, data) => {
@@ -125,8 +54,39 @@ export const mutations = {
   resetSelectedEval: (state) => {
     state.selectedEval = []
   },
+  setEvalData: (state, data) => {
+    state.evalData = data
+  },
+  resetEvalData: (state) => {
+    state.evalData = null
+  }
 }
 
 export const actions = {
+  async evaluate({commit, state}) {
+    let params = {
+      ...state.tempEvalData.sales,
+      "companySize": state.tempEvalData.businessScale.data,
+      "patentNumber": state.tempEvalData.patentNumber,
+      "industryCode": state.tempEvalData.ksic.code,
+    }
 
+    return new Promise(((resolve, reject) => {
+      this.$axios.$post('/patent/evaluation', params).then(res=> {
+        commit('setEvalData', res.result)
+        resolve(res.result)
+      }).catch(err => {
+        reject(err.message)
+      })
+    }))
+  },
+  async getIpcCode({commit}, params) {
+    return new Promise(((resolve, reject) => {
+      this.$axios.$post('/patent/search', params).then(res => {
+        resolve(res.result[0]['ipcCode'])
+      }).catch(err => {
+        reject(err.message)
+      })
+    }))
+  }
 }
