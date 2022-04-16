@@ -140,7 +140,6 @@ export default {
   data: () => ({
     isScrolled: false,
     isHovered: false,
-    loginBtnText: "로그인",
     isLogin: false,
     appBarHeight: 100
   }),
@@ -153,6 +152,9 @@ export default {
       toolbarItems: 'toolbarItems',
       sheetTitle: 'getSheetTitle'
     }),
+    loginBtnText() {
+      return this.$auth.loggedIn ? '로그아웃' : '로그인'
+    },
     getColor() {
       return this.isActive ? 'rgba(255, 255, 255, 255)' : 'rgba(255, 255, 255, 0)'
     },
@@ -199,6 +201,12 @@ export default {
       this.isHovered = flag
     },
     onClickLogIn(){
+      if (this.$auth.loggedIn) {
+        this.$store.commit('logout')
+        this.$auth.strategy.token.reset();
+        this.$auth.strategy.refreshToken.reset();
+        return;
+      }
       this.$router.push('/membership/login')
     },
     goToMain() {

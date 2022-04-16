@@ -49,10 +49,6 @@ export const getters = {
     return result;
   },
   getSheetTitle: state => state.sheetTitle,
-  logout(state, data) {
-    state.auth.user = {}
-    state.auth.loggedIn = false;
-  }
 }
 
 export const mutations = {
@@ -62,6 +58,11 @@ export const mutations = {
 
   setSheetTitle: (state, data) => {
     state.sheetTitle = data
+  },
+
+  logout(state) {
+    state.auth.user = {}
+    state.auth.loggedIn = false;
   }
 }
 
