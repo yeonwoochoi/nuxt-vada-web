@@ -1,4 +1,4 @@
-export default ({ $axios, error: nuxtError }) => {
+export default ({ $axios, store }, inject) => {
   $axios.onRequest(config => {
     console.log('Making request to ' + config.url)
   })
