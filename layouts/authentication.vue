@@ -1,14 +1,16 @@
 <template>
   <v-app>
     <authentication-view />
+    <snackbar/>
   </v-app>
 </template>
 
 <script>
 import AuthenticationView from "./authentication/view/view";
+import Snackbar from "../components/snackbar/Snackbar";
 export default {
   name: "AuthenticationLayout",
-  components: {AuthenticationView}
+  components: {Snackbar, AuthenticationView}
 }
 </script>
 

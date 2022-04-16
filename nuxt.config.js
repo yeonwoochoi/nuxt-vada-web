@@ -30,6 +30,8 @@ export default {
     { src: "~/plugins/vue-carousel", ssr: false },
     { src: '~/plugins/vee-validate', ssr: false },
     { src: '~/plugins/vue-json-csv', ssr: false },
+    { src: '~/plugins/notifier' },
+    { src: '~/plugins/axios' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
