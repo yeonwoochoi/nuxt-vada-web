@@ -10,11 +10,14 @@
           outlined
           filled
           :items="businessScaleItems"
+          return-object
+          :item-text="item => item.original"
+          :disabled="loading"
         />
       </v-col>
       <div style="display: flex;" class="mt-6 mb-4">
         <custom-button
-          :loading="value"
+          :loading="loading"
           class="mx-1 darken-1"
           :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
           @submit="goNext"
@@ -39,27 +42,17 @@ import CustomButton from "../../button/CustomButton";
 export default {
   name: "BusinessScaleInputCard",
   components: {CustomButton},
-  props: {
-    value: {
-      type: Boolean,
-      default: () => false
-    },
-  },
   data: () => ({
     title: '기업 규모를 선택해주세요',
-    businessScaleItems: [
-      '상장 기업',
-      '비상장 대기업',
-      '비상장 중기업',
-      '비상장 소기업',
-      '비상장 창업기업',
-      '학교, 기관'
-    ]
+    loading: false
   }),
   computed: {
+    businessScaleItems() {
+      return this.$store.getters["evaluation/getBusinessScaleList"]
+    },
     businessScale: {
       get () {
-        return this.$store.getters['evaluation/getEvaluationData'].businessScale
+        return this.$store.getters['evaluation/getTempEvalData'].businessScale
       },
       set (value) {
         return this.$store.commit('evaluation/setBusinessScale', value)
@@ -68,7 +61,10 @@ export default {
   },
   methods: {
     goNext() {
-      this.$emit('nextStep', 4);
+      this.loading = true;
+      this.$emit('nextStep', 4, () => {
+        this.loading = false;
+      });
     },
     goPrev() {
       this.$emit('prevStep', 4)
