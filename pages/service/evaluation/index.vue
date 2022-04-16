@@ -43,14 +43,13 @@
                       </validation-observer>
                       <validation-observer v-if="n.step === 4" ref="stepForm">
                         <v-form>
-                          <business-scale-input-card @nextStep="nextStep" @prevStep="prevStep" v-model="loading"/>
+                          <business-scale-input-card @nextStep="nextStep" @prevStep="prevStep"/>
                         </v-form>
                       </validation-observer>
                       <v-form v-if="n.step === 5" ref="stepForm" v-model="n.valid" lazy-validation>
                         <result-summary-card
                           :download-link="`ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`"
-                          :summary-data="sampleSummaryData"
-                          :is-loading="(loading || currentStep !== 5)"
+                          :summary-data="summaryData"
                         />
                       </v-form>
                     </v-stepper-content>
@@ -74,6 +73,10 @@ import CompanyLogoBtn from "../../../components/button/CompanyLogoBtn";
 import BusinessScaleInputCard from "../../../components/card/evaluation/BusinessScaleInputCard";
 import KsicInputCard from "../../../components/card/evaluation/KsicInputCard";
 import ResultSummaryCard from "../../../components/card/evaluation/ResultSummaryCard";
+import mapper from "../../../data/ipcKsicMapper.json";
+import ksicList from "../../../data/ksic.json";
+
+
 export default {
   name: "evaluation",
   components: {
@@ -81,6 +84,7 @@ export default {
     KsicInputCard,
     BusinessScaleInputCard, CompanyLogoBtn, PatentInfoInputCard, SalesInputCard, MainCard},
   created() {
+    this.$store.commit('evaluation/resetTempEvalData')
     this.$store.commit('evaluation/resetEvalData')
     this.$store.commit('setSheetTitle', '특허평가')
   },
@@ -96,7 +100,7 @@ export default {
     ],
     lastStep: 5,
     loading: false,
-    sampleSummaryData: null,
+    summaryData: null,
     ksic: {},
   }),
   computed: {
@@ -113,15 +117,18 @@ export default {
         this.currentStep = step - 1
       }
     },
-    async nextStep(currentStep) {
+    async nextStep(currentStep, callback = null) {
       let index = currentStep-1;
       this.steps[index].valid = false
       let v = await this.$refs.stepForm[index].validate();
       if (v) {
         this.steps[index].valid = true
         if (!this.isLastStep) {
-          this.fetchData(currentStep, () => {
+          await this.fetchData(currentStep, () => {
             this.currentStep = currentStep + 1;
+            if (!!callback) {
+              callback();
+            }
           })
         }
         else {
@@ -136,14 +143,32 @@ export default {
       return this.currentStep > step ? 'green' : 'blue'
     },
 
-    fetchData(prevStep, callback) {
-
+    // 다음 step으로 넘어가기전 다음 step에 필요한 data를 미리 fetch 시키는 method
+    async fetchData(prevStep, callback) {
       // 나머지 step
       if (parseInt(prevStep + 1) < this.lastStep) {
 
         // 3번째 (index = 2) step 에서 fetchData 호출
         if (prevStep === 2) {
-          this.$refs.ksicRef[0].fetchData();
+          let patentNumber = this.$store.getters["evaluation/getTempEvalData"].patentNumber
+          await this.$store.dispatch('evaluation/getIpcCode', {patentNumbers: [patentNumber]}).then(
+            res => {
+              let target = mapper.find(v => v.ipc === res).ksic;
+              let ksic = ksicList.find(v => v.code === target)
+              this.$store.commit('evaluation/setKsic', ksic)
+              this.$refs.ksicRef[0].fetchData();
+              callback();
+            },
+            err => {
+              console.log("error!")
+              this.$notifier.showMessage({
+                content: err,
+                color: 'error'
+              })
+              callback()
+            }
+          )
+          return;
         }
 
         callback();
@@ -151,31 +176,37 @@ export default {
       }
 
       // 마지막 step (요약문 fetch data)
-      this.loading = true
-      setTimeout(() => {
-        let randomNumber = Math.floor(Math.random() * 10000) + 1;
-        this.sampleSummaryData =  {
-          targetPatentList: [
-            'KR 10-0107367',
-          ],
-          techLife: 9,
-          cashFlowFrom: '2020',
-          cashFlowTo: '2028',
-          loyalty: '3.15',
-          discountRate: '10.85',
-          industrialCode: '기타 기계 및 장비 제조업 (C29)',
-          enterpriseType: '비상장 창업기업',
-          techPriceFrom: randomNumber,
-          techPriceTo: randomNumber + 1,
+      // evaluate 진행
+      await this.$store.dispatch('evaluation/evaluate').then(
+        res => {
+          let randomNumber = Math.floor(Math.random() * 10000) + 1;
+          let inputData = this.$store.getters["evaluation/getTempEvalData"]
+          let currentYear = parseInt(new Date().getFullYear())
+          this.summaryData =  {
+            targetPatentList: [
+              'KR ' + inputData.patentNumber,
+            ],
+            techLife: res['cashFlowResult']['techLifeTime'],
+            cashFlowFrom: currentYear,
+            cashFlowTo: currentYear + res['cashFlowResult']['cashFlowPeriod'] - 1,
+            royalty: res['royaltyRateResult']['finalRoyaltyRate'] * 100,
+            discountRate: res['discountRateResult']['discountRateSum'],
+            industrialCode: `${inputData.ksic.title} (${inputData.ksic.code})`,
+            enterpriseType: inputData.businessScale.original,
+            techPriceFrom: randomNumber,
+            techPriceTo: randomNumber + 1,
+          }
+          callback();
+        },
+        err => {
+          this.$notifier.showMessage({
+            content: err,
+            color: 'error'
+          })
         }
-        this.loading = false
-        callback();
-      }, 3000)
+      )
     },
   },
-  mounted() {
-
-  }
 }
 </script>
 
