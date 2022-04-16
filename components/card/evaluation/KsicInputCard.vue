@@ -74,11 +74,11 @@ export default {
   }),
   computed: {
     ...mapGetters("evaluation", {
-      evaluationData: 'getEvaluationData'
+      evaluationData: 'getTempEvalData'
     }),
     classification: {
       get() {
-        return this.$store.getters["evaluation/getEvaluationData"].ksic
+        return this.$store.getters["evaluation/getTempEvalData"].ksic
       },
       set(value) {
         return this.$store.commit('evaluation/setKsic', value)
@@ -90,8 +90,8 @@ export default {
     ksicHeader() {
       return [
         {
-          text: this.evaluationData.patent.type,
-          value: 'patent',
+          text: '특허번호',
+          value: 'patentNumber',
         },
         {
           text: '산업분류코드(KSIC)',
@@ -102,7 +102,7 @@ export default {
     ksicContent() {
       return [
         {
-          patent: this.evaluationData.patent.number,
+          patentNumber: this.evaluationData.patentNumber,
           ksic: `${this.evaluationData.ksic.code} ${this.evaluationData.ksic.title}`
         }
       ]
