@@ -78,8 +78,18 @@ export default {
     showPassword: false,
   }),
   methods: {
-    submit() {
-      this.$router.push('change-password')
+    async submit() {
+      await this.$auth.loginWith('local', { data: { id: this.id, password: this.password } })
+        .then((res) => {
+          console.log(res)
+          this.$router.push(`/`)
+        })
+        .catch(e => {
+          this.$notifier.showMessage({
+            content: e.toString(),
+            color: 'error'
+          })
+        })
     },
     goToSignUp() {
       this.$router.push('join')

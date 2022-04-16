@@ -86,6 +86,7 @@ import CustomButton from "../../../components/button/CustomButton";
 import ResetPwdCard from "../../../components/card/reset-password/ResetPwdCard";
 export default {
   name: "ResetPasswordAuth",
+  auth: false,
   components: {ResetPwdCard, CustomButton},
   created() {
     this.$store.commit('setSheetTitle', '비밀번호 재설정')

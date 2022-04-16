@@ -94,6 +94,7 @@
 <script>
 export default {
   name: "index",
+  auth: false,
   /*
   async asyncData({$axios}) {
     const {data} = await $axios.get('http://127.0.0.1:3000/projects/readAll');

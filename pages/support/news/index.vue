@@ -24,6 +24,7 @@ import NewsBoardCard from "../../../components/card/news/NewsBoardCard";
 import MainCard from "../../../components/card/MainCard";
 export default {
   name: "index",
+  auth: false,
   components: {NewsBoardCard, MainCard},
   asyncData({query}) {
     return {

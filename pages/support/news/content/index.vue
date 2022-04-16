@@ -19,6 +19,7 @@ import {mapState} from "vuex";
 
 export default {
   name: "index",
+  auth: false,
   components: {MainCard, NewsBoardContentCard},
   created() {
     this.$store.commit('setSheetTitle', '공지사항')

@@ -58,6 +58,7 @@ import {ValidationObserver} from "vee-validate";
 
 export default {
   name: "join",
+  auth: false,
   components: {ValidationObserver, SignUpDoneCard, SignUpUserInfoInputCard, SignUpUserTypeCard, SignUpAgreementCard},
   created() {
     this.$store.commit('setSheetTitle', '회원가입')

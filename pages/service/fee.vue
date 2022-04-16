@@ -40,6 +40,7 @@ import MainCard from "../../components/card/MainCard";
 import SimpleDataTable from "../../components/table/SimpleDataTable";
 export default {
   name: "fee",
+  auth: false,
   components: {SimpleDataTable, MainCard},
   created() {
     this.$store.commit('setSheetTitle', '요금안내')

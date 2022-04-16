@@ -24,6 +24,7 @@ import ContactCard from "../../../components/contact/ContactCard";
 
 export default {
   name: "Contact",
+  auth: false,
   components: {ContactCard, GoogleMap, MainCard},
   created() {
     this.$store.commit('setSheetTitle', '오시는길')

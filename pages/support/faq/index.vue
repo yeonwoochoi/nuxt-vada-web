@@ -49,6 +49,7 @@
 import MainCard from "../../../components/card/MainCard";
 export default {
   name: "index",
+  auth: false,
   components: {MainCard},
   created() {
     this.$store.commit('setSheetTitle', 'FAQ')

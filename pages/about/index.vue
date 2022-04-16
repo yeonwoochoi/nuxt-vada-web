@@ -65,6 +65,7 @@
 <script>
 export default {
   name: "index",
+  auth: false,
   created() {
     this.$store.commit('setSheetTitle', '기업소개')
   },
