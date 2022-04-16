@@ -100,7 +100,7 @@ export default {
         endpoints: {
           login: { url: '/user/login', method: 'post', },
           refresh: { url: '/user/refresh-token', method: 'post' },
-          user: { url: '/user/login-email', method: 'get' },
+          user: { url: '/user/login-email', method: 'post' },
         },
         // autoLogout: false
       }
@@ -113,6 +113,6 @@ export default {
   },
 
   axios: {
-    baseURL: 'http://127.0.0.1:3000'
+    baseURL: process.env.API_URL
   }
 }
