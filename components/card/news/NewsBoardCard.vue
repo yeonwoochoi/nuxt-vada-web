@@ -5,7 +5,7 @@
     </v-col>
     <v-col cols="12">
       <v-data-table
-        v-if="isMobile"
+        v-if="$vuetify.breakpoint.smAndDown"
         :header="headers"
         :items="tableContents"
         :items-per-page="itemsPerPage"
@@ -187,13 +187,6 @@ export default {
   computed: {
     currentPath() {
       return this.$router.currentRoute.path;
-    },
-    isMobile () {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return true
-        case 'sm': return true
-        default: return false
-      }
     },
     contentCount() {
       return this.tableContents.length;
