@@ -4,7 +4,7 @@
       <v-card style="width: 1200px; height:fit-content;" class="elevation-0">
         <main-card :header="header">
           <template v-slot:body>
-            <news-board-content-card :path="returnPath" />
+            <news-board-content-card :path="returnPath" :contents="newsContent" />
           </template>
         </main-card>
       </v-card>
@@ -15,24 +15,54 @@
 <script>
 import MainCard from "../../../../components/card/MainCard";
 import NewsBoardContentCard from "../../../../components/card/news/NewsBoardContentCard";
-import {mapState} from "vuex";
 
 export default {
   name: "index",
   auth: false,
   components: {MainCard, NewsBoardContentCard},
+  asyncData({store, query}) {
+    return store.dispatch('news/readByIndex', query.uid).then(
+      res => {
+        let time = !res.updatedAt ? res.createdAt : res.updatedAt
+        let created_at = time.split('T')[0]
+        let result = {
+          title: res.title,
+          content: res.content,
+          created_at: created_at,
+          view_count: res.view
+        }
+
+        return {
+          newsContent: result
+        }
+      },
+      err => {
+        this.$notifier.showMessage({
+          content: err,
+          color: 'error'
+        })
+      }
+    )
+  },
   created() {
     this.$store.commit('setSheetTitle', '공지사항')
+    let uid = this.$route.query.uid
+    this.$store.dispatch('news/addViewCount', uid).then(
+      (res) => {},
+      error => {
+        this.$notifier.showMessage({
+          content: error,
+          color: 'error'
+        })
+      }
+    )
   },
   data: () => ({
-    header: 'News',
+    header: '공지사항',
   }),
   computed: {
-    ...mapState({
-      drawerItems: 'drawerItems'
-    }),
     returnPath() {
-      return this.drawerItems[3].link
+      return '/support/news'
     }
   }
 }
