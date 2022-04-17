@@ -1,6 +1,3 @@
-import mapper from "../data/ipcKsicMapper.json";
-import ksicList from "../data/ksic.json";
-
 export const state = () => ({
   selectedEval: [],
   businessScaleRef: [
