@@ -121,8 +121,10 @@ export default {
       if (v) {
         this.steps[index].valid = true
         if (!this.isLastStep) {
-          await this.fetchData(currentStep, () => {
-            this.currentStep = currentStep + 1;
+          await this.fetchData(currentStep, (hasError = false) => {
+            if (!hasError) {
+              this.currentStep = currentStep + 1;
+            }
             if (!!callback) {
               callback();
             }
@@ -157,12 +159,11 @@ export default {
               callback();
             },
             err => {
-              console.log("error!")
               this.$notifier.showMessage({
                 content: err,
                 color: 'error'
               })
-              callback()
+              callback(true)
             }
           )
           return;
