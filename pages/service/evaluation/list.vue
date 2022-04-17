@@ -216,10 +216,10 @@ export default {
   computed: {
     selected: {
       get () {
-        return this.$store.getters['evaluation/getSelectedEval']
+        return this.$store.getters['patent/getSelectedEval']
       },
       set (value) {
-        return this.$store.commit('evaluation/setSelectedEval', value)
+        return this.$store.commit('patent/setSelectedEval', value)
       }
     },
     currentPath() {
@@ -298,7 +298,7 @@ export default {
   mounted() {
     this.fetchData()
     if (this.reset) {
-      this.$store.commit('evaluation/resetSelectedEval')
+      this.$store.commit('patent/resetSelectedEval')
     }
   }
 }

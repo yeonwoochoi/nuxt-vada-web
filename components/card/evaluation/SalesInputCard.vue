@@ -133,7 +133,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations("evaluation", {
+    ...mapMutations("patent", {
       setSalesData: 'setSalesData'
     }),
     goNext() {

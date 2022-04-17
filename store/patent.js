@@ -56,7 +56,7 @@ export const mutations = {
   },
   resetEvalData: (state) => {
     state.evalData = null
-  }
+  },
 }
 
 export const actions = {
@@ -81,6 +81,15 @@ export const actions = {
     return new Promise(((resolve, reject) => {
       this.$axios.$post('/patent/search', params).then(res => {
         resolve(res.result[0]['ipcCode'])
+      }).catch(err => {
+        reject(err.message)
+      })
+    }))
+  },
+  async search({commit}, params) {
+    return new Promise(((resolve, reject) => {
+      this.$axios.$post('/patent/search', params).then(res => {
+        resolve(res.result)
       }).catch(err => {
         reject(err.message)
       })

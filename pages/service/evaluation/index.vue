@@ -79,13 +79,10 @@ import ksicList from "../../../data/ksic.json";
 
 export default {
   name: "evaluation",
-  components: {
-    ResultSummaryCard,
-    KsicInputCard,
-    BusinessScaleInputCard, CompanyLogoBtn, PatentInfoInputCard, SalesInputCard, MainCard},
+  components: {ResultSummaryCard, KsicInputCard, BusinessScaleInputCard, CompanyLogoBtn, PatentInfoInputCard, SalesInputCard, MainCard},
   created() {
-    this.$store.commit('evaluation/resetTempEvalData')
-    this.$store.commit('evaluation/resetEvalData')
+    this.$store.commit('patent/resetTempEvalData')
+    this.$store.commit('patent/resetEvalData')
     this.$store.commit('setSheetTitle', '특허평가')
   },
   data: () => ({
@@ -150,12 +147,12 @@ export default {
 
         // 3번째 (index = 2) step 에서 fetchData 호출
         if (prevStep === 2) {
-          let patentNumber = this.$store.getters["evaluation/getTempEvalData"].patentNumber
-          await this.$store.dispatch('evaluation/getIpcCode', {patentNumbers: [patentNumber]}).then(
+          let patentNumber = this.$store.getters["patent/getTempEvalData"].patentNumber
+          await this.$store.dispatch('patent/getIpcCode', {patentNumbers: [patentNumber]}).then(
             res => {
               let target = mapper.find(v => v.ipc === res).ksic;
               let ksic = ksicList.find(v => v.code === target)
-              this.$store.commit('evaluation/setKsic', ksic)
+              this.$store.commit('patent/setKsic', ksic)
               this.$refs.ksicRef[0].fetchData();
               callback();
             },
@@ -177,10 +174,10 @@ export default {
 
       // 마지막 step (요약문 fetch data)
       // evaluate 진행
-      await this.$store.dispatch('evaluation/evaluate').then(
+      await this.$store.dispatch('patent/evaluate').then(
         res => {
           let randomNumber = Math.floor(Math.random() * 10000) + 1;
-          let inputData = this.$store.getters["evaluation/getTempEvalData"]
+          let inputData = this.$store.getters["patent/getTempEvalData"]
           let currentYear = parseInt(new Date().getFullYear())
           this.summaryData =  {
             targetPatentList: [

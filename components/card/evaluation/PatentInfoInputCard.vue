@@ -59,7 +59,7 @@ export default {
   methods: {
     goNext() {
       this.loading = true;
-      this.$store.commit('evaluation/setPatentNumber', this.patentNumber)
+      this.$store.commit('patent/setPatentNumber', this.patentNumber)
       this.$emit('nextStep', 2, () => {
         this.loading = false
       });

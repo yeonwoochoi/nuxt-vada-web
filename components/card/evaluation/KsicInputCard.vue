@@ -73,15 +73,15 @@ export default {
     tempKsic: null
   }),
   computed: {
-    ...mapGetters("evaluation", {
+    ...mapGetters("patent", {
       evaluationData: 'getTempEvalData'
     }),
     classification: {
       get() {
-        return this.$store.getters["evaluation/getTempEvalData"].ksic
+        return this.$store.getters["patent/getTempEvalData"].ksic
       },
       set(value) {
-        return this.$store.commit('evaluation/setKsic', value)
+        return this.$store.commit('patent/setKsic', value)
       }
     },
     classificationItems() {

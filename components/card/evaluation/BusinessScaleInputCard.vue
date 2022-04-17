@@ -48,14 +48,14 @@ export default {
   }),
   computed: {
     businessScaleItems() {
-      return this.$store.getters["evaluation/getBusinessScaleList"]
+      return this.$store.getters["patent/getBusinessScaleList"]
     },
     businessScale: {
       get () {
-        return this.$store.getters['evaluation/getTempEvalData'].businessScale
+        return this.$store.getters['patent/getTempEvalData'].businessScale
       },
       set (value) {
-        return this.$store.commit('evaluation/setBusinessScale', value)
+        return this.$store.commit('patent/setBusinessScale', value)
       }
     }
   },
