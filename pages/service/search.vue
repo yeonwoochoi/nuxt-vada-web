@@ -60,6 +60,7 @@
                       :text="`검색`"
                       class="my-4"
                       @submit="searchByInput"
+                      :loading="loading"
                     />
                   </v-card-title>
                   <div style="display: flex; align-items: start; justify-content: end;" class="my-2">
@@ -95,9 +96,11 @@
                   :headers="searchResultHeaders"
                   :items="searchResults"
                   :items-per-page="itemsPerPage"
+                  :page.sync="currentPage"
                   hide-default-footer
+                  @page-count="pageCount = $event"
                   :mobile-breakpoint="600"
-                  :loading="isLoading"
+                  :loading="loading"
                   :show-select="false"
                   item-key="indexNo"
                   :no-data-text="noDataText"
@@ -120,7 +123,7 @@
                           <a
                             class="ellipsis"
                             style="font-size: 1.125em; font-weight: 600; text-decoration: none; color: black;"
-                            :onClick="`window.open('${kiprisDoiLink + item.content.applicationNumber}', '_blank', 'width=960, height=700')`"
+                            :onClick="`window.open('${kiprisDoiLink + item.content.applicationNumber}', '_blank', 'width=1080, height=850')`"
                           >
                             {{ item.content.inventionTitle }}
                           </a>
@@ -189,7 +192,6 @@
                       prev-icon="mdi-menu-left"
                       next-icon="mdi-menu-right"
                       class="mt-6"
-                      @input="changePage"
                     />
                   </template>
                 </v-data-table>
@@ -222,8 +224,6 @@ export default {
     searchFile: null,
     currentPage: 1,
     itemsPerPage: 10,
-    //TODO (특허검색): 전체 페이지 수 서버 통신해 받기
-    isLoading: false,
     selected: [],
     searchResultHeaders: [
       {
@@ -257,7 +257,8 @@ export default {
       },
     ],
     searchResults: [],
-    noDataText: ''
+    noDataText: '',
+    loading: false,
   }),
   watch: {
     searchData (val, prev) {
@@ -294,7 +295,6 @@ export default {
     },
     // Input field 로 검색했을 때
     searchByInput() {
-      this.noDataText = '검색결과 없음'
       let validSearchData = []
       if (this.searchData.length > 0) {
         for (let i = 0; i < this.searchData.length; i++) {
@@ -310,12 +310,13 @@ export default {
         })
         return;
       }
+      this.loading = true;
       this.$store.dispatch('patent/search', {patentNumbers: validSearchData})
         .then(
           res => {
             let result = []
             for (let i = 0; i < res.length; i++) {
-              if (!res[i]['items']) continue
+              if (!res[i]['items'] || !res[i]['validatePatent']) continue
               result.push({
                 indexNo: i+1,
                 content: {
@@ -328,13 +329,19 @@ export default {
                 }
               })
             }
+            if (result.length === 0) {
+              this.noDataText = '검색결과 없음'
+            }
             this.searchResults = result
+            this.loading = false;
           },
           err => {
             this.$notifier.showMessage({
               content: err,
               color: 'error'
             })
+            this.noDataText = '검색결과 없음'
+            this.loading = false;
           }
         )
     },
