@@ -33,6 +33,7 @@
           <v-pagination
             v-model="page"
             :length="pageCount"
+            class="mt-6"
           />
         </template>
       </v-data-table>
@@ -58,6 +59,7 @@
           <v-pagination
             v-model="page"
             :length="pageCount"
+            class="mt-6"
           ></v-pagination>
         </template>
       </v-data-table>
