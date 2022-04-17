@@ -8,16 +8,20 @@
               <template v-slot:body>
                 <edit-user-info-card
                   v-if="activeIndex === 0"
-                  v-model="userInfo"
                   :header="'회원정보'"
+                  v-model="userInfo"
                   :isAuthorize="isAuthorized"
                   @selfAuth="selfAuthentication"
                   @edit="editUserInfo"
                 />
-                <inquiry-list-card :header="'문의목록'" v-if="activeIndex === 1"/>
+                <inquiry-list-card
+                  v-if="activeIndex === 1"
+                  :header="'문의목록'"
+                  :inquiryList="inquiryData"
+                />
                 <purchase-list-card
-                  :header="'구매내역'"
                   v-if="activeIndex === 2"
+                  :header="'구매내역'"
                   :table-header="purchaseListHeader"
                   :table-content="purchaseListContents"
                 />
@@ -49,8 +53,44 @@ import WithdrawalCard from "../../components/card/my-page/contents/WithdrawalCar
 export default {
   name: "index",
   components: {WithdrawalCard, PurchaseListCard, InquiryListCard, EditUserInfoCard, MyPageCard, MainCard},
+  asyncData({store}) {
+    return store.dispatch('qna/readAll').then(
+      res => {
+        let result = []
+        for (let i = 0; i < res.length; i++) {
+          let item = res[i]
+          result.push({
+            id: item.id,
+            isAnswered: item.answered,
+            data: {
+              title: item.title,
+              content: item.content,
+              created_at: item.updatedAt.split('T')[0],
+              answer: !item.answered ? null : { data: item.answer, created_at: item.answeredAt.split('T')[0] }
+            }
+          })
+        }
+        return {
+          inquiryData: result,
+          fetchError: null
+        }
+      },
+      err => {
+        return {
+          inquiryData: [],
+          fetchError: err
+        }
+      }
+    )
+  },
   created() {
     this.$store.commit('setSheetTitle', '마이페이지')
+    if (!!this.fetchError) {
+      this.$notifier.showMessage({
+        content: this.fetchError,
+        color: 'error'
+      })
+    }
   },
   data: () => ({
     header: '마이페이지',

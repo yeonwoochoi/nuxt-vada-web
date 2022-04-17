@@ -29,7 +29,7 @@ export default {
         let result = []
         for (let i = 0; i < res.length; i++) {
           let item = res[i]
-          let time = !item.updatedAt ? item.createdAt : item.updatedAt
+          let time = item.updatedAt.split('T')[0]
           let created_at = time.split('T')[0]
           result.push({
             no: i+1,

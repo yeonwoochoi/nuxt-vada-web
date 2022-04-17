@@ -7,24 +7,10 @@
             <v-form v-model="valid" ref="form">
               <v-row align="start" justify="space-around" class="mb-6 px-4" style="width: 100%;">
                 <v-col cols="12">
-                  <v-card class="elevation-0 px-12 py-12" style="background-color: #F5F5F5; width: 100%">
+                  <v-card v-if="!success" class="elevation-0 px-12 py-12" style="background-color: #F5F5F5; width: 100%">
                     <v-container fluid>
                       <v-row align="center" justify="start">
-                        <v-col cols="2" v-if="!isMobile">
-                          <v-subheader>문의유형</v-subheader>
-                        </v-col>
-                        <v-col cols="12" md="9">
-                          <v-select
-                            v-model="type"
-                            :items="typeList"
-                            :rules="[rules.required]"
-                            label="문의유형"
-                            required
-                            menu-props="auto"
-                            :single-line="!isMobile"
-                          />
-                        </v-col>
-                        <v-col cols="2" v-if="!isMobile" align-self="start">
+                        <v-col cols="2" v-if="$vuetify.breakpoint.mdAndUp" align-self="start">
                           <v-subheader>제목</v-subheader>
                         </v-col>
                         <v-col cols="12" md="9">
@@ -37,7 +23,7 @@
                             :rules="[rules.required]"
                           />
                         </v-col>
-                        <v-col cols="2" v-if="!isMobile" align-self="start">
+                        <v-col cols="2" v-if="$vuetify.breakpoint.mdAndUp" align-self="start">
                           <v-subheader>문의내용</v-subheader>
                         </v-col>
                         <v-col cols="12" md="9">
@@ -45,7 +31,7 @@
                             v-model="content"
                             ref="content"
                             label="문의내용"
-                            rows="8"
+                            rows="12"
                             :rules="[rules.required]"
                             outlined
                             no-resize
@@ -57,8 +43,30 @@
                       </v-row>
                     </v-container>
                   </v-card>
+                  <div v-else style="display: flex; align-items: center; justify-content: center">
+                    <v-card class="elevation-0 px-12 py-12 text-center" style="background-color: transparent; border: #F5F5F5 1px solid;">
+                      <v-card-title class="headline mb-2 font-weight-bold">문의하신 내용이 정상적으로 접수되었습니다.</v-card-title>
+                      <v-card-subtitle class="subtitle-1 font-weight-bold">문의에 대한 답변은 마이페이지에서 확인 가능하십니다.</v-card-subtitle>
+                      <v-card-actions class="mt-4">
+                        <custom-button
+                          :width="`200`"
+                          @submit="reset"
+                          :color="'primary'"
+                          :text="`확인`"
+                          class="darken-1 mx-2"
+                        />
+                        <custom-button
+                          :width="`200`"
+                          @submit="$router.push('/my-page')"
+                          :color="'primary'"
+                          :text="`마이페이지`"
+                          class="darken-1 mx-2"
+                        />
+                      </v-card-actions>
+                    </v-card>
+                  </div>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" v-if="!success">
                   <div style="display: flex; width: 100%; justify-content: end">
                     <v-btn large @click="submit" class="mr-4 font-weight-bold elevation-0 button-border-grey" outlined>제출</v-btn>
                     <v-btn large @click="cancel" class="font-weight-bold elevation-0 button-border-grey" outlined>취소</v-btn>
@@ -75,64 +83,64 @@
 
 <script>
 import MainCard from "../../../components/card/MainCard";
+import CustomButton from "../../../components/button/CustomButton";
 export default {
   name: "index",
-  components: {MainCard},
+  components: {CustomButton, MainCard},
   created() {
     this.$store.commit('setSheetTitle', '문의하기')
+    this.reset();
   },
   data: () => ({
     valid: false,
     header: '1:1 문의',
-    type: '사용방법 문의',
-    typeList: ['사용방법 문의', '서비스 이용방법 문의', '기타'],
-    //TODO (inquiry) : 처음 로그인 인증해보고 되어있으면 email 가져올거 아님. 가져온 후 설정 ㄱ
-    // 우선 임의로
-    email: 'rud57@naver.com',
     title: '',
     content: '',
+    success: false,
+    loading: false
   }),
   computed: {
-    isMobile () {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return true
-        case 'sm': return true
-        default: return false
-      }
-    },
     rules() {
       return {
         required: value => !!value || '값을 입력해주세요',
-        email: value => {
-          const replaceV = value.replace(/(\s*)/g, '')
-          const pattern = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/
-          return pattern.test(replaceV) || '이메일 형식으로 입력해주세요'
-        }
       }
     },
   },
   methods: {
     reset() {
-      this.email = '';
-      this.type = '사용방법 문의';
       this.title = '';
       this.content = '';
+      this.success = false;
+      this.loading = false;
     },
 
     submit () {
       if (!this.valid) {
-        alert("모든 값을 입력하세요")
+        this.$notifier.showMessage({
+          content: '모든 값을 입력해주십시오.',
+          color: 'error'
+        })
       }
       else {
-        //TODO (서버 통신)
-        this.$router.push('/');
-        this.reset();
+        this.loading = true;
+        this.$store.dispatch('qna/createInquiry', { title: this.title, content: this.content, userId: this.$auth.user.id}).then(
+          res => {
+            this.loading = false;
+            this.success = true;
+          },
+          err => {
+            this.$notifier.showMessage({
+              content: err,
+              color: 'error'
+            })
+            this.loading = false;
+          }
+        )
       }
     },
 
     cancel() {
       this.$router.push('/');
-      this.reset();
     }
   }
 }
