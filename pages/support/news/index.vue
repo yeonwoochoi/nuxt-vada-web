@@ -42,19 +42,27 @@ export default {
         }
         return {
           newsData: result,
-          totalPage: Math.ceil(result.length / store.state["news/itemsPerPage"])
+          totalPage: Math.ceil(result.length / store.state["news/itemsPerPage"]),
+          fetchError: null
         }
       },
       err => {
-        this.$notifier.showMessage({
-          content: err,
-          color: 'error'
-        })
+        return {
+          newsData: [],
+          totalPage: 1,
+          fetchError: err
+        }
       }
     )
   },
   created() {
     this.$store.commit('setSheetTitle', '공지사항')
+    if (!!this.fetchError) {
+      this.$notifier.showMessage({
+        content: this.fetchError,
+        color: 'error'
+      })
+    }
   },
   data: () => ({
     header: '공지사항',
