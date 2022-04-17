@@ -81,7 +81,6 @@ export default {
     async submit() {
       await this.$auth.loginWith('local', { data: { email: this.id, password: this.password } })
         .then((res) => {
-          console.log(res)
           this.$router.push(`/`)
         })
         .catch(e => {
