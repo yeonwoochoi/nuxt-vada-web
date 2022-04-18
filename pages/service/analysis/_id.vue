@@ -126,14 +126,11 @@ export default {
   created() {
     this.$store.commit('setSheetTitle', '특허분석')
   },
-  asyncData({params}) {
+  asyncData({params, store}) {
+
     return {
       idx: params.id,
     };
-  },
-  // 정수 값만 param으로 받음.
-  validate({params}) {
-    return /^\d+$/.test(params.id);
   },
   data: () => ({
     header: '개별특허분석',

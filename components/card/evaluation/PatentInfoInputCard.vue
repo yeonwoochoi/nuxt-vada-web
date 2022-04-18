@@ -58,7 +58,7 @@ export default {
   methods: {
     goNext() {
       this.loading = true;
-      if (!this.validatePatentNumber(this.patentNumber)) {
+      if (!this.$util.validatePatentNumber(this.patentNumber)) {
         this.$notifier.showMessage({
           content: '유효하지 않은 출원/등록번호입니다.',
           color: 'error'
@@ -74,19 +74,6 @@ export default {
     goPrev() {
       this.$emit('prevStep', 2)
     },
-    validatePatentNumber(number) {
-      if (number.length !== 13 || !number) {
-        return false
-      }
-      let str = `${number}`.slice(0, 2)
-      let prefix = ['10', '20', '30', '40', '41', '42', '43', '44', '45', '46', '47']
-      for (let i = 0; i < prefix.length; i++) {
-        if (prefix[i] === str) {
-          return true
-        }
-      }
-      return false
-    }
   }
 }
 </script>

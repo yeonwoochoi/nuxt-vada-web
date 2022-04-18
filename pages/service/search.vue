@@ -298,7 +298,7 @@ export default {
       let validSearchData = []
       if (this.searchData.length > 0) {
         for (let i = 0; i < this.searchData.length; i++) {
-          if (this.validatePatentNumber(this.searchData[i].text)) {
+          if (this.$util.validatePatentNumber(this.searchData[i].text)) {
             validSearchData.push(this.searchData[i].text)
           }
         }
@@ -365,19 +365,6 @@ export default {
     changePage() {
       console.dir(`page: ${this.currentPage}`)
     },
-    validatePatentNumber(number) {
-      if (number.length !== 13 || !number) {
-        return false
-      }
-      let str = `${number}`.slice(0, 2)
-      let prefix = ['10', '20', '30', '40', '41', '42', '43', '44', '45', '46', '47']
-      for (let i = 0; i < prefix.length; i++) {
-        if (prefix[i] === str) {
-          return true
-        }
-      }
-      return false
-    }
   }
 }
 </script>

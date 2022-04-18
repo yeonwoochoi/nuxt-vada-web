@@ -32,6 +32,7 @@ export default {
     { src: '~/plugins/vue-json-csv', ssr: false },
     { src: '~/plugins/notifier' },
     { src: '~/plugins/axios' },
+    { src: '~/plugins/utils.js' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
