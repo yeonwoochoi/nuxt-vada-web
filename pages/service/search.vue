@@ -99,7 +99,7 @@
                   :items-per-page="itemsPerPage"
                   :page.sync="currentPage"
                   hide-default-footer
-                  @page-count="pageCount = $event"
+                  @page-count="totalPage = $event"
                   :mobile-breakpoint="600"
                   :loading="searchLoading"
                   :show-select="false"
@@ -194,6 +194,7 @@
                       prev-icon="mdi-menu-left"
                       next-icon="mdi-menu-right"
                       class="mt-6"
+                      :disabled="searchLoading"
                     />
                   </template>
                 </v-data-table>
@@ -224,7 +225,8 @@ export default {
     chipColor: 'grey lighten-3',
     searchFile: null,
     currentPage: 1,
-    itemsPerPage: 10,
+    totalPage: 0,
+    itemsPerPage: 5,
     selected: [],
     searchResultHeaders: [
       {
@@ -274,11 +276,6 @@ export default {
         }
         return v
       })
-    },
-  },
-  computed: {
-    totalPage() {
-      return Math.ceil(this.searchResults.length / this.itemsPerPage);
     },
   },
   methods: {
