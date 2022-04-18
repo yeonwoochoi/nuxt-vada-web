@@ -55,7 +55,7 @@
                           <a
                             class="ellipsis"
                             style="font-size: 1.125em; font-weight: 600; text-decoration: none; color: black;"
-                            :onClick="`window.open('${item.content.link}', '_blank', 'width=960, height=700')`"
+                            :onClick="`window.open('${item.content.link}', '_blank', 'width=1080, height=850')`"
                           >
                             {{ item.content.inventionTitle }}
                           </a>
@@ -144,7 +144,7 @@ import CustomButton from "../../../../components/button/CustomButton";
 export default {
   name: "evaluationList",
   components: {CustomButton, DownloadButton, MainCard},
-  asyncData({ store }) {
+  asyncData({ store, $util }) {
     return {
       evaluations: [
         {
@@ -159,7 +159,7 @@ export default {
             applicationNumber: '1020147002912',
             applicantName: '삼성전자주식회사',
             personName: '권리자명',
-            link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020160148671&index=0&start=fulltext&openPageId=View03',
+            link: $util.getKiprisDoiLink('1020147002912'),
             detailReportLink: `ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`,
             price: '10000 KRW',
             expirationDate: '2021-03-30 ~ 2022-03-30',
@@ -174,7 +174,7 @@ export default {
             applicationNumber: '1020147002912',
             applicantName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
             personName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
-            link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020207007034&index=0&start=fulltext&openPageId=View03',
+            link: $util.getKiprisDoiLink('1020147002912'),
             detailReportLink: `ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`,
             price: '12000 KRW',
             expirationDate: '2022-02-15 ~ 2023-02-15',
