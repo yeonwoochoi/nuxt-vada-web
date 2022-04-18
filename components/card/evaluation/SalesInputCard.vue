@@ -98,6 +98,13 @@
             :text="`계속하기`"
             class="darken-1"
           />
+          <custom-button
+            class="mx-1"
+            :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
+            @submit="goPrev"
+            :color="'primary'"
+            :text="`이전으로`"
+          />
         </div>
       </v-col>
     </v-row>
@@ -130,20 +137,32 @@ export default {
       return {
         required: value => (!!value || !this.hasSales) || '값을 입력해주세요',
       }
-    }
+    },
   },
   methods: {
     ...mapMutations("patent", {
       setSalesData: 'setSalesData'
     }),
     goNext() {
-      this.$emit('nextStep', 1);
-      this.setSalesData(this.hasSales ? this.salesData : {
-        firstRevenue: null,
-        secondRevenue: null,
-        thirdRevenue: null,
-        revenueRoyaltyRatio: null,
-      })
+      this.$emit('nextStep', 3);
+      let result = {
+        firstRevenue: -1,
+        secondRevenue: -1,
+        thirdRevenue: -1,
+        revenueRoyaltyRatio: -1,
+      }
+      if (this.hasSales) {
+        result = {
+          firstRevenue: parseInt(this.salesData.firstRevenue),
+          secondRevenue: parseInt(this.salesData.secondRevenue),
+          thirdRevenue: parseInt(this.salesData.thirdRevenue),
+          revenueRoyaltyRatio: parseInt(this.salesData.revenueRoyaltyRatio),
+        }
+      }
+      this.setSalesData(result)
+    },
+    goPrev() {
+      this.$emit('prevStep', 3)
     },
     isNumber: function(evt) {
       evt = (evt) ? evt : window.event;

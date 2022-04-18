@@ -31,16 +31,16 @@
                       :step="n.step"
                     >
                       <v-form v-if="n.step === 1" ref="stepForm" v-model="n.valid" lazy-validation>
-                        <sales-input-card @nextStep="nextStep" />
+                        <patent-info-input-card @nextStep="nextStep"/>
                       </v-form>
-                      <v-form v-if="n.step === 2" ref="stepForm" v-model="n.valid" lazy-validation>
-                        <patent-info-input-card @nextStep="nextStep" @prevStep="prevStep"/>
-                      </v-form>
-                      <validation-observer v-if="n.step === 3" ref="stepForm">
+                      <validation-observer v-if="n.step === 2" ref="stepForm">
                         <v-form>
                           <ksic-input-card @nextStep="nextStep" @prevStep="prevStep" ref="ksicRef"/>
                         </v-form>
                       </validation-observer>
+                      <v-form v-if="n.step === 3" ref="stepForm" v-model="n.valid" lazy-validation>
+                        <sales-input-card @nextStep="nextStep" @prevStep="prevStep"/>
+                      </v-form>
                       <validation-observer v-if="n.step === 4" ref="stepForm">
                         <v-form>
                           <business-scale-input-card @nextStep="nextStep" @prevStep="prevStep"/>
@@ -81,17 +81,20 @@ export default {
   name: "evaluation",
   components: {ResultSummaryCard, KsicInputCard, BusinessScaleInputCard, CompanyLogoBtn, PatentInfoInputCard, SalesInputCard, MainCard},
   created() {
-    this.$store.commit('patent/resetTempEvalData')
     this.$store.commit('patent/resetEvalData')
     this.$store.commit('setSheetTitle', '특허평가')
+  },
+  beforeRouteLeave(to, from, next) {
+    this.$store.commit('patent/resetTempEvalData')
+    next()
   },
   data: () => ({
     header: '특허 평가',
     currentStep: 1,
     steps: [
-      { step: 1, header: '3년 매출액', valid: true, errorMsg: '모든 값을 입력해야 다음 단계로 진행 가능합니다.' },
-      { step: 2, header: '특허 번호', valid: true, errorMsg: '유효한 특허번호를 입력해주십시오.' },
-      { step: 3, header: '산업분류코드', valid: true, errorMsg: '산업분류코드를 선택해 주셔야 다음 단계로 진행 가능합니다.' },
+      { step: 1, header: '특허 번호', valid: true, errorMsg: '유효한 특허번호를 입력해주십시오.' },
+      { step: 2, header: '산업분류코드', valid: true, errorMsg: '산업분류코드를 선택해 주셔야 다음 단계로 진행 가능합니다.' },
+      { step: 3, header: '3년 매출액', valid: true, errorMsg: '모든 값을 입력해야 다음 단계로 진행 가능합니다.' },
       { step: 4, header: '기업 규모', valid: true, errorMsg: '기업 규모를 선택해 주셔야 다음 단계로 진행 가능합니다.' },
       { step: 5, header: '분석 결과 요약', valid: true, errorMsg: '' },
     ],
@@ -147,16 +150,25 @@ export default {
       // 나머지 step
       if (parseInt(prevStep + 1) < this.lastStep) {
 
-        // 3번째 (index = 2) step 에서 fetchData 호출
-        if (prevStep === 2) {
+        // 2번째 (index = 1) step 에서 fetchData 호출
+        if (prevStep === 1) {
           let patentNumber = this.$store.getters["patent/getTempEvalData"].patentNumber
           await this.$store.dispatch('patent/getIpcCode', {patentNumbers: [patentNumber]}).then(
             res => {
-              let target = mapper.find(v => v.ipc === res).ksic;
-              let ksic = ksicList.find(v => v.code === target)
-              this.$store.commit('patent/setKsic', ksic)
-              this.$refs.ksicRef[0].fetchData();
-              callback();
+              if (!res) {
+                this.$notifier.showMessage({
+                  content: '유효하지 않은 특허번호입니다.',
+                  color: 'error'
+                })
+                callback(true)
+              }
+              else {
+                let target = mapper.find(v => v.ipc === res).ksic;
+                let ksic = ksicList.find(v => v.code === target)
+                this.$store.commit('patent/setKsic', ksic)
+                this.$refs.ksicRef[0].fetchData();
+                callback();
+              }
             },
             err => {
               this.$notifier.showMessage({
@@ -201,6 +213,7 @@ export default {
             content: err,
             color: 'error'
           })
+          callback(true);
         }
       )
     },

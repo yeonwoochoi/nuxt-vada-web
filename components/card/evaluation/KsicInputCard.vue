@@ -110,11 +110,11 @@ export default {
   },
   methods: {
     goNext() {
-      this.$emit('nextStep', 3);
+      this.$emit('nextStep', 2);
       this.classification = this.tempKsic
     },
     goPrev() {
-      this.$emit('prevStep', 3)
+      this.$emit('prevStep', 2)
     },
     fetchData() {
       this.tempKsic = this.classification

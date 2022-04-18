@@ -16,23 +16,18 @@
           :rules="[rules.required]"
         />
       </v-col>
-      <div style="display: flex;" class="mb-4">
-        <custom-button
-          class="mx-1 darken-1"
-          :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
-          @submit="goNext"
-          :color="'primary'"
-          :text="`계속하기`"
-          :loading="loading"
-        />
-        <custom-button
-          class="mx-1"
-          :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
-          @submit="goPrev"
-          :color="'primary'"
-          :text="`이전으로`"
-        />
-      </div>
+      <v-col cols="12">
+        <div style="display: flex; justify-content: center;" class="mb-4">
+          <custom-button
+            class="mx-1 darken-1"
+            :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
+            @submit="goNext"
+            :color="'primary'"
+            :text="`계속하기`"
+            :loading="loading"
+          />
+        </div>
+      </v-col>
     </v-row>
   </v-card>
 </template>
@@ -43,6 +38,9 @@ import CustomButton from "../../button/CustomButton";
 export default {
   name: "PatentInfoInputCard",
   components: {CustomButton},
+  created() {
+    this.patentNumber = this.$store.getters["patent/getTempEvalData"].patentNumber
+  },
   data: () => ({
     title: '출원/등록번호를 입력해주세요.',
     patentNumber: '',
@@ -67,12 +65,9 @@ export default {
         return;
       }
       this.$store.commit('patent/setPatentNumber', this.patentNumber)
-      this.$emit('nextStep', 2, () => {
+      this.$emit('nextStep', 1, () => {
         this.loading = false
       });
-    },
-    goPrev() {
-      this.$emit('prevStep', 2)
     },
   }
 }

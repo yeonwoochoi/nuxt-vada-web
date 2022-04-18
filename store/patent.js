@@ -1,18 +1,18 @@
 export const state = () => ({
   selectedEval: [],
   businessScaleRef: [
-    { original: '상장 기업', data: '' },
+    { original: '상장 기업', data: 'CAPM' },
     { original: '비상장 대기업', data: 'BIG' },
     { original: '비상장 중기업', data: 'MEDIUM' },
     { original: '비상장 소기업', data: 'SMALL' },
-    { original: '비상장 창업기업', data: '' },
-    { original: '학교, 기관', data: '' },
+    { original: '비상장 창업기업', data: 'STARTUP' },
+    { original: '학교, 기관', data: 'UNIVERSITY' },
   ],
   tempEvalData: {
     patentNumber: '',
     ksic: null,
     sales: null, // can be null
-    businessScale: { original: '비상장 대기업', data: 'BIG' }
+    businessScale: { original: '상장 기업', data: 'CAPM' },
   },
   evalData: null
 })

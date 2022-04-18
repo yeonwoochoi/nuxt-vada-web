@@ -361,7 +361,8 @@ export default {
     },
     // 개별 평가
     evaluateIndividual(item) {
-      console.log(item)
+      this.$store.commit('patent/setPatentNumber', item.content.applicationNumber);
+      this.$router.push('/service/evaluation')
     },
     // 일괄 평가
     // 기능에서 뺌 (checkbox로 선택해서 하려고 했는데)
