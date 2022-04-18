@@ -60,13 +60,13 @@
                       :text="`검색`"
                       class="my-4"
                       @submit="searchByInput"
-                      :loading="loading"
+                      :loading="searchLoading"
                     />
                   </v-card-title>
                   <div style="display: flex; align-items: start; justify-content: end;" class="my-2">
                     <div class="filebox mr-2">
-                      <label for="searchFile">
-                        <v-icon color="green" size="25" style="padding-top: 0.1em">mdi-file-upload</v-icon>
+                      <label for="searchFile" style="font-size: 14px">
+                        <v-icon color="green" size="25">mdi-file-upload</v-icon>
                         업로드
                       </label>
                       <input
@@ -75,6 +75,7 @@
                         type="file"
                         id="searchFile"
                         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        :disabled="searchLoading"
                       >
                     </div>
                     <download-button
@@ -100,7 +101,7 @@
                   hide-default-footer
                   @page-count="pageCount = $event"
                   :mobile-breakpoint="600"
-                  :loading="loading"
+                  :loading="searchLoading"
                   :show-select="false"
                   item-key="indexNo"
                   :no-data-text="noDataText"
@@ -123,7 +124,7 @@
                           <a
                             class="ellipsis"
                             style="font-size: 1.125em; font-weight: 600; text-decoration: none; color: black;"
-                            :onClick="`window.open('${kiprisDoiLink + item.content.applicationNumber}', '_blank', 'width=1080, height=850')`"
+                            :onClick="`window.open('${$util.getKiprisDoiLink(item.content.applicationNumber)}', '_blank', 'width=1080, height=850')`"
                           >
                             {{ item.content.inventionTitle }}
                           </a>
@@ -178,6 +179,7 @@
                       :ripple="false"
                       @click="showDetails(item)"
                       color="transparent"
+                      :loading="item.loading"
                     >
                       <v-icon>mdi-note-check</v-icon>
                       상세보기
@@ -215,7 +217,6 @@ export default {
     this.$store.commit('setSheetTitle', '특허검색')
   },
   data: () => ({
-    kiprisDoiLink: 'https://doi.org/10.8080/',
     header: '특허검색',
     searchData: [],
     nonce: 1,
@@ -258,7 +259,7 @@ export default {
     ],
     searchResults: [],
     noDataText: '',
-    loading: false,
+    searchLoading: false,
   }),
   watch: {
     searchData (val, prev) {
@@ -310,7 +311,7 @@ export default {
         })
         return;
       }
-      this.loading = true;
+      this.searchLoading = true;
       this.$store.dispatch('patent/search', {patentNumbers: validSearchData})
         .then(
           res => {
@@ -326,14 +327,15 @@ export default {
                   applicationNumber: res[i]['applicationNumber'],
                   applicantName: res[i]['items'][0]['applicantName'],
                   applicationDate: res[i]['items'][0]['applicationDate'],
-                }
+                },
+                loading: false
               })
             }
             if (result.length === 0) {
               this.noDataText = '검색결과 없음'
             }
             this.searchResults = result
-            this.loading = false;
+            this.searchLoading = false;
           },
           err => {
             this.$notifier.showMessage({
@@ -341,7 +343,7 @@ export default {
               color: 'error'
             })
             this.noDataText = '검색결과 없음'
-            this.loading = false;
+            this.searchLoading = false;
           }
         )
     },
@@ -351,11 +353,15 @@ export default {
     },
     // 자체 사이트 상세보기
     showDetails(item) {
-      this.$router.push('analysis/'+item.indexNo)
+      for (let i = 0; i < this.searchResults.length; i++) {
+        this.searchResults[i].loading = false
+      }
+      item.loading = true;
+      this.$router.push('analysis/'+item.content.applicationNumber)
     },
     // 개별 평가
     evaluateIndividual(item) {
-      console.dir(item)
+      console.log(item)
     },
     // 일괄 평가
     // 기능에서 뺌 (checkbox로 선택해서 하려고 했는데)

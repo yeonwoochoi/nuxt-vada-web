@@ -5,6 +5,7 @@
     :onclick="`window.open('http://${link}', '_blank')`"
     formtarget="_blank"
     style="background-color: transparent; color: #666666; height: fit-content"
+    :disabled="isDisable"
   >
     <slot/>
   </button>
@@ -18,7 +19,11 @@ export default {
       type: String,
       default: () => ''
     },
-  }
+    isDisable: {
+      type: Boolean,
+      default: () => false
+    }
+  },
 }
 </script>
 

@@ -12,6 +12,9 @@ class Utils {
     }
     return false
   }
+  static getKiprisDoiLink(applicantNumber) {
+    return 'https://doi.org/10.8080/' + applicantNumber
+  }
 }
 
 export default (context, inject) => {
