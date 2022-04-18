@@ -137,9 +137,9 @@
 </template>
 
 <script>
-import MainCard from "../../../components/card/MainCard";
-import DownloadButton from "../../../components/button/DownloadButton";
-import CustomButton from "../../../components/button/CustomButton";
+import MainCard from "../../../../components/card/MainCard";
+import DownloadButton from "../../../../components/button/DownloadButton";
+import CustomButton from "../../../../components/button/CustomButton";
 
 export default {
   name: "evaluationList",
