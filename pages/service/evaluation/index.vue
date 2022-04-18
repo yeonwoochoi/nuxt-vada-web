@@ -189,6 +189,14 @@ export default {
       // evaluate 진행
       await this.$store.dispatch('patent/evaluate').then(
         res => {
+          if (!res) {
+            this.$notifier.showMessage({
+              content: '',
+              color: 'error'
+            })
+            callback(true);
+            return;
+          }
           let randomNumber = Math.floor(Math.random() * 10000) + 1;
           let inputData = this.$store.getters["patent/getTempEvalData"]
           let currentYear = parseInt(new Date().getFullYear())

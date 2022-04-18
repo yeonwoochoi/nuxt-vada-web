@@ -72,7 +72,7 @@
               suffix="%"
               flat
               outlined
-              :rules="[rules.required]"
+              :rules="[rules.required, rules.min, rules.max]"
             >
               <template v-slot:append-outer>
                 <v-tooltip bottom>
@@ -136,6 +136,8 @@ export default {
     rules() {
       return {
         required: value => (!!value || !this.hasSales) || '값을 입력해주세요',
+        min: value => parseInt(value) > 0 || '양수 값을 입력해주세요',
+        max: value => parseInt(value) <= 100 || '100이하 값을 입력해주세요',
       }
     },
   },

@@ -103,7 +103,7 @@ export default {
       return [
         {
           patentNumber: this.evaluationData.patentNumber,
-          ksic: `${this.evaluationData.ksic.code} ${this.evaluationData.ksic.title}`
+          ksic: !!this.evaluationData.ksic ? `${this.evaluationData.ksic.code} ${this.evaluationData.ksic.title}` : ''
         }
       ]
     },
