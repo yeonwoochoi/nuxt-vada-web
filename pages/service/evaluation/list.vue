@@ -9,7 +9,7 @@
                 <v-card class="elevation-0 px-md-12 px-6 py-12" style="background-color: #F5F5F5; width: 100%; height: fit-content">
                   <v-card-title>
                     <v-text-field
-                      v-model="search"
+                      v-model="tempSearch"
                       label="검색"
                       outlined
                       hide-details
@@ -18,7 +18,7 @@
                     <custom-button
                       :width="`100`"
                       :text="`검색`"
-                      @submit="searchByInput"
+                      @submit="searchData"
                     />
                   </v-card-title>
                 </v-card>
@@ -27,13 +27,17 @@
                 <v-data-table
                   v-model="selected"
                   :headers="searchResultHeaders"
-                  :items="sampleData"
+                  :items="evaluations"
                   :items-per-page="itemsPerPage"
+                  :page.sync="currentPage"
                   hide-default-footer
+                  @page-count="totalPage = $event"
                   :mobile-breakpoint="600"
-                  :loading="isLoading"
                   show-select
-                  item-key="indexNo"
+                  item-key="applicationNumber"
+                  :no-data-text="noDataText"
+                  :search="search"
+                  :custom-filter="customFilter"
                 >
                   <template v-slot:top>
                     <v-btn
@@ -120,7 +124,6 @@
                       prev-icon="mdi-menu-left"
                       next-icon="mdi-menu-right"
                       class="mt-6"
-                      @input="changePage"
                     />
                   </template>
                 </v-data-table>
@@ -137,41 +140,61 @@
 import MainCard from "../../../components/card/MainCard";
 import DownloadButton from "../../../components/button/DownloadButton";
 import CustomButton from "../../../components/button/CustomButton";
+
 export default {
   name: "evaluationList",
   components: {CustomButton, DownloadButton, MainCard},
+  asyncData({ store }) {
+    return {
+      evaluations: [
+        {
+          indexNo: 1,
+          content: {
+            inventionTitle: '이미지센서 셀, 상기 이미지센서 셀들을 복수 개 구비하는 이미지센서 어레이를 구비하는 이미지센서 및\n' +
+              '                    상기 이미지센서를 구비하는 카메라시스템(Image sensor cell, image sensor including image\n' +
+              '                    sensor array including plurality of the image sensor cells and camera\n' +
+              '                    system including the image sensor)',
+            registerNumber: '1019870006388',
+            registerDate: '1987/07/11',
+            applicationNumber: '1020147002912',
+            applicantName: '삼성전자주식회사',
+            personName: '권리자명',
+            link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020160148671&index=0&start=fulltext&openPageId=View03',
+            detailReportLink: `ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`,
+            price: '10000 KRW',
+            expirationDate: '2021-03-30 ~ 2022-03-30',
+          }
+        },
+        {
+          indexNo: 2,
+          content: {
+            inventionTitle: '에스트로겐 수용체 억제제로서의 벤조티오펜 유도체',
+            registerNumber: '10-2016-7002876',
+            registerDate: '1987/07/11',
+            applicationNumber: '1020147002912',
+            applicantName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
+            personName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
+            link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020207007034&index=0&start=fulltext&openPageId=View03',
+            detailReportLink: `ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`,
+            price: '12000 KRW',
+            expirationDate: '2022-02-15 ~ 2023-02-15',
+          }
+        },
+      ]
+    }
+  },
   created() {
     this.$store.commit('setSheetTitle', '평가목록조회')
-  },
-  asyncData({ from, query }) {
-    let result = {
-      currentPage: 1,
-      reset: true
-    }
-    console.log(from)
-    console.log(query)
-    if (query !== undefined) {
-      if (query.page !== undefined) {
-        result.currentPage = parseInt(query.page)
-      }
-    }
-    if (from !== undefined) {
-      if (from.path !== undefined) {
-        result.reset = from.path !== '/service/evaluation/list'
-      }
-    }
-    return result;
+    this.$store.commit('patent/resetSelectedEval')
   },
   data: () => ({
     header: '평가결과조회',
-
+    tempSearch: '',
     search: '',
-
-    isLoading: true,
-
-    itemsPerPage: 10,
-    totalPage: 1,
-
+    currentPage: 1,
+    itemsPerPage: 5,
+    totalPage: 0,
+    noDataText: '',
     searchResultHeaders: [
       {
         text: 'No',
@@ -185,7 +208,6 @@ export default {
         text: '내용',
         align: 'start',
         sortable: false,
-        filterable: false,
         value: 'content',
       },
       {
@@ -211,7 +233,6 @@ export default {
         value: 'detail',
       },
     ],
-    sampleData: []
   }),
   computed: {
     selected: {
@@ -224,14 +245,14 @@ export default {
     },
     currentPath() {
       return this.$router.currentRoute.path;
-    }
+    },
   },
   methods: {
-    goToSummaryReport({indexNo}) {
-      this.$router.push('/service/evaluation/summary/' + indexNo)
+    goToSummaryReport({content}) {
+      this.$router.push('/service/evaluation/summary/' + content.applicationNumber)
     },
-    goToDetail({indexNo}) {
-      this.$router.push('/service/analysis/' + indexNo)
+    goToDetail({content}) {
+      this.$router.push('/service/analysis/' + content.applicationNumber)
     },
     changePage() {
       let query = { page: this.currentPage }
@@ -244,63 +265,18 @@ export default {
     downloadSelectedAll() {
       console.dir(this.selected)
     },
-    fetchData() {
-      setTimeout(() => {
-        this.sampleData = [
-          {
-            indexNo: 1,
-            content: {
-              inventionTitle: '이미지센서 셀, 상기 이미지센서 셀들을 복수 개 구비하는 이미지센서 어레이를 구비하는 이미지센서 및\n' +
-                '                    상기 이미지센서를 구비하는 카메라시스템(Image sensor cell, image sensor including image\n' +
-                '                    sensor array including plurality of the image sensor cells and camera\n' +
-                '                    system including the image sensor)',
-              registerNumber: '1019870006388',
-              registerDate: '1987/07/11',
-              applicationNumber: '1020147002912',
-              applicantName: '삼성전자주식회사',
-              personName: '권리자명',
-              link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020160148671&index=0&start=fulltext&openPageId=View03',
-              detailReportLink: `ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`,
-              price: '10000 KRW',
-              expirationDate: '2021-03-30 ~ 2022-03-30',
-            }
-          },
-          {
-            indexNo: 2,
-            content: {
-              inventionTitle: '에스트로겐 수용체 억제제로서의 벤조티오펜 유도체',
-              registerNumber: '10-2016-7002876',
-              registerDate: '1987/07/11',
-              applicationNumber: '1020147002912',
-              applicantName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
-              personName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
-              link: 'http://kpat.kipris.or.kr/kpat/biblioa.do?method=biblioFrame&applno=1020207007034&index=0&start=fulltext&openPageId=View03',
-              detailReportLink: `ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`,
-              price: '12000 KRW',
-              expirationDate: '2022-02-15 ~ 2023-02-15',
-            }
-          },
-        ]
-        this.totalPage = Math.ceil(this.sampleData.length / this.itemsPerPage);
-        this.isLoading = false;
-      }, 3000)
+    searchData() {
+      this.search = this.tempSearch
+      this.noDataText = !!this.search ? '검색결과 없음' : ''
     },
-    // Input field 로 검색했을 때
-    searchByInput() {
-      let query = { page: this.currentPage }
-      if (!!this.search) query.keyword = this.search;
-      this.$router.push({
-        path: this.currentPath,
-        query: query
-      })
-    },
-  },
-  mounted() {
-    this.fetchData()
-    if (this.reset) {
-      this.$store.commit('patent/resetSelectedEval')
+    customFilter(items, search, filter) {
+      if (!search || !items) return items;
+      if (items.inventionTitle.includes(search) || items.registerNumber.includes(search) || items.applicationNumber.includes(search) || items.applicantName.includes(search)) {
+        return items;
+      }
+      return null
     }
-  }
+  },
 }
 </script>
 

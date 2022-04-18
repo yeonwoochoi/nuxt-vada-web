@@ -67,7 +67,6 @@ export const actions = {
       "patentNumber": state.tempEvalData.patentNumber,
       "industryCode": state.tempEvalData.ksic.code,
     }
-    console.log(params)
     return new Promise(((resolve, reject) => {
       this.$axios.$post('/patent/evaluation', params).then(res=> {
         commit('setEvalData', res.result)
