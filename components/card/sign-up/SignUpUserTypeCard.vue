@@ -10,7 +10,7 @@
       <div style="display: flex;" class="mt-6 mb-4">
         <custom-button
           class="mx-1 darken-1"
-          :width="`${isMobile ? '49%' : '200'}`"
+          :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
           @submit="goNext"
           :color="'primary'"
           :text="`계속하기`"
@@ -18,7 +18,7 @@
         />
         <custom-button
           class="mx-1"
-          :width="`${isMobile ? '49%' : '200'}`"
+          :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
           @submit="goPrev"
           :color="'primary'"
           :text="`이전으로`"
@@ -36,15 +36,6 @@ export default {
   data: () => ({
     userType: '',
   }),
-  computed: {
-    isMobile() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return true
-        case 'sm': return true
-        default: return false
-      }
-    },
-  },
   watch: {
     userType(val) {
       this.$emit('setUserType', val);

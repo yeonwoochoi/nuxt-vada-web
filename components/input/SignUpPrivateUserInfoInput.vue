@@ -109,7 +109,7 @@
     <div class="mt-6" style="display: flex; align-items: center; justify-content: center">
       <custom-button
         class="mx-1 darken-1"
-        :width="`${isMobile ? '49%' : '200'}`"
+        :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
         @submit="goNext"
         :color="'primary'"
         :text="`계속하기`"
@@ -117,7 +117,7 @@
       />
       <custom-button
         class="mx-1"
-        :width="`${isMobile ? '49%' : '200'}`"
+        :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
         @submit="goPrev"
         :color="'primary'"
         :text="`이전으로`"
@@ -217,13 +217,6 @@ export default {
         password: this.password,
         username: this.username,
         phone: this.phone
-      }
-    },
-    isMobile() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return true
-        case 'sm': return true
-        default: return false
       }
     },
   },

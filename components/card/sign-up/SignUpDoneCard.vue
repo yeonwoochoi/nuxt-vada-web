@@ -5,12 +5,12 @@
         <v-img aspect-ratio="1" style="height: 180px;" contain :src="icon"/>
       </v-col>
       <v-col v-if="isPrivateUser" cols="12" class="mb-3 mt-1 text-center font-weight-thin">
-        <pre v-html="privateGuide.header" :style="`font-size: ${isMobile ? '24' : '33'}px; letter-spacing: 0;`"/>
-        <pre v-text="privateGuide.content" class="font-weight-bold mt-1" :style="`font-size: ${isMobile ? '13' : '15'}px;  letter-spacing: 0;`"/>
+        <pre v-html="privateGuide.header" :style="`font-size: ${$vuetify.breakpoint.smAndDown ? '24' : '33'}px; letter-spacing: 0;`"/>
+        <pre v-text="privateGuide.content" class="font-weight-bold mt-1" :style="`font-size: ${$vuetify.breakpoint.smAndDown ? '13' : '15'}px;  letter-spacing: 0;`"/>
       </v-col>
       <v-col v-else cols="12" class="mb-3 mt-1 text-center font-weight-thin">
-        <pre v-html="enterpriseGuide.header" :style="`font-size: ${isMobile ? '24' : '33'}px; letter-spacing: 0;`"/>
-        <p v-text="enterpriseGuide.content" class="font-weight-bold mt-1 mb-0" :style="`font-size: ${isMobile ? '13' : '15'}px;  letter-spacing: 0;`"/>
+        <pre v-html="enterpriseGuide.header" :style="`font-size: ${$vuetify.breakpoint.smAndDown ? '24' : '33'}px; letter-spacing: 0;`"/>
+        <p v-text="enterpriseGuide.content" class="font-weight-bold mt-1 mb-0" :style="`font-size: ${$vuetify.breakpoint.smAndDown ? '13' : '15'}px;  letter-spacing: 0;`"/>
       </v-col>
       <v-col cols="10" style="display: flex; align-items: center; justify-content: center">
         <custom-button
@@ -50,13 +50,6 @@ export default {
   computed: {
     isPrivateUser() {
       return this.userType === 'private'
-    },
-    isMobile() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return true
-        case 'sm': return true
-        default: return false
-      }
     },
   },
   methods: {

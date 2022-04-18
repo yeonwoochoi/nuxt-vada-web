@@ -6,7 +6,7 @@
       color="rgb(0,33,69)"
       style="height: fit-content"
   >
-    <v-container v-if="!isMobile">
+    <v-container v-if="$vuetify.breakpoint.mdAndUp">
       <v-row justify="space-around" align="center" class="my-4">
         <v-col cols="6" align="start">
           <CompanyLogoBtn :logo-src="companyLogo" :logo-height="150"/>
@@ -55,13 +55,6 @@ export default {
       footerBtnInfo: 'footerBtnInfo',
       copyright: 'copyright'
     }),
-    isMobile() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return true
-        case 'sm': return true
-        default: return false
-      }
-    }
   }
 }
 </script>

@@ -39,9 +39,6 @@ export default {
     getWidth() {
       return this.$vuetify.breakpoint.width;
     },
-    isMobile() {
-      return this.getWidth < 960;
-    }
   },
   data: () => ({
     title: '기술의 숨겨진 가치를\n찾아드립니다',

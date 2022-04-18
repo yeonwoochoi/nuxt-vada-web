@@ -13,7 +13,7 @@
     >
       <v-container fluid>
         <v-row
-          v-if="!isMobile"
+          v-if="$vuetify.breakpoint.mdAndUp"
           align="center"
           justify="center"
         >
@@ -117,7 +117,7 @@
     </v-app-bar>
     <app-bar-sheet-view
       v-if="this.$route.path !== '/'"
-      :is-mobile="isMobile"
+      :is-mobile="$vuetify.breakpoint.smAndDown"
       :header-title="appBarSheetTitle"
       :img-src="sheetImage"
     />
@@ -163,13 +163,6 @@ export default {
     },
     isActive () {
       return this.isScrolled || this.isHovered;
-    },
-    isMobile () {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return true
-        case 'sm': return true
-        default: return false
-      }
     },
     drawer: {
       get () {

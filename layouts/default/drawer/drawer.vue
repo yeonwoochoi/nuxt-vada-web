@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    v-if="isMobile"
+    v-if="$vuetify.breakpoint.smAndDown"
     v-model="drawer"
     v-bind="$attrs"
     dark
@@ -66,13 +66,6 @@ export default {
         return this.$store.commit('setDrawer', value)
       }
     },
-    isMobile () {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return true
-        case 'sm': return true
-        default: return false
-      }
-    }
   }
 }
 </script>

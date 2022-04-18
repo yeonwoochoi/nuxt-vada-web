@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container style="height: fit-content; margin-bottom: 100px; padding: 0px 50px 50px;">
-      <v-row align="center" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-9' : ''}`">
+      <v-row align="center" :justify="`${$vuetify.breakpoint.smAndDown ? 'start' : 'center'}`" :class="`${$vuetify.breakpoint.smAndDown ? 'mx-9' : ''}`">
         <v-col cols="12" lg="5" xl="4" style="text-align: start">
           <div :style="`font-size: ${breakpoint === 'xs' ? 29 : 36}px; line-height: 45px`">
             <p class="font-weight-medium mb-1">{{ companyIntroHeader1 }}</p>
@@ -50,7 +50,7 @@
                 v-for="(text, i) in techIntroContents"
                 :key="`tech-content-${i}`"
                 class="ml-1 font-weight-medium white--text"
-                :style="`font-size: ${isMobile ? 11 : 13}px; line-height: ${isMobile? 20 : 22}px`"
+                :style="`font-size: ${$vuetify.breakpoint.smAndDown ? 11 : 13}px; line-height: ${$vuetify.breakpoint.smAndDown? 20 : 22}px`"
               >
                 <p v-text="text" class="mb-0"/>
               </div>
@@ -58,19 +58,19 @@
             <v-btn
               to="/about"
               class="px-1 mt-4 no-background-hover elevation-0 font-weight-medium white--text"
-              :style="`font-size: ${isMobile ? 13 : 15}px; background-color: transparent`"
+              :style="`font-size: ${$vuetify.breakpoint.smAndDown ? 13 : 15}px; background-color: transparent`"
             >
               {{ detailInfoBtnText }}
-              <v-icon class="ml-3" :size="`${isMobile ? 17 : 22}`">mdi-arrow-right</v-icon>
+              <v-icon class="ml-3" :size="`${$vuetify.breakpoint.smAndDown ? 17 : 22}`">mdi-arrow-right</v-icon>
             </v-btn>
           </div>
         </v-col>
       </v-row>
     </v-img>
     <v-container style="height: fit-content; margin-top: 100px; padding: 40px 100px 10px">
-      <v-row align="start" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-9' : ''}`">
+      <v-row align="start" :justify="`${$vuetify.breakpoint.smAndDown ? 'start' : 'center'}`" :class="`${$vuetify.breakpoint.smAndDown ? 'mx-9' : ''}`">
         <v-col cols="12" md="4" style="text-align: start" class="pr-8">
-          <p class="mb-1 font-weight-regular" :style="`font-size: ${isMobile ? 35 : 40}px;`">{{ noticeHeader }}</p>
+          <p class="mb-1 font-weight-regular" :style="`font-size: ${$vuetify.breakpoint.smAndDown ? 35 : 40}px;`">{{ noticeHeader }}</p>
           <v-btn
             to="/support/news"
             class="pl-1 my-3 no-background-hover elevation-0 font-weight-bold"
@@ -121,13 +121,6 @@ export default {
     detailInfoBtnText: '자세히보기',
   }),
   computed: {
-    isMobile() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "sm": return true;
-        case "xs": return true;
-        default: return false;
-      }
-    },
     breakpoint() {
       return this.$vuetify.breakpoint.name
     },

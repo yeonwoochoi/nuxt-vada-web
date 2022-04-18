@@ -17,9 +17,9 @@
       </v-row>
     </v-container>
     <v-container style="height: fit-content; margin-top: 100px; margin-bottom: 100px; padding: 50px 0;">
-      <v-row align="start" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-7' : ''}`">
+      <v-row align="start" :justify="`${$vuetify.breakpoint.smAndDown ? 'start' : 'center'}`" :class="`${$vuetify.breakpoint.smAndDown ? 'mx-7' : ''}`">
         <v-col cols="10" md="5" xl="4">
-          <div class="font-weight-black" :style="`font-size: ${isMobile ? 21 : 25}px; line-height: ${isMobile ? 22 : 30}px;`">
+          <div class="font-weight-black" :style="`font-size: ${$vuetify.breakpoint.smAndDown ? 21 : 25}px; line-height: ${$vuetify.breakpoint.smAndDown ? 22 : 30}px;`">
             <p v-for="(text, i) in companyHeaders" :key="`company-about-header-${i}`" v-text="text" />
           </div>
         </v-col>
@@ -28,7 +28,7 @@
             v-for="(item, j) in companyContents"
             :key="`-company-about-content-${j}`"
             class="mb-4 font-weight-medium"
-            :style="`font-size: ${isMobile ? 12: 14}px;`"
+            :style="`font-size: ${$vuetify.breakpoint.smAndDown ? 12: 14}px;`"
           >
             <li class="grey--text text--darken-1">{{ item }}</li>
             <p v-if="j === companyContents.length-1" class="mt-6 caption font-weight-black grey--text text--darken-3">{{ companyFooter }}</p>
@@ -37,8 +37,8 @@
       </v-row>
     </v-container>
     <v-container style="height: fit-content;">
-      <v-row align="center" :justify="`${isMobile ? 'start' : 'center'}`" :class="`${isMobile ? 'mx-9' : ''}`">
-        <v-col v-if="!isMobile" cols="10" md="7" lg="6" xl="5" class="mr-lg-12">
+      <v-row align="center" :justify="`${$vuetify.breakpoint.smAndDown ? 'start' : 'center'}`" :class="`${$vuetify.breakpoint.smAndDown ? 'mx-9' : ''}`">
+        <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="10" md="7" lg="6" xl="5" class="mr-lg-12">
           <v-img :src="techImg" contain/>
         </v-col>
         <v-spacer v-if="breakpoint === 'md'"/>
@@ -54,7 +54,7 @@
             <p v-text="techContent" class="mb-6"/>
           </div>
         </v-col>
-        <v-col v-if="isMobile" cols="11">
+        <v-col v-if="$vuetify.breakpoint.smAndDown" cols="11">
           <v-img :src="techImg"/>
         </v-col>
       </v-row>
@@ -84,13 +84,6 @@ export default {
     companyFooter: 'VADA PARTNERS CO',
   }),
   computed: {
-    isMobile() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "sm": return true;
-        case "xs": return true;
-        default: return false;
-      }
-    },
     breakpoint() {
       return this.$vuetify.breakpoint.name
     },
