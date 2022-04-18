@@ -11,7 +11,7 @@
 
               <v-col cols="12" class="py-2"><v-divider/></v-col>
 
-              <v-col cols="12" sm="2" class="text-sm-center pb-0">
+              <v-col cols="12" sm="2" class="text-sm-center">
                 <p class="analysis-header">출원번호(일자)</p>
               </v-col>
               <v-col cols="12" sm="9">
@@ -20,7 +20,7 @@
 
               <v-col cols="12" class="py-2"><v-divider/></v-col>
 
-              <v-col cols="12" sm="2" class="text-sm-center pb-0">
+              <v-col cols="12" sm="2" class="text-sm-center">
                 <p class="analysis-header">등록번호(일자)</p>
               </v-col>
               <v-col cols="12" sm="9">
@@ -30,7 +30,7 @@
               <v-col cols="12" class="py-2"><v-divider/></v-col>
 
               <!--
-              <v-col cols="12" sm="2" class="text-sm-center pb-0">
+              <v-col cols="12" sm="2" class="text-sm-center">
                 <p class="analysis-header">권리자명</p>
               </v-col>
               <v-col cols="12" sm="9">
@@ -40,7 +40,7 @@
               <v-col cols="12" class="py-2"><v-divider/></v-col>
               -->
 
-              <v-col cols="12" sm="2" class="text-sm-center pb-0">
+              <v-col cols="12" sm="2" class="text-sm-center">
                 <p class="analysis-header">출원인명</p>
               </v-col>
               <v-col cols="12" sm="9">
@@ -49,7 +49,7 @@
 
               <v-col cols="12" class="py-2"><v-divider/></v-col>
 
-              <v-col cols="12" sm="2" class="text-sm-center pb-0">
+              <v-col cols="12" sm="2" class="text-sm-center">
                 <p class="analysis-header">발명자</p>
               </v-col>
               <v-col cols="12" sm="9">
@@ -58,7 +58,7 @@
 
               <v-col cols="12" class="py-2"><v-divider/></v-col>
 
-              <v-col cols="12" sm="2" class="text-sm-center pb-0">
+              <v-col cols="12" sm="2" class="text-sm-center">
                 <p class="analysis-header">PQI 등급</p>
               </v-col>
               <v-col cols="12" sm="9">
@@ -93,7 +93,7 @@
                 <p class="font-weight-bold title">대표도면</p>
               </v-col>
               <v-col cols="11" class="my-6">
-                <img :src="representativeDrawing.path" width="90%" :alt="representativeDrawing.name"/>
+                <img :src="representativeDrawing" :width="isImgNull ? '250px' : '90%'"/>
               </v-col>
 
               <v-col cols="12" sm="2" class="text-start mt-12">
@@ -103,7 +103,7 @@
                 <a
                   class="analysis-content"
                   style="font-size: 1.125em; text-decoration: none;"
-                  :onClick="`window.open('${link}', '_blank', 'width=960, height=700')`"
+                  :onClick="`window.open('${link}', '_blank', 'width=1080, height=850')`"
                 >
                   {{ link }}
                 </a>
@@ -123,14 +123,79 @@ import CustomButton from "../../../components/button/CustomButton";
 export default {
   name: "Analysis",
   components: {CustomButton, SimpleDataTable, MainCard},
+  asyncData({params, store}) {
+    let baseData = {
+      "inventionTitle": "",
+      "registerNumber": "",
+      "registerDate": "",
+      "applicationNumber": "",
+      "applicationDate": "",
+      "astrtCont": "",
+      "applicantName": "",
+      "registrationLastRightHolder": "",
+      "imagePathInfo": {
+        "bigDrawing": "",
+        "drawing": ""
+      },
+      "pqi": "",
+      "inventors":  [],
+      "link": "",
+      "claim": []
+    }
+    if (!params.id) {
+      return {
+        patentData: baseData,
+        fetchError: '해당 특허정보가 없습니다.'
+      }
+    }
+    return store.dispatch('patent/search', {patentNumbers: [params.id]})
+      .then(
+        res => {
+          if (!res || !res[0]["items"] || !res[0]["validatePatent"]) {
+            return {
+              patentData: baseData,
+              fetchError: '해당 특허정보가 없습니다.'
+            }
+          }
+          let targetData = res[0];
+          let targetItem = targetData["items"][0]
+          return {
+            patentData: {
+              "inventionTitle": targetItem["inventionTitle"],
+              "registerNumber": targetItem["registerNumber"],
+              "registerDate": targetItem["registerDate"],
+              "applicationNumber": targetItem["applicationNumber"],
+              "applicationDate": targetItem["applicationDate"],
+              "astrtCont": targetItem["abstractContent"],
+              "applicantName": targetItem["applicantName"],
+              "registrationLastRightHolder": "",
+              "imagePathInfo": {
+                "bigDrawing": targetItem["bigDrawing"],
+                "drawing": targetItem["drawing"]
+              },
+              "pqi": targetData["pqiGrade"],
+              "inventors": [],
+              "claim": targetData["detail"]["claimInfos"]
+            },
+            fetchError: null
+          }
+        },
+        err => {
+          return {
+            patentData: baseData,
+            fetchError: err
+          }
+        }
+      )
+  },
   created() {
     this.$store.commit('setSheetTitle', '특허분석')
-  },
-  asyncData({params, store}) {
-
-    return {
-      idx: params.id,
-    };
+    if (!!this.fetchError) {
+      this.$notifier.showMessage({
+        content: this.fetchError,
+        color: 'error'
+      })
+    }
   },
   data: () => ({
     header: '개별특허분석',
@@ -143,7 +208,7 @@ export default {
       "applicationDate": "2016.11.09",
       "astrtCont": "본 발명은 ABS계 수지 분체의 제조방법 및 표면특성이 향상된 ABS계 수지 조성물의 제조방법에 관한 것으로, 보다 상세하게는 유화중합으로 제조된 ABS계 수지 라텍스에 산(acid) 응집제를 투입하여 응집시키는 산응집 단계; 상기 산응집된 슬러리를 숙성시키는 숙성 단계; 상기 숙성된 슬러리에 염기(base)를 투입하여 pH를 8 내지 12로 조절하는 염기처리 단계; 및 상기 염기처리된 슬러리를 1 내지 3회 탈수한 다음, 건조하여 ABS계 수지 분체를 수득하는 단계;를 포함하고, 상기 ABS계 수지 분체는 잔류 유화제 함량이 5,000ppm 이하이고, 산-프리(acid-free)인 것을 특징으로 하는 ABS계 수지 분체의 제조방법 및 이를 포함하여 표면특성이 향상된 ABS계 수지 조성물의 제조방법에 관한 것이다.",
       "applicantName": "주식회사 엘지화학",
-      "registrationLastRightHolderInfo": {
+      "registrationLastRightHolder": {
         "lastRightHolderNumber": "419980143540",
         "lastRightHolderName": "민철기",
         "lastRightHolderAddress": "경기도 고양시 덕양구",
@@ -151,11 +216,11 @@ export default {
       },
       "imagePathInfo": {
         "docName": "ent_image/PT_R/10",
-        "largePath": "http://kpat.kipris.or.kr/kpat/remoteFile.do?method=bigFrontDraw&applno=1020160148671",
-        "path": "http://kpat.kipris.or.kr/kpat/remoteFile.do?method=bigFrontDraw&applno=1020160148671"
+        "bigDrawing": "http://kpat.kipris.or.kr/kpat/remoteFile.do?method=bigFrontDraw&applno=1020160148671",
+        "drawing": "http://kpat.kipris.or.kr/kpat/remoteFile.do?method=bigFrontDraw&applno=1020160148671"
       },
       "pqi": "A",
-      "inventorInfoArray":  [
+      "inventors":  [
         {
           "name": "배중선",
           "engName": "BAE,Joung Sun",
@@ -189,28 +254,28 @@ export default {
   }),
   computed: {
     title() {
-      return this.sampleData.inventionTitle;
+      return this.patentData["inventionTitle"];
     },
     applicationInfo() {
-      return `${this.sampleData['applicationNumber']} (${this.sampleData['applicationDate']})`
+      return `${this.patentData['applicationNumber']} (${this.patentData['applicationDate']})`
     },
     registerInfo() {
-      return `${this.sampleData['registerNumber']} (${this.sampleData['registerDate']})`
+      return `${this.patentData['registerNumber']} (${this.patentData['registerDate']})`
     },
     lastRightHolderName() {
-      return this.sampleData.registrationLastRightHolderInfo.lastRightHolderName
+      return this.patentData["registrationLastRightHolder"]
     },
     applicantName() {
-      return this.sampleData.applicantName;
+      return this.patentData["applicantName"];
     },
     pqiRank() {
-      return this.sampleData.pqi;
+      return this.patentData["pqi"];
     },
     inventors() {
       let result = ''
-      let inventors = this.sampleData.inventorInfoArray;
+      let inventors = this.patentData["inventors"];
       for (let i = 0; i < inventors.length; i++) {
-        result += inventors[i].name
+        result += inventors[i]
         if (i+1 < inventors.length) {
           result += ', '
         }
@@ -218,24 +283,26 @@ export default {
       return result
     },
     summary() {
-      return this.sampleData.astrtCont;
+      return this.patentData["astrtCont"];
     },
     claim() {
       let result = ''
-      let claims = this.sampleData.claim;
+      let claims = this.patentData["claim"];
       for (let i = 0; i < claims.length; i++) {
-        result += `<p class="font-weight-bold subtitle-1">청구항${i+1}</p>${claims[i]}\n\n\n`
+        result += `<p class="font-weight-bold subtitle-1">청구항${i+1}</p>${claims[i]["claim"]}\n\n\n`
       }
       return result
     },
     representativeDrawing() {
-      return {
-        path: this.sampleData.imagePathInfo.largePath,
-        name: this.sampleData.imagePathInfo.docName
-      };
+      if (!!this.patentData.imagePathInfo.bigDrawing) return this.patentData.imagePathInfo.bigDrawing;
+      if (!!this.patentData.imagePathInfo.drawing) return this.patentData.imagePathInfo.drawing;
+      return require("../../../assets/no_thumbnail.png")
+    },
+    isImgNull() {
+      return !this.patentData.imagePathInfo.bigDrawing && !this.patentData.imagePathInfo.drawing
     },
     link() {
-      return this.sampleData.link
+      return this.$util.getKiprisDoiLink(this.patentData["applicationNumber"])
     },
   },
   methods: {
