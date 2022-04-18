@@ -42,7 +42,7 @@ export const mutations = {
       patentNumber: '',
       ksic: '',
       sales: null, // can be null
-      businessScale: { original: '비상장 대기업', data: 'BIG' } // default value
+      businessScale: { original: '상장 기업', data: 'CAPM' } // default value
     }
   },
   setSelectedEval: (state, data) => {
@@ -67,7 +67,7 @@ export const actions = {
       "patentNumber": state.tempEvalData.patentNumber,
       "industryCode": state.tempEvalData.ksic.code,
     }
-
+    console.log(params)
     return new Promise(((resolve, reject) => {
       this.$axios.$post('/patent/evaluation', params).then(res=> {
         commit('setEvalData', res.result)
