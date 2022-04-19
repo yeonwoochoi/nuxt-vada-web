@@ -14,7 +14,8 @@ export const state = () => ({
     sales: null, // can be null
     businessScale: { original: '상장 기업', data: 'CAPM' },
   },
-  evalData: null
+  evalData: null,
+  downloadTypes: [ 'Report', 'MultiPatent', 'IpEmailPair' ]
 })
 
 export const getters = {
@@ -72,7 +73,7 @@ export const actions = {
         commit('setEvalData', res.result)
         resolve(res.result)
       }).catch(err => {
-        reject(err.message)
+        reject(err.response.data.message)
       })
     }))
   },
@@ -81,7 +82,7 @@ export const actions = {
       this.$axios.$post('/patent/search', params).then(res => {
         resolve(res.result[0]['ipcCode'])
       }).catch(err => {
-        reject(err.message)
+        reject(err.response.data.message)
       })
     }))
   },
@@ -90,7 +91,22 @@ export const actions = {
       this.$axios.$post('/patent/search', params).then(res => {
         resolve(res.result)
       }).catch(err => {
-        reject(err.message)
+        reject(err.response.data.message)
+      })
+    }))
+  },
+  async download({commit}, params) {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      responseType: "blob",
+    }
+    return new Promise(((resolve, reject) => {
+      this.$axios.$get('/file/template?type=' + params, config).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err.response.data.message)
       })
     }))
   }

@@ -8,7 +8,7 @@ export const actions = {
       this.$axios.$get('/faq').then(res => {
         resolve(res['faqs'])
       }).catch(err => {
-        reject(err.message)
+        reject(err.response.data.message)
       })
     }))
   }
