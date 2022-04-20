@@ -157,7 +157,8 @@ export default {
     },
     async sendEmailAuthCode(email, callback) {
       let param = {
-        email: email
+        email: email,
+        type: 'Register'
       }
       await this.$store.dispatch('user/sendEmailAuthCode', param).then(
         res => {
