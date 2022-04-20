@@ -68,14 +68,31 @@ export default {
       this.isLoading = true;
       let v = this.$refs.resetPwdForm.validate();
       if (v) {
-        setTimeout(() => {
-          alert("인증코드가 전송되었습니다.")
-          this.isLoading = false;
-          this.$router.push('/membership/reset-password/auth')
-        }, 3000)
+        let params = {
+          type: 'Find',
+          email: this.email
+        }
+        await this.$store.dispatch('user/sendEmailAuthCode', params).then(
+          res => {
+            this.isLoading = false;
+            alert("인증코드가 전송되었습니다.")
+            this.$store.commit('user/setEmailForPwdReset', this.email)
+            this.$router.push('/membership/reset-password/auth')
+          },
+          err => {
+            this.$notifier.showMessage({
+              content: err,
+              color: 'error'
+            })
+            this.isLoading = false;
+          }
+        )
       }
       else {
-        alert('입력한 정보를 확인해 주세요')
+        this.$notifier.showMessage({
+          content: '입력한 정보를 확인해주세요.',
+          color: 'error'
+        })
         this.isLoading = false;
       }
     },

@@ -24,12 +24,23 @@
 <script>
 import ResetPwdCard from "../../../components/card/reset-password/ResetPwdCard";
 import CustomButton from "../../../components/button/CustomButton";
+
 export default {
   name: "reset-password-done",
   auth: false,
   components: {CustomButton, ResetPwdCard},
+  beforeCreate() {
+    if (!this.$store.getters["user/getPwdResetSuccess"]) {
+      this.$router.push('/membership/reset-password')
+    }
+  },
   created() {
     this.$store.commit('setSheetTitle', '비밀번호 재설정')
+  },
+  destroyed() {
+    console.log('destroyed - done')
+    this.$store.commit('user/resetEmailForPwdReset')
+    this.$store.commit('user/resetPwdResetSuccess')
   },
   data: () => ({
     icon: require('../../../assets/icon_complete.png'),
