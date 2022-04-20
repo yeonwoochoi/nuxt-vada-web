@@ -375,7 +375,6 @@ export default {
           this.privacyPolicyCheckBox = false;
         }
       }
-      console.log(this.totalCheckBox)
     },
     termsOfUseCheckBox (val) {
       if (val && this.privacyPolicyCheckBox) {
