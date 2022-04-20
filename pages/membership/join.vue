@@ -102,7 +102,10 @@ export default {
         }
       }
       else {
-        alert(this.steps[index].errorMsg)
+        this.$notifier.showMessage({
+          content: this.steps[index].errorMsg,
+          color: "error"
+        })
       }
     },
     async submit(params, errorMsg) {
@@ -112,13 +115,56 @@ export default {
       let v = await this.$refs.stepForm[index].validate();
       if (v) {
         this.steps[index].valid = true
-        setTimeout(() => {
-          this.currentStep = currentStep + 1;
-        }, 3000)
-        console.dir(params);
+        if (params.type === 'private') {
+          let payload = {
+            "email": params.email,
+            "password": params.password,
+            "fullName": params.username,
+            "phoneNumber": params.phone,
+          }
+          this.$store.dispatch("user/createPrivateUser", payload).then(
+            res => {
+              this.currentStep = currentStep + 1;
+            },
+            err => {
+              this.$notifier.showMessage({
+                content: err,
+                color: "error"
+              })
+            }
+          )
+        }
+        else if (params.type === 'enterprise') {
+          let payload = {
+            "email": params.email,
+            "password": params.password,
+            "fullName": params.username,
+            "phoneNumber": params.phone,
+          }
+          this.$store.dispatch("user/createEnterpriseUser", payload).then(
+            res => {
+              this.currentStep = currentStep + 1;
+            },
+            err => {
+              this.$notifier.showMessage({
+                content: err,
+                color: "error"
+              })
+            }
+          )
+        }
+        else {
+          this.$notifier.showMessage({
+            content: '회원가입 도중 오류가 발생했습니다. 다시 시도해주세요.',
+            color: "error"
+          })
+        }
       }
       else {
-        alert(errorMsg)
+        this.$notifier.showMessage({
+          content: errorMsg,
+          color: "error"
+        })
       }
     },
     stepStatus(step) {
