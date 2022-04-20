@@ -4,7 +4,8 @@ export default function getReportData() {
     ...getEstimatedSalesTableData(),
     ...getTlafTableData(),
     ...getConfirmationFactorTableData(),
-    ...getDiscountRateTableData()
+    ...getDiscountRateTableData(),
+    ...getEvalTableData()
   }
 }
 
@@ -13,9 +14,9 @@ let reportBaseData = {
   tech_exp_date: '2022년 09월 30일',   // 기술가치 유효기간 (yyyy년 mm월 dd일)
   applicant_num: 'KR 10-1491762',   // 출원 번호
   cashflow_from: '2022',    // 현금흐름 추정기간 From
-  cashflow_to: '2029',      // 현금흐름 추정기간 To
-  tech_life: '6',   // 기술의 경제적 수명 (기간)
-  tech_life_to: '2027',  // 기술 경제적 수명 To (연도)
+  cashflow_to: '2046',      // 현금흐름 추정기간 To
+  tech_life: '23',   // 기술의 경제적 수명 (기간)
+  tech_life_to: '2044',  // 기술 경제적 수명 To (연도)
   preparation_period: '2',    // 사업화 준비기간
   royalty_rate_final: '16.13',    // 적정(합리적) 로열티율
   royalty_rate_base: '3.84',    // 기준 로열티율
@@ -63,91 +64,6 @@ let reportBaseData = {
   risk_market_3: '4',   // 기술사업화 위험프리미엄 산출표 - 시장 및 사업위험 - 시장의 성장 전망
   risk_market_4: '4',   // 기술사업화 위험프리미엄 산출표 - 시장 및 사업위험 - 생산용이성
   risk_market_5: '4',   // 기술사업화 위험프리미엄 산출표 - 시장 및 사업위험 - 수익성
-
-
-  // 가치평가표
-  eval_table: [
-    {
-      year: '2022',   // 연도
-      sales: '0',   // 매출액
-      royalty_rate: '16.13',    // 로열티율
-      royalty_income: '0',    // 로열티 수입
-      corporate_tax: '0',   // 법인세 등
-      royalty_after_tax: '0',   // 세후 로열티
-      suspension: '0.9052',   // 현가계수
-      present_value: '0'    // 현재가치
-    },
-    {
-      year: '2023',
-      sales: '0',
-      royalty_rate: '16.13',
-      royalty_income: '0',
-      corporate_tax: '0',
-      royalty_after_tax: '0',
-      suspension: '0.8120',
-      present_value: '0'
-    },
-    {
-      year: '2024',
-      sales: '455',
-      royalty_rate: '16.13',
-      royalty_income: '0.7',
-      corporate_tax: '0.1',
-      royalty_after_tax: '0.6',
-      suspension: '0.7284',
-      present_value: '0.5'
-    },
-    {
-      year: '2025',
-      sales: '1,536',
-      royalty_rate: '16.13',
-      royalty_income: '2.5',
-      corporate_tax: '0.3',
-      royalty_after_tax: '2.2',
-      suspension: '0.6534',
-      present_value: '1.4'
-    },
-    {
-      year: '2026',
-      sales: '13,821',
-      royalty_rate: '16.13',
-      royalty_income: '22.3',
-      corporate_tax: '2.5',
-      royalty_after_tax: '19.8',
-      suspension: '0.5862',
-      present_value: '11.6'
-    },
-    {
-      year: '2027',
-      sales: '21,852',
-      royalty_rate: '16.13',
-      royalty_income: '35.2',
-      corporate_tax: '3.9',
-      royalty_after_tax: '31.4',
-      suspension: '0.5258',
-      present_value: '16.5'
-    },
-    {
-      year: '2028',
-      sales: '27,942',
-      royalty_rate: '16.13',
-      royalty_income: '45.1',
-      corporate_tax: '5.0',
-      royalty_after_tax: '40.1',
-      suspension: '0.4717',
-      present_value: '18.9'
-    },
-    {
-      year: '2029',
-      sales: '25,236',
-      royalty_rate: '16.13',
-      royalty_income: '40.7',
-      corporate_tax: '4.5',
-      royalty_after_tax: '36.2',
-      suspension: '0.4231',
-      present_value: '15.3'
-    },
-  ],
 
   t1: '0',    // 기술성(권리성 포함) 평가 - 우월성
   t2: '0',    // 기술성(권리성 포함) 평가 - 혁신성
@@ -242,8 +158,20 @@ function getEstimatedSalesTableData() {
   result += '</tr></table>'
   */
 
+  const from = 2022;
+  const to = 2046;
+  let result = [];
+  let temp = 0
+  for (let year = from; year <= to; year++) {
+    result.push({
+      year: year,
+      sales: temp.toLocaleString()
+    })
+    temp += getRandomInteger(0, 10000)
+  }
+
   return {
-    estimated_sales_table: input
+    estimated_sales_table: result
   };
 }
 
@@ -275,6 +203,30 @@ function getTlafTableData() {
   }
 
   return result;
+}
+
+// 가치 평가표
+function getEvalTableData() {
+  const from = 2022;
+  const to = 2046;
+  let result = []
+  for (let year = from; year <= to; year++) {
+    result.push({
+      year: year,
+      sales: `${getRandomInteger(10000, 50000)}`.toLocaleString(),
+      royalty_rate: `${getRandomInteger(0, 99)}.${getRandomInteger(0, 99)}`,
+      royalty_income: `${getRandomInteger(0, 99)}.${getRandomInteger(0, 9)}`,
+      corporate_tax: `${getRandomInteger(0, 99)}.${getRandomInteger(0, 9)}`,
+      royalty_after_tax: `${getRandomInteger(0, 99)}.${getRandomInteger(0, 9)}`,
+      suspension: `0.${getRandomInteger(0, 9999)}`,
+      present_value: `${getRandomInteger(0, 99)}.${getRandomInteger(0, 9)}`
+    })
+  }
+  return { eval_table: result }
+}
+
+function getRandomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 // 조정계수 산출표
