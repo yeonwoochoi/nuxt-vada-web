@@ -53,11 +53,42 @@
               <v-text-field
                 v-model="tempName"
                 :rules="[rules.required]"
-                required
+                flat
+                solo
                 outlined
-                dense
-                filled
+                label="이름"
+                prepend-inner-icon="mdi-account-outline"
                 background-color="transparent"
+              />
+            </div>
+            <div>
+              <p class="ma-1 subtitle-2 text-start">비밀번호</p>
+              <v-text-field
+                v-model="password"
+                flat
+                solo
+                outlined
+                label="비밀번호"
+                :rules="[rules.required, rules.password]"
+                prepend-inner-icon="mdi-lock-outline"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="showPassword = !showPassword"
+                :type="showPassword ? 'text' : 'password'"
+              />
+            </div>
+            <div>
+              <p class="ma-1 subtitle-2 text-start">비밀번호 확인</p>
+              <v-text-field
+                v-model="passwordConfirm"
+                flat
+                solo
+                outlined
+                label="비밀번호 확인"
+                :rules="[rules.passwordConfirm]"
+                prepend-inner-icon="mdi-lock-check-outline"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="showPassword = !showPassword"
+                :type="showPassword ? 'text' : 'password'"
               />
             </div>
             <div>
@@ -65,11 +96,13 @@
               <v-text-field
                 v-model="tempPhone"
                 @keypress="isNumber($event)"
+                flat
+                solo
+                outlined
+                label="연락처"
                 maxlength="12"
                 :rules="[rules.required]"
-                outlined
-                dense
-                filled
+                prepend-inner-icon="mdi-phone-outline"
                 background-color="transparent"
               />
             </div>
@@ -104,6 +137,7 @@ export default {
   },
   data: () => ({
     password: '',
+    passwordConfirm: '',
     showPassword: false,
     isAuthLoading: false,
     isEditLoading: false,
@@ -118,6 +152,8 @@ export default {
     rules() {
       return {
         required: value => !!value || '값을 입력해주세요',
+        password: value => /^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).*$/.test(value) || '영문 대소문자와 최소 1개의 숫자 혹은 특수 문자를 포함해야 합니다.',
+        passwordConfirm: value => value === this.password || '비밀번호가 일치하지 않습니다.',
       }
     },
     userType() {
@@ -156,7 +192,10 @@ export default {
         }
         try {
           // 정보 세팅
-          this.initUserInfo = userInfo;
+          this.initUserInfo = {
+            password: this.password,
+            ...userInfo
+          };
           this.tempName = this.initUserInfo.fullName;
           this.tempPhone = this.initUserInfo.phoneNumber;
 
@@ -182,6 +221,7 @@ export default {
             return
           }
 
+          this.passwordConfirm = this.password;
           this.isAuthorize = true;
         }
         catch (e) {
@@ -203,7 +243,7 @@ export default {
         this.isEditLoading = true;
 
         // 변경된 정보 여부 체크
-        if (this.initUserInfo.fullName === this.tempName && this.initUserInfo.phoneNumber === this.tempPhone) {
+        if (this.initUserInfo.fullName === this.tempName && this.initUserInfo.phoneNumber === this.tempPhone && this.initUserInfo.password === this.password) {
           this.$notifier.showMessage({
             content: '변경된 정보가 없습니다.',
             color: 'error'
@@ -215,6 +255,7 @@ export default {
         let payload = {
           name: this.tempName,
           phoneNumber: this.tempPhone,
+          password: this.password
         }
 
         // 서버 통신
