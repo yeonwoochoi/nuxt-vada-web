@@ -34,7 +34,7 @@ export default {
   }),
   methods: {
     generate() {
-      loadFile('http://ai.kunsan.ac.kr:3000/uploads/files-1650105496658.docx', function (error, content) {
+      loadFile('http://ai.kunsan.ac.kr:3000/uploads/files-1650369000764.docx', function (error, content) {
         if (error) {
           throw error;
         }
@@ -55,6 +55,7 @@ export default {
           // For a 50MB output document, expect 500ms additional CPU time
           compression: "DEFLATE",
         });
+        //const documentBlobObjectUrl = URL.createObjectURL(out);
         // Output the document using Data-URI
         saveAs(out, "output.docx");
       });
