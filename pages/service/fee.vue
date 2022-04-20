@@ -6,9 +6,9 @@
           <template v-slot:body>
             <v-row align="start" justify="space-around" class="mb-6 px-4" style="width: 100%;">
               <v-col cols="12">
-                <v-card class="elevation-0 px-md-12 px-6 py-12" style="background-color: #F5F5F5; width: 100%">
-                  <div class="mb-6">
-                    <v-card-title class="font-weight-medium mb-4" style="font-size: 25px;">
+                <v-card v-if="!isPurchasing" class="elevation-0 px-md-12 px-6 py-12" style="background-color: #F5F5F5; width: 100%">
+                  <div class="mb-12">
+                    <v-card-title class="font-weight-medium mb-4 pr-0" style="font-size: 25px;">
                       • 건별 요금제
                     </v-card-title>
                     <simple-data-table
@@ -16,8 +16,8 @@
                       :table-content="incidentPlanData"
                     />
                   </div>
-                  <div class="my-6">
-                    <v-card-title class="font-weight-medium mb-4" style="font-size: 25px;">
+                  <div class="my-12">
+                    <v-card-title class="font-weight-medium mb-4 pr-0" style="font-size: 25px;">
                       • 연간 요금제
                     </v-card-title>
                     <simple-data-table
@@ -25,6 +25,77 @@
                       :table-content="annualPlanData"
                     />
                   </div>
+                  <div class="mt-12" style="display: flex; justify-content: end">
+                    <v-btn
+                      x-large
+                      class="elevation-0"
+                      color="primary"
+                      @click="goToApplyPlanView"
+                    >
+                      신청하기
+                    </v-btn>
+                  </div>
+                </v-card>
+                <v-card v-else class="elevation-0 px-md-12 px-6 py-12" style="background-color: #F5F5F5; width: 100%">
+                  <v-container fluid>
+                    <v-row align="center" justify="start">
+                      <v-col cols="2" v-if="$vuetify.breakpoint.mdAndUp" align-self="start">
+                        <v-subheader>요금제선택</v-subheader>
+                      </v-col>
+                      <v-col cols="12" md="9" class="pt-1 mb-4">
+                        <v-radio-group v-model="planType" row>
+                          <v-radio value="incident" label="건별 요금제"/>
+                          <v-radio value="annual" label="연간 요금제"/>
+                        </v-radio-group>
+                      </v-col>
+                      <v-col cols="2" v-if="$vuetify.breakpoint.mdAndUp && !isAnnualPlan" align-self="start">
+                        <v-subheader>건별 요금제</v-subheader>
+                      </v-col>
+                      <v-col cols="12" md="9" v-if="!isAnnualPlan" class="pt-2">
+                        <v-text-field
+                          @keypress="isNumber($event)"
+                          v-model="incidentPlanCount"
+                          label="신청건수"
+                          suffix="건"
+                          flat
+                          outlined
+                        />
+                      </v-col>
+                      <v-col cols="2" v-if="$vuetify.breakpoint.mdAndUp && isAnnualPlan" align-self="start">
+                        <v-subheader>연간 요금제</v-subheader>
+                      </v-col>
+                      <v-col cols="12" md="9" v-if="isAnnualPlan" class="pt-1">
+                        <v-radio-group v-model="annualPlanYear">
+                          <v-radio value="1" label="1년"/>
+                          <v-radio value="2" label="2년"/>
+                          <v-radio value="3" label="3년"/>
+                          <v-radio value="4" label="4년"/>
+                          <v-radio value="5" label="5년"/>
+                        </v-radio-group>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-divider/>
+                      </v-col>
+                      <v-col cols="2" align-self="start" v-if="$vuetify.breakpoint.mdAndUp">
+                        <v-subheader>이용요금</v-subheader>
+                      </v-col>
+                      <v-col cols="12" md="9">
+                        <p class="mb-0 title"><strong class="mr-1">{{ totalPrice.toLocaleString() }}</strong>원</p>
+                      </v-col>
+                      <v-col cols="12">
+                        <div class="mt-4" style="display: flex; justify-content: end">
+                          <v-btn
+                            x-large
+                            class="elevation-0"
+                            color="primary"
+                            @click="applyPlan"
+                          >
+                            신청하기
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-container>
                 </v-card>
               </v-col>
             </v-row>
@@ -38,10 +109,11 @@
 <script>
 import MainCard from "../../components/card/MainCard";
 import SimpleDataTable from "../../components/table/SimpleDataTable";
+import CustomButton from "../../components/button/CustomButton";
 export default {
   name: "fee",
   auth: false,
-  components: {SimpleDataTable, MainCard},
+  components: {CustomButton, SimpleDataTable, MainCard},
   created() {
     this.$store.commit('setSheetTitle', '요금안내')
   },
@@ -121,7 +193,58 @@ export default {
         price: '3,200,000'
       },
     ],
-  })
+    isPurchasing: false,
+    planType: 'incident',
+    incidentPlanCount: '',
+    annualPlanYear: '1',
+
+    // TODO: 가격 정해지면 그때 ㄱㄱ.. 아니면 서버 통신 하던가
+    incidentPrice: 10000,
+    annualPrice: 100000,
+  }),
+  computed: {
+    isAnnualPlan() {
+      return this.planType === 'annual'
+    },
+    totalPrice() {
+      if (this.isAnnualPlan) {
+        let year = parseInt(this.annualPlanYear)
+        return year * this.annualPrice
+      }
+      else {
+        let count = !this.incidentPlanCount ? 0 : parseInt(this.incidentPlanCount)
+        return count * this.incidentPrice
+      }
+    }
+  },
+  methods : {
+    goToApplyPlanView() {
+      if (!this.$auth.loggedIn) {
+        this.$router.push('/membership/login')
+        return;
+      }
+      this.isPurchasing = true;
+    },
+    applyPlan() {
+      let payload = {
+        type: this.planType,
+        price: this.totalPrice,
+        incidentPlan: !this.isAnnualPlan ? parseInt(this.incidentPlanCount) : null,
+        annualPlan: this.isAnnualPlan ? parseInt(this.annualPlanYear) : null
+      }
+      console.log(payload)
+      // TODO 결제 모듈 연동
+    },
+    isNumber: function(evt) {
+      evt = (evt) ? evt : window.event;
+      let charCode = (evt.which) ? evt.which : evt.keyCode;
+      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
+  }
 }
 </script>
 
