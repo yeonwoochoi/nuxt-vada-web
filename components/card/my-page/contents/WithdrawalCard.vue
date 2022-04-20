@@ -89,15 +89,12 @@ export default {
       type: String,
       default: () => ''
     },
-    isAuthorize: {
-      type: Boolean,
-      default: () => false
-    },
   },
   data: () => ({
     password: '',
     showPassword: false,
     isDialogOpen: false,
+    isAuthorize: false,
     dialogHeader: '바다파트너스 탈퇴',
     dialogContent: '탈퇴 시, 바다 파트너스의 모든 데이터는 삭제됩니다. \n정말로 탈퇴하시겠습니까?',
     caution: '<h1>개인정보 처리방침</h1>\n' +
@@ -218,10 +215,18 @@ export default {
   }),
   methods: {
     async checkPwd() {
-      if (this.isLoading) return;
+      if (!this.password) {
+        this.$notifier.showMessage({
+          content: '값을 입력해주세요.',
+          color: 'error'
+        })
+        return
+      }
       this.isLoading = true;
-      await this.$emit('selfAuth', this.password)
-      this.isLoading = false;
+      await this.$emit('selfAuth', this.password, (success) => {
+        this.isAuthorize = success;
+        this.isLoading = false;
+      })
     },
     withdraw() {
       this.$emit('delete')

@@ -48,7 +48,7 @@
           outlined
           dense
           filled
-          :disabled="isAuthorized || isEmailAuthCodeSending"
+          :disabled="isAuthorized || isEmailAuthCodeSending || loadingEmailAuth"
           background-color="transparent"
         />
         <v-btn
@@ -63,12 +63,10 @@
         </v-btn>
       </div>
     </validation-provider>
-    <validation-provider v-slot="{ errors }" name="이메일 인증" :rules="`required|emailAuth:${emailAuthCode}`">
+    <validation-provider v-slot="{ errors }" name="이메일 인증" rules="required">
       <div style="display:flex; flex-direction: row; justify-content: start; align-items: start" v-if="isEmailAuthCodeSending">
         <v-text-field
           v-model="managerEmailAuth"
-          @keypress="isNumber($event)"
-          maxlength="6"
           required
           outlined
           dense
@@ -160,9 +158,9 @@
       <v-file-input
         v-model="businessRegistrationFile"
         ref="registrationImage"
-        accept="image/*"
-        placeholder="사업자등록증 (이미지 파일)"
-        label="사업자등록증 (이미지 파일)"
+        accept="application/pdf"
+        placeholder="사업자등록증 (pdf 파일)"
+        label="사업자등록증 (pdf 파일)"
         @change="handleImageFileSelect"
       />
       <v-row align="start" justify="start" v-if="previewImgUrl">
@@ -237,14 +235,6 @@ extend('max', {
   message: '{_field_}는 {max}자 이하이어야 합니다.'
 })
 
-extend('emailAuth', {
-  params: ['code'],
-  validate(value, { code }) {
-    return value === code
-  },
-  message: '인증번호가 일치하지 않습니다.'
-})
-
 extend('fileRequired', {
   params: ['file'],
   validate(value, { file }) {
@@ -313,8 +303,6 @@ export default {
     isEmailAuthCodeSending: false,
     // 이메일 인증코드 재전송 여부
     isRedirectAuthCode: false,
-    // TODO(temp): 임의로 만든거니까 서버 연결되면 삭제하기 - 서버에서 발송한 인증코드
-    emailAuthCode: '',
     isUploading: false,
     contentLimit: 500,
     previewImgUrl: null,
@@ -366,35 +354,46 @@ export default {
       if (!this.loadingEmailAuth) {
         this.loadingEmailAuth = true;
         if (!this.managerEmail) {
-          alert('이메일을 입력해주십시오.')
+          this.$notifier.showMessage({
+            content: '이메일을 입력해주십시오.',
+            color: 'error'
+          })
           this.loadingEmailAuth = false;
         } else {
           if (!valid) {
-            alert('이메일 형식이 올바르지 않습니다')
+            this.$notifier.showMessage({
+              content: '이메일 형식이 올바르지 않습니다',
+              color: 'error'
+            })
             this.loadingEmailAuth = false;
             return;
           }
-          // TODO (sign-up-private): 이메일 인증 코드 전송 api 서버랑 통신하는 부분
-          setTimeout(() => {
+
+          this.$emit('sendAuthCode', this.managerEmail, (success) => {
             this.loadingEmailAuth = false;
-            this.isEmailAuthCodeSending = true;
-            this.isRedirectAuthCode = true;
-            this.emailAuthCode = '111111'
-          }, 3000)
+            this.isEmailAuthCodeSending = success;
+            this.isRedirectAuthCode = success;
+          })
         }
       }
     },
     checkEmailAuthCode() {
-      if (`${this.managerEmailAuth}` === this.emailAuthCode) {
-        alert("인증이 완료되었습니다.")
-        this.isAuthorized = true;
-      } else {
-        alert("잘못된 인증번호 입니다. 인증번호를 확인한 다음 다시 입력해 주세요.")
-      }
+      this.$emit('checkAuthCode', this.managerEmail, this.managerEmailAuth, (success) => {
+        this.isAuthorized = success;
+      })
     },
     async goNext() {
       if (this.loadingSubmit) return;
       this.loadingSubmit = true;
+
+      if (!this.isAuthorized) {
+        this.$notifier.showMessage({
+          content: '이메일 인증이 필요합니다.',
+          color: 'error'
+        })
+        this.loadingSubmit = false;
+        return;
+      }
 
       let errorMsg = "";
 
@@ -412,16 +411,22 @@ export default {
       }
 
       let form = new FormData();
-      form.append("type", 'enterprise');
       form.append("companyName", this.companyName);
-      form.append("businessNumber", this.businessNumber);
-      form.append("businessRegistrationFile", this.businessRegistrationFile);
+      form.append("registrationNumber", this.businessNumber);
       form.append("managerName", this.managerName);
       form.append("managerEmail", this.managerEmail);
-      form.append("password", this.password);
-      form.append("ipFile", this.ipFile);
+      form.append("managerPhone", this.managerPhone);
+      form.append("managerPassword", this.password);
+      form.append("ipEmailPair", this.ipFile);
+      form.append("license", this.businessRegistrationFile);
 
-      await this.$emit('submitCompanyInfo', form, errorMsg);
+
+
+      await this.$emit('submitCompanyInfo', {
+        data: form,
+        errorMsg: errorMsg,
+        isPrivate: false
+      });
 
       this.loadingSubmit = false;
     },
@@ -442,28 +447,33 @@ export default {
         );
         fileExt = fileExt.toLowerCase();
 
-        // 20MB
-        let limitSize = 1048576 * 20;
+        // 1MB
+        let limitSize = 1048576;
 
-        // 이미지 파일
-        if (
-          ["jpeg", "jpg", "png", "gif", "bmp"].includes(fileExt) &&
-          selectFile.size <= limitSize
-        ) {
+        // pdf 파일
+        if (["pdf"].includes(fileExt) && selectFile.size <= limitSize) {
           let reader = new FileReader();
           reader.onload = e => {
             this.previewImgUrl = e.target.result;
           }
           reader.readAsDataURL(selectFile)
         }
-        // 이미지 외 파일
+        // pdf 외 파일
         else if (selectFile.size <= limitSize) {
-          this.previewImgUrl = require('../../assets/no_thumbnail.png');
+          this.$notifier.showMessage({
+            content: '유효하지 않은 파일입니다.',
+            color: 'error'
+          })
+          this.resetBusinessRegistrationFile()
+          this.previewImgUrl = null;
         }
         else {
-          alert("Invalid File")
-          this.previewImgUrl = null;
+          this.$notifier.showMessage({
+            content: `최대 1 MB 파일만 업로드 가능합니다. (1 MB = ${limitSize.toLocaleString()} bytes)`,
+            color: 'error'
+          })
           this.resetBusinessRegistrationFile()
+          this.previewImgUrl = null;
         }
       }
       else {

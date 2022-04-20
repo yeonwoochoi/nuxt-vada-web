@@ -1,8 +1,8 @@
 <template>
   <v-card flat style="width: 100%; height: fit-content;" class="elevation-0 mt-4 mb-4">
     <v-row align="center" justify="center" style="width: 100%; height: 100%;">
-      <sign-up-private-user-info-input v-if="isPrivate" @submitUserInfo="submit" @prevStep="goPrev"/>
-      <sign-up-enterprise-user-info-input v-else @submitCompanyInfo="submit" @prevStep="goPrev"/>
+      <sign-up-private-user-info-input v-if="isPrivate" @submitUserInfo="submit" @prevStep="goPrev" @sendAuthCode="sendEmailAuthCode" @checkAuthCode="checkEmailAuthCode"/>
+      <sign-up-enterprise-user-info-input v-else @submitCompanyInfo="submit" @prevStep="goPrev" @sendAuthCode="sendEmailAuthCode" @checkAuthCode="checkEmailAuthCode"/>
     </v-row>
   </v-card>
 </template>
@@ -51,6 +51,12 @@ export default {
     },
     goPrev() {
       this.$emit('prevStep', 3)
+    },
+    sendEmailAuthCode(email, callback) {
+      this.$emit('sendCode', email, callback)
+    },
+    checkEmailAuthCode(email, code, callback) {
+      this.$emit('checkCode', email, code, callback)
     }
   }
 }

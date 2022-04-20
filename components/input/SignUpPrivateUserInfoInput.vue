@@ -25,12 +25,10 @@
         </v-btn>
       </div>
     </validation-provider>
-    <validation-provider v-slot="{ errors }" name="이메일 인증" :rules="`required|emailAuth:${emailAuthCode}`">
+    <validation-provider v-slot="{ errors }" name="이메일 인증" rules="required">
       <div style="display:flex; flex-direction: row; justify-content: start; align-items: start" v-if="isEmailAuthCodeSending">
         <v-text-field
           v-model="emailAuth"
-          @keypress="isNumber($event)"
-          maxlength="6"
           required
           outlined
           dense
@@ -171,14 +169,6 @@ extend('max', {
   message: '{_field_}는 {max}자 이하이어야 합니다.'
 })
 
-extend('emailAuth', {
-  params: ['code'],
-  validate(value, { code }) {
-    return value === code
-  },
-  message: '인증번호가 일치하지 않습니다.'
-})
-
 export default {
   name: "SignUpPrivateUserInfoInput",
   components: {
@@ -206,17 +196,14 @@ export default {
     isEmailAuthCodeSending: false,
     // 이메일 인증코드 재전송 여부
     isRedirectAuthCode: false,
-    // TODO(temp): 임의로 만든거니까 서버 연결되면 삭제하기 - 서버에서 발송한 인증코드
-    emailAuthCode: '',
   }),
   computed: {
     userInfo() {
       return {
-        type: 'private',
         email: this.email,
         password: this.password,
-        username: this.username,
-        phone: this.phone
+        fullName: this.username,
+        phoneNumber: this.phone
       }
     },
   },
@@ -248,46 +235,57 @@ export default {
       if (!this.loadingEmailAuth) {
         this.loadingEmailAuth = true;
         if (!this.email) {
-          alert('이메일을 입력해주십시오.')
+          this.$notifier.showMessage({
+            content: '이메일을 입력해주십시오.',
+            color: 'error'
+          })
           this.loadingEmailAuth = false;
-        } else {
+        }
+        else {
           if (!valid) {
-            alert('이메일 형식이 올바르지 않습니다')
+            this.$notifier.showMessage({
+              content: '이메일 형식이 올바르지 않습니다',
+              color: 'error'
+            })
             this.loadingEmailAuth = false;
             return;
           }
 
-          // TODO (sign-up-private): 이메일 인증 코드 전송 api 서버랑 통신하는 부분
-          setTimeout(() => {
+          this.$emit('sendAuthCode', this.email, (success) => {
             this.loadingEmailAuth = false;
-            this.isEmailAuthCodeSending = true;
-            this.isRedirectAuthCode = true;
-            this.emailAuthCode = '111111'
-          }, 3000)
-
+            this.isEmailAuthCodeSending = success;
+            this.isRedirectAuthCode = success;
+          })
         }
       }
     },
     checkEmailAuthCode() {
-      if (`${this.emailAuth}` === this.emailAuthCode) {
-        alert("인증이 완료되었습니다.")
-        this.isAuthorized = true;
-      } else {
-        alert("잘못된 인증번호 입니다. 인증번호를 확인한 다음 다시 입력해 주세요.")
-      }
+      this.$emit('checkAuthCode', this.email, this.emailAuth, (success) => {
+        this.isAuthorized = success;
+      })
     },
     async goNext() {
       if (this.loadingSubmit) return;
       this.loadingSubmit = true;
-      let defaultErrorMsg = '입력한 정보를 확인해 주세요.';
-      let emailAuthErrorMsg = '이메일 인증이 필요합니다.';
-      let errorMsg = this.isAuthorized ? defaultErrorMsg : emailAuthErrorMsg;
-      await this.$emit('submitUserInfo', this.userInfo, errorMsg);
+      if (!this.isAuthorized) {
+        this.$notifier.showMessage({
+          content: '이메일 인증이 필요합니다.',
+          color: 'error'
+        })
+        this.loadingSubmit = false;
+        return;
+      }
+
+      await this.$emit('submitUserInfo', {
+        data: this.userInfo,
+        errorMsg: '입력한 정보를 확인해 주세요.',
+        isPrivate: true
+      });
       this.loadingSubmit = false;
     },
     goPrev() {
       this.$emit('prevStep')
-    }
+    },
   }
 }
 </script>

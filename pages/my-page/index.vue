@@ -9,8 +9,6 @@
                 <edit-user-info-card
                   v-if="activeIndex === 0"
                   :header="'회원정보'"
-                  v-model="userInfo"
-                  :isAuthorize="isAuthorized"
                   @selfAuth="selfAuthentication"
                   @edit="editUserInfo"
                 />
@@ -28,7 +26,6 @@
                 <withdrawal-card
                   v-if="activeIndex === 3"
                   :header="'회원탈퇴'"
-                  :isAuthorize="isAuthorized"
                   @selfAuth="selfAuthentication"
                   @delete="deleteUserInfo"
                 />
@@ -113,9 +110,6 @@ export default {
         }
       ],
     activeIndex: 0,
-    password: '',
-    showPassword: false,
-    isAuthorized: false,
     userInfo: {},
     purchaseListHeader: [
       {
@@ -203,40 +197,70 @@ export default {
     openTabContent(index) {
       this.activeIndex = index
     },
-    async selfAuthentication(pwd) {
-      if (!pwd) {
-        alert("값을 입력해주십시오.")
-        return;
-      }
-      // TODO (my-page): 임시로..
-      setTimeout(() => {
-        if (pwd === '123123a') {
-          this.userInfo = {
-            email: 'rud527@naver.com',
-            name: '최연우',
-            phone: '01085603465',
-            password: this.password
+    async selfAuthentication(pwd, callback = null) {
+      await this.$store.dispatch('user/checkPassword', {password: pwd}).then(
+        res => {
+          let enterpriseId = this.$auth.user["enterprise"]["enterpriseId"]
+          if (!enterpriseId) {
+            this.userInfo = this.$auth.user
+            if (!!callback) callback(true, this.userInfo);
           }
-          this.isAuthorized = true;
+          else {
+            this.$store.dispatch('user/getEnterpriseInfo', enterpriseId).then(
+              res => {
+                let enterpriseInfo = {
+                  ...this.$auth.user['enterprise'],
+                  organizationName: res['organizationName'],
+                  organizationNumber: res['organizationNumber']
+                }
+                this.userInfo = this.$auth.user
+                this.userInfo['enterprise'] = enterpriseInfo
+                if (!!callback) callback(true, this.userInfo);
+              },
+              err => {
+                this.userInfo = {}
+                this.$notifier.showMessage({
+                  content: err,
+                  color: 'error'
+                })
+              }
+            )
+          }
+        },
+        err => {
+          this.userInfo = {}
+          this.$notifier.showMessage({
+            content: "비밀번호가 올바르지 않습니다.",
+            color: 'error'
+          })
+          if (!!callback) callback(false, null);
         }
-        else {
-          this.isAuthorized = false
-          alert("비밀번호가 올바르지 않습니다.")
+      )
+    },
+    async editUserInfo(info, callback) {
+      await this.$store.dispatch('user/updateUser', info).then(
+        res => {
+          callback(true, '회원 정보가 수정되었습니다.')
+        },
+        err => {
+          callback(false, err)
         }
-      }, 1000)
+      )
     },
-    async editUserInfo(info) {
-      //TODO (MyPage): 본인 확인 서버 통신해서
-      setTimeout(() => {
-        this.$router.push('/')
-      }, 1000)
-    },
-    async deleteUserInfo(info) {
-      //TODO (MyPage): 본인 확인 서버 통신해서
-      setTimeout(() => {
-        alert("회원탈퇴가 정상적으로 되었습니다.")
-        this.$router.push('/')
-      }, 1000)
+    async deleteUserInfo() {
+      await this.$store.dispatch('user/deleteUser', this.$auth.user.id).then(
+        res => {
+          alert('회원 탈퇴가 완료되었습니다.')
+          this.$store.commit('logout')
+          this.$router.push('/')
+        },
+        err => {
+          this.$notifier.showMessage({
+            content: err,
+            color: 'error'
+          })
+        }
+      )
     }
   }
 }

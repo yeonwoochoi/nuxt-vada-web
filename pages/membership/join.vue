@@ -34,7 +34,13 @@
               </v-form>
               <validation-observer v-if="n.step === 3" ref="stepForm">
                 <v-form>
-                  <sign-up-user-info-input-card :user-type="userType" @submit="submit" @prevStep="prevStep"/>
+                  <sign-up-user-info-input-card
+                    :user-type="userType"
+                    @submit="submit"
+                    @prevStep="prevStep"
+                    @sendCode="sendEmailAuthCode"
+                    @checkCode="checkEmailAuthCode"
+                  />
                 </v-form>
               </validation-observer>
               <v-form v-if="n.step === 4" ref="stepForm" v-model="n.valid" lazy-validation>
@@ -108,40 +114,15 @@ export default {
         })
       }
     },
-    async submit(params, errorMsg) {
+    async submit(params) {
       let currentStep = 3;
       let index = currentStep - 1;
       this.steps[index].valid = false
       let v = await this.$refs.stepForm[index].validate();
       if (v) {
         this.steps[index].valid = true
-        if (params.type === 'private') {
-          let payload = {
-            "email": params.email,
-            "password": params.password,
-            "fullName": params.username,
-            "phoneNumber": params.phone,
-          }
-          this.$store.dispatch("user/createPrivateUser", payload).then(
-            res => {
-              this.currentStep = currentStep + 1;
-            },
-            err => {
-              this.$notifier.showMessage({
-                content: err,
-                color: "error"
-              })
-            }
-          )
-        }
-        else if (params.type === 'enterprise') {
-          let payload = {
-            "email": params.email,
-            "password": params.password,
-            "fullName": params.username,
-            "phoneNumber": params.phone,
-          }
-          this.$store.dispatch("user/createEnterpriseUser", payload).then(
+        if (params.isPrivate) {
+          this.$store.dispatch("user/createPrivateUser", params.data).then(
             res => {
               this.currentStep = currentStep + 1;
             },
@@ -154,18 +135,64 @@ export default {
           )
         }
         else {
-          this.$notifier.showMessage({
-            content: '회원가입 도중 오류가 발생했습니다. 다시 시도해주세요.',
-            color: "error"
-          })
+          this.$store.dispatch("user/createEnterpriseUser", params.data).then(
+            res => {
+              this.currentStep = currentStep + 1;
+            },
+            err => {
+              this.$notifier.showMessage({
+                content: err,
+                color: "error"
+              })
+            }
+          )
         }
       }
       else {
         this.$notifier.showMessage({
-          content: errorMsg,
+          content: params.errorMsg,
           color: "error"
         })
       }
+    },
+    async sendEmailAuthCode(email, callback) {
+      let param = {
+        email: email
+      }
+      await this.$store.dispatch('user/sendEmailAuthCode', param).then(
+        res => {
+          callback(true)
+        },
+        err => {
+          this.$notifier.showMessage({
+            content: err,
+            color: 'error'
+          })
+          callback(false)
+        }
+      )
+    },
+    async checkEmailAuthCode(email, code, callback) {
+      let param = {
+        email: email,
+        code: code
+      }
+      await this.$store.dispatch('user/validateEmailAuthCode', param).then(
+        res => {
+          callback(true)
+          this.$notifier.showMessage({
+            content: '인증이 완료되었습니다.',
+            color: 'success'
+          })
+        },
+        err => {
+          callback(false)
+          this.$notifier.showMessage({
+            content: err,
+            color: 'error'
+          })
+        }
+      )
     },
     stepStatus(step) {
       return this.currentStep > step ? 'green' : 'blue'

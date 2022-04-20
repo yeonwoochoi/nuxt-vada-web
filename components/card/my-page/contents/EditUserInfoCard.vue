@@ -33,43 +33,25 @@
         <v-card-text>
           <v-form ref="editForm" v-model="valid" lazy-validation>
             <div class="mb-8">
-              <p class="ma-1 subtitle-2 text-start">이름</p>
-              <p class="subtitle-1 ml-2">{{value.email}}</p>
+              <p class="ma-1 subtitle-2 text-start">회원유형</p>
+              <p class="subtitle-1 mt-2 ml-2">{{userType}}</p>
             </div>
-            <div>
-              <p class="ma-1 subtitle-2 text-start">비밀번호</p>
-              <v-text-field
-                v-model="password"
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                @click:append="showPassword = !showPassword"
-                :rules="[rules.password]"
-                outlined
-                dense
-                filled
-                :type="showPassword ? 'text' : 'password'"
-                background-color="transparent"
-                style="max-width: 400px"
-                class="mb-4"
-              />
+            <div class="mb-8" v-if="!isPersonalUser">
+              <p class="ma-1 subtitle-2 text-start">기업명</p>
+              <p class="subtitle-1 mt-2 ml-2">{{initUserInfo['enterprise']['organizationName']}}</p>
             </div>
-            <div>
-              <p class="ma-1 subtitle-2 text-start">비밀번호 확인</p>
-              <v-text-field
-                v-model="passwordConfirm"
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                @click:append="showPassword = !showPassword"
-                :rules="[rules.passwordConfirm]"
-                outlined
-                dense
-                filled
-                :type="showPassword ? 'text' : 'password'"
-                background-color="transparent"
-              />
+            <div class="mb-8" v-if="!isPersonalUser">
+              <p class="ma-1 subtitle-2 text-start">사업자 등록번호</p>
+              <p class="subtitle-1 mt-2 ml-2">{{initUserInfo['enterprise']['organizationNumber']}}</p>
+            </div>
+            <div class="mb-8">
+              <p class="ma-1 subtitle-2 text-start">이메일</p>
+              <p class="subtitle-1 mt-2 ml-2">{{initUserInfo.email}}</p>
             </div>
             <div>
               <p class="ma-1 subtitle-2 text-start">이름</p>
               <v-text-field
-                v-model="value.name"
+                v-model="tempName"
                 :rules="[rules.required]"
                 required
                 outlined
@@ -81,7 +63,7 @@
             <div>
               <p class="ma-1 subtitle-2 text-start">연락처(-없이 번호만 입력)</p>
               <v-text-field
-                v-model="value.phone"
+                v-model="tempPhone"
                 @keypress="isNumber($event)"
                 maxlength="12"
                 :rules="[rules.required]"
@@ -111,55 +93,150 @@ import MyPageContentCard from "../MyPageContentCard";
 export default {
   name: "EditUserInfoCard",
   components: {MyPageContentCard, CustomButton},
+  created() {
+    this.isAuthorize = false;
+  },
   props: {
     header: {
       type: String,
       default: () => ''
     },
-    isAuthorize: {
-      type: Boolean,
-      default: () => false
-    },
-    value : {
-      type : Object,
-      required : true
-    }
   },
   data: () => ({
     password: '',
-    passwordConfirm: '',
     showPassword: false,
     isAuthLoading: false,
     isEditLoading: false,
-    valid: false
+    isAuthorize: false,
+    valid: false,
+    initUserInfo: {},
+    tempUserInfo: {},
+    tempName: '',
+    tempPhone: ''
   }),
   computed: {
     rules() {
       return {
         required: value => !!value || '값을 입력해주세요',
-        password: value => /^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).*$/.test(value) || '영문 대소문자와 최소 1개의 숫자 혹은 특수 문자를 포함해야 합니다.',
-        passwordConfirm: value => value === this.password || '비밀번호가 일치하지 않습니다.',
       }
     },
+    userType() {
+      switch (this.initUserInfo['roles'][0]) {
+        case "ROLE_ENTERPRISE_MANAGER_USER":
+          return '기업 매니저 회원';
+        case "ROLE_ENTERPRISE_USER":
+          return '기업 일반 회원';
+        case "ROLE_PERSONAL_USER":
+          return '일반 회원'
+        case "ROLE_ADMIN":
+          return 'Admin'
+        default:
+          return ''
+      }
+    },
+    isPersonalUser() {
+      return this.initUserInfo['roles'][0] === "ROLE_PERSONAL_USER";
+    }
   },
   methods: {
     async checkPwd() {
-      if (this.isAuthLoading) return
+      if (!this.password) {
+        this.$notifier.showMessage({
+          content: '값을 입력해주세요.',
+          color: 'error'
+        })
+        return
+      }
       this.isAuthLoading = true;
-      await this.$emit('selfAuth', this.password)
-      this.passwordConfirm = this.password;
-      this.isAuthLoading = false;
+      await this.$emit('selfAuth', this.password, (success, userInfo) => {
+        if (!success) {
+          this.isAuthorize = false;
+          this.isAuthLoading = false;
+          return;
+        }
+        try {
+          // 정보 세팅
+          this.initUserInfo = userInfo;
+          this.tempName = this.initUserInfo.fullName;
+          this.tempPhone = this.initUserInfo.phoneNumber;
+
+          // 관리자 회원은 접근 불가
+          if (userInfo['roles'][0] === "ROLE_ADMIN") {
+            this.$notifier.showMessage({
+              content: '관리 사이트로 이동하여 정보를 변경해주십시오.',
+              color: 'error'
+            })
+            this.isAuthorize = false;
+            this.isAuthLoading = false;
+            return
+          }
+
+          // 기업 귀속 회원도 접근 불가
+          if (userInfo['roles'][0] === "ROLE_ENTERPRISE_USER") {
+            this.$notifier.showMessage({
+              content: '기업 일반 회원은 본인이 소속된 기업 관리자 회원의 1:1 문의를 통해 회원정보를 변경할 수 있습니다.',
+              color: 'error'
+            })
+            this.isAuthorize = false;
+            this.isAuthLoading = false;
+            return
+          }
+
+          this.isAuthorize = true;
+        }
+        catch (e) {
+          this.$notifier.showMessage({
+            content: e.message,
+            color: 'error'
+          })
+          this.isAuthorize = false;
+        }
+        this.isAuthLoading = false;
+      })
     },
     async edit() {
       this.valid = this.$refs.editForm.validate();
+
+      // validate 체크
       if (this.valid) {
         if (this.isEditLoading) return
         this.isEditLoading = true;
-        await this.$emit('edit', this.value)
-        this.isEditLoading = false;
+
+        // 변경된 정보 여부 체크
+        if (this.initUserInfo.fullName === this.tempName && this.initUserInfo.phoneNumber === this.tempPhone) {
+          this.$notifier.showMessage({
+            content: '변경된 정보가 없습니다.',
+            color: 'error'
+          })
+          this.isEditLoading = false;
+          return;
+        }
+
+        let payload = {
+          name: this.tempName,
+          phoneNumber: this.tempPhone,
+        }
+
+        // 서버 통신
+        await this.$emit('edit', payload, (success, message) => {
+          this.isEditLoading = false;
+          if (!success) {
+            this.$notifier.showMessage({
+              content: message,
+              color: 'error'
+            })
+          }
+          else {
+            alert(message)
+            this.$router.go(0)
+          }
+        })
       }
       else {
-        alert('입력한 정보를 확인해 주세요')
+        this.$notifier.showMessage({
+          content: '입력한 정보를 확인해 주세요',
+          color: 'error'
+        })
       }
     },
     isNumber: function(evt) {
