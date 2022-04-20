@@ -137,11 +137,15 @@ export default {
     AppBarSheetView,
     CompanyLogoBtn
   },
+  created() {
+    this.loginBtnText = this.$auth.loggedIn ? '로그아웃' : '로그인';
+  },
   data: () => ({
     isScrolled: false,
     isHovered: false,
     isLogin: false,
-    appBarHeight: 100
+    appBarHeight: 100,
+    loginBtnText: '로그인'
   }),
   computed: {
     ...mapState({
@@ -152,9 +156,6 @@ export default {
       toolbarItems: 'toolbarItems',
       sheetTitle: 'getSheetTitle'
     }),
-    loginBtnText() {
-      return this.$auth.loggedIn ? '로그아웃' : '로그인'
-    },
     getColor() {
       return this.isActive ? 'rgba(255, 255, 255, 255)' : 'rgba(255, 255, 255, 0)'
     },
@@ -198,6 +199,7 @@ export default {
         this.$store.commit('logout')
         this.$auth.strategy.token.reset();
         this.$auth.strategy.refreshToken.reset();
+        this.$router.go(0)
         return;
       }
       this.$router.push('/membership/login')
