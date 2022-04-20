@@ -90,7 +90,7 @@
                             color="primary"
                             @click="applyPlan"
                           >
-                            신청하기
+                            결제하기
                           </v-btn>
                         </div>
                       </v-col>
@@ -115,7 +115,7 @@ export default {
   auth: false,
   components: {CustomButton, SimpleDataTable, MainCard},
   created() {
-    this.$store.commit('setSheetTitle', '요금안내')
+    this.$store.commit('setSheetTitle', '이용신청')
   },
   data: () => ({
     header: '요금안내',

@@ -10,7 +10,7 @@ export const state = () => ({
     { title: '메인', icon: 'mdi-home', link: '/', items:[] },
     { title: '기업소개', icon: 'mdi-office-building', link: '/about', items: []},
     { title: '서비스', icon: 'mdi-desktop-mac', link: '/service/fee', items: [
-        { title: '요금안내', icon: 'mdi-currency-usd', link: '/service/fee' },
+        { title: '이용신청', icon: 'mdi-currency-usd', link: '/service/fee' },
         { title: '특허검색', icon: 'mdi-book-open-blank-variant', link: '/service/search' },
         { title: '특허평가', icon: 'mdi-chart-bar', link: '/service/evaluation' },
         { title: '평가조회', icon: 'mdi-clipboard-list', link: '/service/evaluation/list' },
