@@ -90,9 +90,9 @@ export default {
   name: "ResetPasswordAuth",
   auth: false,
   components: {ResetPwdCard, CustomButton},
-  beforeCreate() {
-    if (!this.$store.getters["user/getEmailForPwdReset"]) {
-      this.$router.push('/membership/reset-password')
+  asyncData({redirect, store}) {
+    if (!store.getters["user/getEmailForPwdReset"]) {
+      redirect('/membership/reset-password')
     }
   },
   created() {

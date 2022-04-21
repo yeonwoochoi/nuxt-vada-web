@@ -29,9 +29,9 @@ export default {
   name: "reset-password-done",
   auth: false,
   components: {CustomButton, ResetPwdCard},
-  beforeCreate() {
-    if (!this.$store.getters["user/getPwdResetSuccess"]) {
-      this.$router.push('/membership/reset-password')
+  asyncData({redirect, store}) {
+    if (!store.getters["user/getPwdResetSuccess"]) {
+      redirect('/membership/reset-password')
     }
   },
   created() {
