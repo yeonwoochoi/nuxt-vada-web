@@ -34,7 +34,7 @@
                   @page-count="totalPage = $event"
                   :mobile-breakpoint="600"
                   show-select
-                  item-key="applicationNumber"
+                  item-key="content.applicationNumber"
                   :no-data-text="noDataText"
                   :search="search"
                   :custom-filter="customFilter"
@@ -171,7 +171,7 @@ export default {
             inventionTitle: '에스트로겐 수용체 억제제로서의 벤조티오펜 유도체',
             registerNumber: '10-2016-7002876',
             registerDate: '1987/07/11',
-            applicationNumber: '1020147002912',
+            applicationNumber: '1020167002876',
             applicantName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
             personName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
             link: $util.getKiprisDoiLink('1020147002912'),
@@ -211,7 +211,7 @@ export default {
         value: 'content',
       },
       {
-        text: '상세보고서',
+        text: '보고서다운',
         align: 'center',
         sortable: false,
         filterable: false,
@@ -226,7 +226,7 @@ export default {
         value: 'summaryReport'
       },
       {
-        text: '상세',
+        text: '상세보기',
         align: 'center',
         sortable: false,
         filterable: false,
@@ -249,6 +249,7 @@ export default {
   },
   methods: {
     goToSummaryReport({content}) {
+      // TODO: summary Id 로 바꾸기
       this.$router.push('/service/evaluation/summary/' + content.applicationNumber)
     },
     goToDetail({content}) {
@@ -264,6 +265,7 @@ export default {
     },
     downloadSelectedAll() {
       console.dir(this.selected)
+      console.dir(this.selected.length)
     },
     searchData() {
       this.search = this.tempSearch
