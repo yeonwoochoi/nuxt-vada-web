@@ -77,6 +77,24 @@ export const actions = {
       })
     }))
   },
+  async getEvaluationList({commit}) {
+    return new Promise(((resolve, reject) => {
+      this.$axios.$get('/patent/evaluation').then(res=> {
+        resolve(res['patentEvaluations'])
+      }).catch(err => {
+        reject(err.response.data.message)
+      })
+    }))
+  },
+  async getEvaluationSummary({commit}, params) {
+    return new Promise(((resolve, reject) => {
+      this.$axios.$get('/patent/evaluation/' + params).then(res=> {
+        resolve(res['patentEvaluations'])
+      }).catch(err => {
+        reject(err.response.data.message)
+      })
+    }))
+  },
   async getIpcCode({commit}, params) {
     return new Promise(((resolve, reject) => {
       this.$axios.$post('/patent/search', params).then(res => {
@@ -95,6 +113,23 @@ export const actions = {
       })
     }))
   },
+  async searchByCsv({commit}, params) {
+    return new Promise((resolve, reject) => {
+      this.$axios.$post('/patent/search/file', params, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+        .then(res => {
+          resolve(res.result)
+        }).catch(err => {
+          reject(err.response.data.message)
+      })
+    })
+  },
+  // 보고서: Report
+  // 기업회원가입시 IP Email: IpEmailPair
+  // 특허검색 시 Template: MultiPatent
   async download({commit}, params) {
     const config = {
       headers: {

@@ -35,20 +35,49 @@ import CustomButton from "../../../../components/button/CustomButton";
 export default {
   name: "evaluationSummary",
   components: {CustomButton, VerticalHeaderTable, MainCard},
+  asyncData({params, store, redirect}) {
+    if (!params.id) {
+      redirect('/service/evaluation/list')
+      return;
+    }
+    return store.dispatch('patent/getEvaluationSummary', params.id).then(
+      res => {
+        let result = {
+          price: '12000 KRW',
+          expirationDate: res['reportExpiredAt'],
+          purpose: '평가용도 : 기술 가치금액 참고용',
+          targetPatent: [ res['patentNumber'] ],
+          techLife: parseInt(res['techLifeTime']),
+          cashFlow: parseInt(res['cashFlowPeriod']),
+          royaltyRate: res['royaltyRate'],
+          industrialCode: res['industryCode'],
+          enterpriseType: res['companySize'],
+          discountRate: res['discountRate'],
+          techPrice: parseInt(res['companyValue']).toLocaleString(),
+        }
+        return {
+          fetchError: null,
+          summaryData: result
+        }
+      },
+      err => {
+        return {
+          fetchError: err,
+          summaryData: null
+        }
+      }
+    )
+  },
   created() {
     this.$store.commit('setSheetTitle', '특허평가')
+    if (!!this.fetchError) {
+      this.$notifier.showMessage({
+        content: this.fetchError,
+        color: 'error'
+      })
+    }
   },
-  asyncData({params}) {
-    return {
-      idx: params.id,
-    };
-  },
-  /*
-  // 정수 값만 param으로 받음.
-  validate({params}) {
-    return /^\d+$/.test(params.id);
-  },
-  */
+
   data: () => ({
     header: "요약보고서",
     title: '',
@@ -86,13 +115,23 @@ export default {
         value: 'techPrice',
       },
     ],
-    summaryData: [],
-    summaryContent: [],
     isLoading: true,
   }),
   computed: {
+    summaryContent() {
+      return {
+        price: '',
+        expirationDate: '',
+        purpose: '',
+        targetPatent: this.targetPatent,
+        techLife: this.techLife + this.cashFlow,
+        royaltyRate: this.royaltyRate,
+        discountRate: this.discountRate,
+        techPrice: this.techPrice
+      }
+    },
     targetPatent() {
-      let sample = this.summaryData.targetPatentList
+      let sample = this.summaryData.targetPatent
       let result = `평가대상 특허 : 등록 ${sample.length}건\n`
       for (let i = 0; i < sample.length; i++) {
         let temp = sample[i];
@@ -102,18 +141,17 @@ export default {
     },
 
     techLife() {
-      // TODO: Sample
       let sample = this.summaryData.techLife
       return `기술의 경제적 수명 : <span class="light-blue--text">${sample}</span>년\n`
     },
 
     cashFlow() {
-      let sample = this.summaryData
-      return `현금흐름 추정기간 : <span class="light-blue--text">${sample.cashFlowFrom} ~ ${sample.cashFlowTo}</span>`
+      let sample = this.summaryData.cashFlow
+      return `현금흐름 추정기간 : <span class="light-blue--text">${sample}</span>`
     },
 
     royaltyRate() {
-      let sample = this.summaryData.royalty
+      let sample = this.summaryData.royaltyRate
       return `매출액 추정 : 직접 추정 (시장 점유율법)\n로열티 : 업종별 상관행법 X 로열티율 조정계수 = <span class="light-blue--text">${sample}%</span>`
     },
 
@@ -122,52 +160,14 @@ export default {
     },
 
     techPrice() {
-      return `기술가치 = <span class="light-blue--text">${this.summaryData.techPriceFrom} ~ ${this.summaryData.techPriceTo}</span> 백만원`
+      return `기술가치 = <span class="light-blue--text">${this.summaryData.techPrice}</span> 백만원`
     },
   },
   methods: {
-    fetchData() {
-      setTimeout(() => {
-        this.summaryData = {
-          inventionTitle: 'ABS계 수지 분체의 제조방법 및 표면특성이 향상된 ABS계 수지 조성물의 제조방법',
-          price: '12000 KRW',
-          expirationDate: '2021-03-21 ~ 2022-03-23',
-          targetPatentList: [
-            'KR 10-0107367',
-          ],
-          techLife: 9,
-          cashFlowFrom: '2020',
-          cashFlowTo: '2028',
-          royalty: '3.15',
-          discountRate: '10.85',
-          industrialCode: '기타 기계 및 장비 제조업 (C29)',
-          enterpriseType: '비상장 창업기업',
-          techPriceFrom: '14328',
-          techPriceTo: '14328',
-        }
-        this.summaryContent = [
-          {
-            inventionTitle: this.summaryData.inventionTitle,
-            price: this.summaryData.price,
-            expirationDate: this.summaryData.expirationDate,
-            purpose: '평가용도 : 기술 가치금액 참고용',
-            targetPatent: this.targetPatent,
-            techLife: this.techLife + this.cashFlow,
-            royaltyRate: this.royaltyRate,
-            discountRate: this.discountRate,
-            techPrice: this.techPrice
-          }
-        ]
-        this.isLoading = false
-      }, 100)
-    },
     goToSearch() {
       this.$router.push('/service/evaluation/list')
     }
   },
-  mounted() {
-    this.fetchData();
-  }
 }
 </script>
 
