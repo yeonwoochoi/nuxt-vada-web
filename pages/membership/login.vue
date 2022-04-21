@@ -68,6 +68,11 @@ import CustomButton from "../../components/button/CustomButton";
 export default {
   name: "login",
   components: {CustomButton},
+  asyncData({store,redirect}) {
+    if(store.$auth.loggedIn) {
+      redirect('/')
+    }
+  },
   created() {
     this.$store.commit('setSheetTitle', '로그인')
   },

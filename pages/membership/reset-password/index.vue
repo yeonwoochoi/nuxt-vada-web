@@ -42,6 +42,11 @@ export default {
   name: "ResetPassword",
   auth: false,
   components: {ResetPwdCard, CustomButton},
+  asyncData({store, redirect}) {
+    if (store.$auth.loggedIn) {
+      redirect('/')
+    }
+  },
   created() {
     this.$store.commit('setSheetTitle', '비밀번호 재설정')
   },

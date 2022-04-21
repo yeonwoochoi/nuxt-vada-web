@@ -58,6 +58,11 @@ import CustomButton from "../../components/button/CustomButton";
 export default {
   name: "change-password",
   components: {CustomButton, ResetPwdCard},
+  asyncData({store,redirect}) {
+    if(store.$auth.loggedIn) {
+      redirect('/')
+    }
+  },
   created() {
     this.$store.commit('setSheetTitle', '비밀번호 변경')
   },

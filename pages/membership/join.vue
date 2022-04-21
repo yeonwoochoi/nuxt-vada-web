@@ -66,6 +66,11 @@ export default {
   name: "join",
   auth: false,
   components: {ValidationObserver, SignUpDoneCard, SignUpUserInfoInputCard, SignUpUserTypeCard, SignUpAgreementCard},
+  asyncData({store,redirect}) {
+    if(store.$auth.loggedIn) {
+      redirect('/')
+    }
+  },
   created() {
     this.$store.commit('setSheetTitle', '회원가입')
   },

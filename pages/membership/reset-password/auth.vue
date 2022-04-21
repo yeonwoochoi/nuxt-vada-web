@@ -91,7 +91,10 @@ export default {
   auth: false,
   components: {ResetPwdCard, CustomButton},
   asyncData({redirect, store}) {
-    if (!store.getters["user/getEmailForPwdReset"]) {
+    if (store.$auth.loggedIn) {
+      redirect('/')
+    }
+    else if (!store.getters["user/getEmailForPwdReset"]) {
       redirect('/membership/reset-password')
     }
   },
