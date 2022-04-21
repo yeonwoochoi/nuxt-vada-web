@@ -320,7 +320,7 @@ export default {
                 content: {
                   inventionTitle: res[i]['items'][0]['inventionTitle'],
                   registerNumber: res[i]['items'][0]['registerNumber'],
-                  registerDate: res[i]['items'][0]['registerDate'],
+                  registerDate: res[i]['items'][0]['registerDate'].replace(/(\d{4})(\d{2})(\d{2})/g, '$1-$2-$3'),
                   applicationNumber: res[i]['applicationNumber'],
                   applicantName: res[i]['items'][0]['applicantName'],
                   applicationDate: res[i]['items'][0]['applicationDate'],
@@ -346,7 +346,43 @@ export default {
     },
     // Excel File 로 검색했을 때
     searchByFile(event) {
-      console.dir(event.target.files[0])
+      this.searchLoading = true;
+      let form = new FormData();
+      form.append("patentNumbers", event.target.files[0])
+      this.$store.dispatch('patent/searchByCsv', form)
+        .then(
+          res => {
+            let result = []
+            for (let i = 0; i < res.length; i++) {
+              if (!res[i]['items'] || !res[i]['validatePatent']) continue
+              result.push({
+                indexNo: i+1,
+                content: {
+                  inventionTitle: res[i]['items'][0]['inventionTitle'],
+                  registerNumber: res[i]['items'][0]['registerNumber'],
+                  registerDate: res[i]['items'][0]['registerDate'].replace(/(\d{4})(\d{2})(\d{2})/g, '$1-$2-$3'),
+                  applicationNumber: res[i]['applicationNumber'],
+                  applicantName: res[i]['items'][0]['applicantName'],
+                  applicationDate: res[i]['items'][0]['applicationDate'],
+                },
+                loading: false
+              })
+            }
+            if (result.length === 0) {
+              this.noDataText = '검색결과 없음'
+            }
+            this.searchResults = result
+            this.searchLoading = false;
+          },
+          err => {
+            this.$notifier.showMessage({
+              content: err,
+              color: 'error'
+            })
+            this.noDataText = '검색결과 없음'
+            this.searchLoading = false;
+          }
+        )
     },
     // 자체 사이트 상세보기
     showDetails(item) {
@@ -365,9 +401,6 @@ export default {
     // 기능에서 뺌 (checkbox로 선택해서 하려고 했는데)
     evaluateSelectedAll() {
       console.dir(this.selected)
-    },
-    changePage() {
-      console.dir(`page: ${this.currentPage}`)
     },
   }
 }
