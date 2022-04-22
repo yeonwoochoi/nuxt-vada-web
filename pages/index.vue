@@ -81,9 +81,9 @@
           </v-btn>
         </v-col>
         <v-col cols="11" md="7" class="pl-4">
-          <div v-for="(item, index) in noticeSampleData" :key="index" @click="moveTo(item.link)" style="cursor:pointer;" class="mb-4">
-            <p class="font-weight-bold">{{ item.text }}</p>
-            <v-divider v-if="index < noticeSampleData.length-1"/>
+          <div v-for="(item, index) in newsItems" :key="index" @click="moveTo(item)" style="cursor:pointer;" class="mb-4">
+            <p class="font-weight-bold">{{ item.title }}</p>
+            <v-divider v-if="index < newsItems.length-1"/>
           </div>
         </v-col>
       </v-row>
@@ -95,12 +95,36 @@
 export default {
   name: "index",
   auth: false,
-  /*
-  async asyncData({$axios}) {
-    const {data} = await $axios.get('http://127.0.0.1:3000/projects/readAll');
-    return { projects : data.data }
+  async asyncData({store}) {
+    return store.dispatch('news/readAll').then(
+      res => {
+        let result = []
+        for (let i = 0; i < 4; i++) {
+          let item = res[i]
+          let time = item.updatedAt.split('T')[0]
+          let created_at = time.split('T')[0]
+          result.push({
+            no: i+1,
+            idx: item.id,
+            title: item.title,
+            content: item.content,
+            created_at: created_at,
+            view_count: item.view
+          })
+        }
+        return {
+          newsItems: result,
+          fetchError: null
+        }
+      },
+      err => {
+        return {
+          newsItems: [],
+          fetchError: err
+        }
+      }
+    )
   },
-  */
   data: () => ({
     companyIntroImg: require('../assets/home/home_company_info.png'),
     companyIntroHeader1: '초간편',
@@ -111,13 +135,6 @@ export default {
     techIntroContents: ['Easy-V 1.0 은 개발에 참여한 실무진들의 다년간 평가 노하우를 기반으로', '비전문가라도 누구나 쉽게 평가를 진행할 수 있도록 개발되었습니다.'],
     noticeHeader: 'VADA 소식',
     noticeDetailBtnText: '새로운 소식',
-    //TODO (Sample)
-    noticeSampleData: [
-      { text: '시스템 점검에 따른 서비스 일시 정지 안내(1.20일, 18시00분~24시)', link: 'support/news/content?uid=1'},
-      { text: '창립기념일 임시휴무(2021.10.18(월)) 안내', link: 'support/news/content?uid=2'},
-      { text: '[공지] 한국특허 평가보고서 생성기능 일시 정지 안내(2021-03-30 10시~ 24시)', link: 'support/news/content?uid=3'},
-      { text: '[공지] 전기설비 정기점검에 따른 서비스 중단안내( 2020년11월 06일(금) 20:00 ~ 11월 07일(토) 12:00 )', link: 'support/news/content?uid=4'},
-    ],
     detailInfoBtnText: '자세히보기',
   }),
   computed: {
@@ -136,7 +153,8 @@ export default {
   },
   methods: {
     moveTo (link) {
-      this.$router.push(link)
+      let path = '/support/news/content?uid=' + link.idx
+      this.$router.push(path)
     }
   }
 }
