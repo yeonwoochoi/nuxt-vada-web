@@ -103,7 +103,6 @@ export default {
     this.email = this.$store.getters["user/getEmailForPwdReset"]
   },
   destroyed() {
-    console.log('destroyed - auth')
     this.$store.commit('user/resetEmailForPwdReset')
   },
   data: () => ({
