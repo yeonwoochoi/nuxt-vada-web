@@ -62,14 +62,14 @@ export const mutations = {
 
 export const actions = {
   async evaluate({commit, state}) {
-    let params = {
+    let payload = {
       ...state.tempEvalData.sales,
       "companySize": state.tempEvalData.businessScale.data,
       "patentNumber": state.tempEvalData.patentNumber,
       "industryCode": state.tempEvalData.ksic.code
     }
     return new Promise(((resolve, reject) => {
-      this.$axios.$post('/patent/evaluation', params).then(res=> {
+      this.$axios.$post('/patent/evaluation', payload).then(res=> {
         commit('setEvalData', res['patentEvaluationSummary'])
         resolve(res['patentEvaluationSummary'])
       }).catch(err => {
@@ -89,33 +89,33 @@ export const actions = {
   async getEvaluationSummary({commit}, params) {
     return new Promise(((resolve, reject) => {
       this.$axios.$get('/patent/evaluation/' + params).then(res=> {
-        resolve(res['patentEvaluations'])
+        resolve(res["patentEvaluationSummary"])
       }).catch(err => {
         reject(err.response.data.message)
       })
     }))
   },
-  async getIpcCode({commit}, params) {
+  async getIpcCode({commit}, payload) {
     return new Promise(((resolve, reject) => {
-      this.$axios.$post('/patent/search', params).then(res => {
+      this.$axios.$post('/patent/search', payload).then(res => {
         resolve(res.result[0]['ipcCode'])
       }).catch(err => {
         reject(err.response.data.message)
       })
     }))
   },
-  async search({commit}, params) {
+  async search({commit}, payload) {
     return new Promise(((resolve, reject) => {
-      this.$axios.$post('/patent/search', params).then(res => {
+      this.$axios.$post('/patent/search', payload).then(res => {
         resolve(res.result)
       }).catch(err => {
         reject(err.response.data.message)
       })
     }))
   },
-  async searchByCsv({commit}, params) {
+  async searchByCsv({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$post('/patent/search/file', params, {
+      this.$axios.$post('/patent/search/file', payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
@@ -127,15 +127,14 @@ export const actions = {
       })
     })
   },
-  // 보고서: Report
   // 기업회원가입시 IP Email: IpEmailPair
   // 특허검색 시 Template: MultiPatent
-  async download({commit}, params) {
+  async downloadSampleFile({commit}, params) {
     const config = {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
       },
-      responseType: "blob",
+      responseType: "arraybuffer",
     }
     return new Promise(((resolve, reject) => {
       this.$axios.$get('/file/template?type=' + params, config).then(res => {
@@ -144,5 +143,48 @@ export const actions = {
         reject(err.response.data.message)
       })
     }))
-  }
+  },
+
+  async downloadReport({commit}, payload) {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      responseType: "arraybuffer",
+    }
+    return new Promise(((resolve, reject) => {
+      this.$axios.$post('/patent/download', payload, config).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err.response.data.message)
+      })
+    }))
+  },
+
+  async purchaseReport({commit}, payload) {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      responseType: "arraybuffer",
+    }
+    return new Promise(((resolve, reject) => {
+      this.$axios.$post('/patent/purchase', payload, config).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err.response.data.message)
+      })
+    }))
+  },
+
+  async removeReport({commit}, payload) {
+    return new Promise(((resolve, reject) => {
+      console.log("remove!: " + payload)
+      this.$axios.$delete('/patent/evaluation/'+ payload).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err.response.data.message)
+      })
+    }))
+  },
 }
