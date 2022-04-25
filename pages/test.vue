@@ -6,6 +6,11 @@
     >
       다운로드
     </v-btn>
+    <v-btn
+      @click="refresh"
+    >
+      Refresh
+    </v-btn>
   </div>
 </template>
 
@@ -17,12 +22,13 @@ export default {
   auth: false,
   methods: {
     downloadFile() {
-      this.$store.dispatch('patent/download', 'Report').then(
+      this.$store.dispatch('patent/downloadSampleFile', 'IpEmailPair').then(
         res => {
-          const url = window.URL.createObjectURL(new Blob([res.data]));
+          let blob = new Blob([res], {type: "application/vnd.ms-excel"});
+          let objectUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', 'report-sample.docx');
+          link.href = objectUrl;
+          link.setAttribute('download', 'sample.xls');
           document.body.appendChild(link);
           link.click();
         },
@@ -33,7 +39,24 @@ export default {
           })
         }
       )
-    }
+    },
+    refresh() {
+      if (this.$auth.strategy.token.status().expired()) {
+        console.log('expired!')
+      }
+      else {
+        console.log('valid!')
+      }
+      this.$auth.refreshTokens().then(
+        res => {
+          console.log(res)
+          console.log("success")
+        },
+        err => {
+          console.dir(err.response.data.message)
+        }
+      )
+    },
   }
 }
 </script>
