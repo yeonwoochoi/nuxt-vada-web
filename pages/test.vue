@@ -28,7 +28,7 @@ export default {
           let objectUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = objectUrl;
-          link.setAttribute('download', 'sample.xls');
+          link.setAttribute('download', 'template.xls');
           document.body.appendChild(link);
           link.click();
         },
