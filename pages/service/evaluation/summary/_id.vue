@@ -1,13 +1,12 @@
 <template>
   <v-container fluid>
     <v-row align="center" justify="center">
-      <v-card style="width: 1200px; height:fit-content;" class="elevation-0">
+      <v-card v-if="!fetchError" style="width: 1200px; height:fit-content;" class="elevation-0">
         <main-card :header="header">
           <template v-slot:body>
-            <v-row align="start" justify="space-around" class="mb-6 px-4" style="width: 100%;">
+            <v-row  align="start" justify="space-around" class="mb-6 px-4" style="width: 100%;">
               <v-col cols="12" class="mt-6">
                 <vertical-header-table
-                  v-if="!isLoading"
                   :table-header="summaryHeader"
                   :table-items="summaryContent"
                   :is-blur="false"
@@ -32,49 +31,69 @@
 import MainCard from "../../../../components/card/MainCard";
 import VerticalHeaderTable from "../../../../components/table/VerticalHeaderTable";
 import CustomButton from "../../../../components/button/CustomButton";
+import ksicList from "../../../../data/ksic.json";
+
 export default {
   name: "evaluationSummary",
   components: {CustomButton, VerticalHeaderTable, MainCard},
   asyncData({params, store, redirect}) {
+    let initSummaryData = {
+      expirationDate: '',
+      targetPatent: '',
+      techLife: '',
+      cashFlow: '',
+      royaltyRate: '',
+      industrialCode: '',
+      enterpriseType: '',
+      discountRate: '',
+      techPrice: ''
+    }
     if (!params.id) {
       redirect('/service/evaluation/list')
       return;
     }
     return store.dispatch('patent/getEvaluationSummary', params.id).then(
       res => {
-        let result = {
-          price: '12000 KRW',
-          expirationDate: res['reportExpiredAt'],
-          purpose: '평가용도 : 기술 가치금액 참고용',
-          targetPatent: [ res['patentNumber'] ],
-          techLife: parseInt(res['techLifeTime']),
-          cashFlow: parseInt(res['cashFlowPeriod']),
-          royaltyRate: res['royaltyRate'],
-          industrialCode: res['industryCode'],
-          enterpriseType: res['companySize'],
-          discountRate: res['discountRate'],
-          techPrice: parseInt(res['companyValue']).toLocaleString(),
+        if (!res) {
+          return {
+            fetchError: '해당 특허 평가 요약 보고서가 존재하지 않습니다.',
+            summaryData: initSummaryData
+          }
         }
-        return {
-          fetchError: null,
-          summaryData: result
+        else {
+          let expirationDate = res['reportExpiredAt'].split('T')[0]
+          let code = res['industryCode']
+          let ksic = ksicList.find(v => v.code === code)
+          let result = {
+            expirationDate: expirationDate,
+            targetPatent: res['patentNumber'],
+            techLife: parseInt(res['techLifeTime']),
+            cashFlow: parseInt(res['cashFlowPeriod']),
+            royaltyRate: res['royaltyRate'],
+            industrialCode: !ksic ? code : `${ksic.code} ${ksic.title}`,
+            enterpriseType: res['companySize'],
+            discountRate: res['discountRate'],
+            techPrice: parseInt(res['companyValue']).toLocaleString(),
+          }
+          return {
+            fetchError: null,
+            summaryData: result
+          }
         }
       },
       err => {
         return {
           fetchError: err,
-          summaryData: null
+          summaryData: initSummaryData
         }
       }
     )
   },
-  created() {
+  mounted() {
     this.$store.commit('setSheetTitle', '특허평가')
     if (!!this.fetchError) {
-      this.$notifier.showMessage({
-        content: this.fetchError,
-        color: 'error'
-      })
+      alert(this.fetchError)
+      this.$router.push('/service/evaluation/list')
     }
   },
 
@@ -115,28 +134,30 @@ export default {
         value: 'techPrice',
       },
     ],
-    isLoading: true,
   }),
   computed: {
     summaryContent() {
-      return {
-        price: '',
-        expirationDate: '',
-        purpose: '',
+      return [{
+        price: '12000 KRW',
+        expirationDate: this.expirationDate,
+        purpose: '평가용도 : 기술 가치금액 참고용',
         targetPatent: this.targetPatent,
         techLife: this.techLife + this.cashFlow,
         royaltyRate: this.royaltyRate,
         discountRate: this.discountRate,
         techPrice: this.techPrice
-      }
+      }]
     },
+
+    expirationDate() {
+      let sample = this.summaryData.expirationDate
+      return !sample ? '' : `<span class="light-blue--text">${this.summaryData.expirationDate}</span>`
+    },
+
     targetPatent() {
       let sample = this.summaryData.targetPatent
-      let result = `평가대상 특허 : 등록 ${sample.length}건\n`
-      for (let i = 0; i < sample.length; i++) {
-        let temp = sample[i];
-        result += `\n<span class="mb-0 light-blue--text">${temp}</span>`
-      }
+      let result = `평가대상 특허 : 등록 ${!sample ? '' : '1'}건\n`
+      result += `\n<span class="mb-0 light-blue--text">${sample}</span>`
       return result
     },
 
@@ -152,11 +173,11 @@ export default {
 
     royaltyRate() {
       let sample = this.summaryData.royaltyRate
-      return `매출액 추정 : 직접 추정 (시장 점유율법)\n로열티 : 업종별 상관행법 X 로열티율 조정계수 = <span class="light-blue--text">${sample}%</span>`
+      return `매출액 추정 : 직접 추정 (시장 점유율법)\n로열티 : 업종별 상관행법 X 로열티율 조정계수 = <span class="light-blue--text">${sample}</span>`
     },
 
     discountRate() {
-      return `할인율 : <span class="light-blue--text">${this.summaryData.discountRate}%</span>\n업종 : <span class="light-blue--text">${this.summaryData.industrialCode}</span>\n기업분류 : <span class="light-blue--text">${this.summaryData.enterpriseType}</span>`
+      return `할인율 : <span class="light-blue--text">${this.summaryData.discountRate}</span>\n업종 : <span class="light-blue--text">${this.summaryData.industrialCode}</span>\n기업분류 : <span class="light-blue--text">${this.summaryData.enterpriseType}</span>`
     },
 
     techPrice() {
