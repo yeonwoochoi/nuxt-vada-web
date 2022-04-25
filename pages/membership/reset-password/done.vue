@@ -41,7 +41,6 @@ export default {
     this.$store.commit('setSheetTitle', '비밀번호 재설정')
   },
   destroyed() {
-    console.log('destroyed - done')
     this.$store.commit('user/resetEmailForPwdReset')
     this.$store.commit('user/resetPwdResetSuccess')
   },
