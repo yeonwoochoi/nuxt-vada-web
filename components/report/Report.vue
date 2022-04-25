@@ -25,10 +25,6 @@ function loadFile(url, callback) {
 
 export default {
   name: "Report",
-  mounted() {
-    let d = getReportData()
-    console.dir(d)
-  },
   data: () => ({
 
   }),
