@@ -78,16 +78,18 @@
                         :disabled="searchLoading"
                       >
                     </div>
-                    <download-button
-                      :link="`ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`"
+                    <button
+                      type="button"
+                      class="no-background-hover elevation-0 mx-2 subtitle-2 font-weight-bold"
+                      @click="downloadSampleFile"
+                      style="background-color: transparent; color: #666666; height: fit-content"
+                      :disabled="searchLoading"
                     >
-                      <template>
-                        <span>
+                      <span>
                           <v-icon>mdi-file-download</v-icon>
                           양식 다운로드
                         </span>
-                      </template>
-                    </download-button>
+                    </button>
                   </div>
                 </v-card>
               </v-col>
@@ -397,10 +399,24 @@ export default {
       this.$store.commit('patent/setPatentNumber', item.content.applicationNumber);
       this.$router.push('/service/evaluation')
     },
-    // 일괄 평가
-    // 기능에서 뺌 (checkbox로 선택해서 하려고 했는데)
-    evaluateSelectedAll() {
-      console.dir(this.selected)
+    downloadSampleFile() {
+      this.$store.dispatch('patent/downloadSampleFile', 'MultiPatent').then(
+        res => {
+          let blob = new Blob([res], {type: "application/vnd.ms-excel"});
+          let objectUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = objectUrl;
+          link.setAttribute('download', 'template.xls');
+          document.body.appendChild(link);
+          link.click();
+        },
+        err => {
+          this.$notifier.showMessage({
+            content: err,
+            color: 'error'
+          })
+        }
+      )
     },
   }
 }
