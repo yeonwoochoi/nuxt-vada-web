@@ -14,11 +14,13 @@
                       outlined
                       hide-details
                       class="pr-sm-4 my-2"
+                      :disabled="isDownload"
                     />
                     <custom-button
                       :width="`100`"
                       :text="`검색`"
                       @submit="searchData"
+                      :is-disable="isDownload"
                     />
                   </v-card-title>
                 </v-card>
@@ -44,6 +46,7 @@
                       class="elevation-0 mt-4 mb-6"
                       color="primary"
                       @click="downloadSelectedAll"
+                      :loading="isDownload"
                     >
                       보고서다운
                     </v-btn>
@@ -72,29 +75,37 @@
                             {{ item.content.applicantName }}
                           </span>
                         </v-col>
-                        <v-col md="6" cols="12" class="pb-0 pb-md-3">
+                        <v-col md="6" cols="12" class="pb-0">
                           <span>
                             <em class="mr-1">평가금액</em>
                             {{ item.content.price }}
                           </span>
                         </v-col>
-                        <v-col md="6" cols="12" class="pb-0 pb-md-3">
+                        <v-col md="6" cols="12" class="pb-0">
                           <span>
                             <em class="mr-1">보고서만료일</em>
                             {{ item.content.expirationDate }}
+                          </span>
+                        </v-col>
+                        <v-col md="6" cols="12" class="pb-0 pb-md-3">
+                          <span>
+                            <em class="mr-1">등록상태</em>
+                            {{ item.content.status }}
                           </span>
                         </v-col>
                       </v-row>
                     </td>
                   </template>
                   <template v-slot:item.detailReport="{item}">
-                    <download-button
-                      :link="item.content.detailReportLink"
+                    <v-btn
+                      class="elevation-0 pa-0 no-background-hover"
+                      :ripple="false"
+                      @click="download(item)"
+                      color="transparent"
+                      :disabled="isDownload"
                     >
-                      <template v-slot:default>
-                        <v-icon color="black">mdi-file-download</v-icon>
-                      </template>
-                    </download-button>
+                      <v-icon>mdi-file-download</v-icon>
+                    </v-btn>
                   </template>
                   <template v-slot:item.summaryReport="{item}">
                     <v-btn
@@ -102,6 +113,7 @@
                       :ripple="false"
                       @click="goToSummaryReport(item)"
                       color="transparent"
+                      :disabled="isDownload"
                     >
                       <v-icon>mdi-note-text</v-icon>
                     </v-btn>
@@ -112,6 +124,7 @@
                       :ripple="false"
                       @click="goToDetail(item)"
                       color="transparent"
+                      :disabled="isDownload"
                     >
                       <v-icon>mdi-chart-box</v-icon>
                     </v-btn>
@@ -124,6 +137,7 @@
                       prev-icon="mdi-menu-left"
                       next-icon="mdi-menu-right"
                       class="mt-6"
+                      :disabled="isDownload"
                     />
                   </template>
                 </v-data-table>
@@ -145,47 +159,50 @@ export default {
   name: "evaluationList",
   components: {CustomButton, DownloadButton, MainCard},
   asyncData({ store, $util }) {
-    return {
-      evaluations: [
-        {
-          indexNo: 1,
-          content: {
-            inventionTitle: '이미지센서 셀, 상기 이미지센서 셀들을 복수 개 구비하는 이미지센서 어레이를 구비하는 이미지센서 및\n' +
-              '                    상기 이미지센서를 구비하는 카메라시스템(Image sensor cell, image sensor including image\n' +
-              '                    sensor array including plurality of the image sensor cells and camera\n' +
-              '                    system including the image sensor)',
-            registerNumber: '1019870006388',
-            registerDate: '1987/07/11',
-            applicationNumber: '1020147002912',
-            applicantName: '삼성전자주식회사',
-            personName: '권리자명',
-            link: $util.getKiprisDoiLink('1020147002912'),
-            detailReportLink: `ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`,
-            price: '10000 KRW',
-            expirationDate: '2021-03-30 ~ 2022-03-30',
-          }
-        },
-        {
-          indexNo: 2,
-          content: {
-            inventionTitle: '에스트로겐 수용체 억제제로서의 벤조티오펜 유도체',
-            registerNumber: '10-2016-7002876',
-            registerDate: '1987/07/11',
-            applicationNumber: '1020167002876',
-            applicantName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
-            personName: '글락소스미스클라인 인털렉츄얼 프로퍼티 디벨로프먼트 리미티드',
-            link: $util.getKiprisDoiLink('1020147002912'),
-            detailReportLink: `ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`,
-            price: '12000 KRW',
-            expirationDate: '2022-02-15 ~ 2023-02-15',
-          }
-        },
-      ]
-    }
+    return store.dispatch('patent/getEvaluationList').then(
+      res => {
+        let result = [];
+        for (let i = 0; i < res.length; i++) {
+          let temp = res[i]
+          result.push({
+            id: temp['id'],
+            summaryId: temp['summaryId'],
+            content: {
+              inventionTitle: temp['patent']['items'][0]['inventionTitle'],
+              registerNumber: temp['patent']['items'][0]['registerNumber'],
+              registerDate: temp['patent']['items'][0]['registerDate'],
+              applicationNumber: temp['patent']['items'][0]['applicationNumber'],
+              applicantName: temp['patent']['items'][0]['applicantName'],
+              personName: '',
+              link: $util.getKiprisDoiLink(temp['patent']['items'][0]['applicationNumber']),
+              price: '12000 KRW',
+              expirationDate: temp['reportExpiredAt'],
+              status: temp['patent']['items'][0]['registerStatus']
+            }
+          })
+        }
+        return {
+          fetchError: null,
+          evaluations: result
+        }
+      },
+      err => {
+        return {
+          fetchError: err,
+          evaluations: []
+        }
+      }
+    )
   },
   created() {
     this.$store.commit('setSheetTitle', '평가목록조회')
     this.$store.commit('patent/resetSelectedEval')
+    if (!!this.fetchError) {
+      this.$notifier.showMessage({
+        content: this.fetchError,
+        color: 'error'
+      })
+    }
   },
   data: () => ({
     header: '평가결과조회',
@@ -233,6 +250,7 @@ export default {
         value: 'detail',
       },
     ],
+    isDownload: false
   }),
   computed: {
     selected: {
@@ -248,16 +266,25 @@ export default {
     },
   },
   methods: {
-    goToSummaryReport({content}) {
-      // TODO: summary Id 로 바꾸기
-      this.$router.push('/service/evaluation/summary/' + content.applicationNumber)
+    goToSummaryReport(item) {
+      this.$router.push('/service/evaluation/summary/' + item.summaryId)
     },
     goToDetail({content}) {
       this.$router.push('/service/analysis/' + content.applicationNumber)
     },
-    downloadSelectedAll() {
-      console.dir(this.selected)
-      console.dir(this.selected.length)
+    async downloadSelectedAll() {
+      if (!this.selected) {
+        this.$notifier.showMessage({
+          content: '선택한 평가가 없습니다.',
+          color: 'error'
+        })
+        return
+      }
+      this.isDownload = true;
+      for (let i = 0; i < this.selected.length; i++) {
+        await this.download(this.selected[i])
+      }
+      this.isDownload = false;
     },
     searchData() {
       this.search = this.tempSearch
@@ -269,6 +296,28 @@ export default {
         return items;
       }
       return null
+    },
+    async download(item) {
+      let payload = {
+        evaluationId: item.id
+      }
+      await this.$store.dispatch('patent/downloadReport', payload).then(
+        res => {
+          let blob = new Blob([res], {type: "application/x-hwp, application/haansofthwp, application/vnd.hancom.hwp"});
+          let objectUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = objectUrl;
+          link.setAttribute('download', 'report.hwp');
+          document.body.appendChild(link);
+          link.click();
+        },
+        err => {
+          this.$notifier.showMessage({
+            content: err,
+            color: 'error'
+          })
+        }
+      )
     }
   },
 }
