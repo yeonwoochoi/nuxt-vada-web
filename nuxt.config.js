@@ -86,8 +86,7 @@ export default {
           type: 'Bearer',
           name: 'Authorization',
           global: true,   // request header 에 authentication 으로 자동 포함됨
-          maxAge: 60  // 30분
-          //maxAge: 1800  // 30분
+          maxAge: 1800  // 30분
         },
         refreshToken: {
           property: 'token.refresh_token',
