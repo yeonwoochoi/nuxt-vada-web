@@ -80,11 +80,14 @@
             <v-icon class="ml-3">mdi-arrow-right</v-icon>
           </v-btn>
         </v-col>
-        <v-col cols="11" md="7" class="pl-4">
+        <v-col cols="11" md="7" class="pl-4" v-if="!!newsItems">
           <div v-for="(item, index) in newsItems" :key="index" @click="moveTo(item)" style="cursor:pointer;" class="mb-4">
             <p class="font-weight-bold">{{ item.title }}</p>
             <v-divider v-if="index < newsItems.length-1"/>
           </div>
+        </v-col>
+        <v-col cols="11" md="7" class="pl-4" v-else>
+          <p class="font-weight-bold">{{ '공지사항이 없습니다' }}</p>
         </v-col>
       </v-row>
     </v-container>
