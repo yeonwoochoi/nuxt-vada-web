@@ -12,25 +12,21 @@
         />
       </v-col>
       <div style="display: flex;" class="mt-6 mb-4">
-        <download-button
-          class="mx-1"
-          :link="downloadLink"
-        >
-          <custom-button
-            class="mx-1 darken-1"
-            :link="downloadLink"
-            :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
-            :color="'primary'"
-            :text="`구매하기`"
-            style="min-width: 140px;"
-          />
-        </download-button>
+        <custom-button
+          class="mx-1 darken-1"
+          :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
+          :color="'primary'"
+          :text="`구매하기`"
+          @submit="purchase"
+          :loading="isDownload"
+        />
         <custom-button
           class="mx-1"
           :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
           :color="'primary'"
           :text="`메인으로`"
           @submit="$router.push('/')"
+          :is-disable="isDownload"
         />
       </div>
     </v-row>
@@ -39,16 +35,12 @@
 
 <script>
 import CustomButton from "../../button/CustomButton";
-import DownloadButton from "../../button/DownloadButton";
 import VerticalHeaderTable from "../../table/VerticalHeaderTable";
 
 export default {
   name: "ResultSummaryCard",
-  components: {VerticalHeaderTable, DownloadButton, CustomButton},
+  components: {VerticalHeaderTable, CustomButton},
   props: {
-    downloadLink: {
-      type: String,
-    },
     summaryData: {
       type: Object,
       default: () => { return {} }
@@ -82,6 +74,7 @@ export default {
         value: 'techPrice',
       },
     ],
+    isDownload: false,
   }),
   computed: {
     targetPatent() {
@@ -131,6 +124,14 @@ export default {
       ]
     }
   },
+  methods: {
+    async purchase() {
+      this.isDownload = true;
+      await this.$emit('purchaseReport', this.summaryData.id, () => {
+        this.isDownload = false;
+      })
+    }
+  }
 }
 </script>
 
