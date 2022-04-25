@@ -163,11 +163,13 @@
         label="사업자등록증 (pdf 파일)"
         @change="handleImageFileSelect"
       />
+      <!--
       <v-row align="start" justify="start" v-if="previewImgUrl">
         <v-col cols="12" class="mb-6">
           <img :src="previewImgUrl" style="min-height: 128px; max-height: 200px;" alt="businessRegistrationFile"/>
         </v-col>
       </v-row>
+      -->
     </validation-provider>
     <div class="mt-6" style="display: flex; align-items: center; justify-content: center">
       <custom-button
