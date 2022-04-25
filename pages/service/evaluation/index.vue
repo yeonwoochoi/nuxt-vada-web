@@ -48,7 +48,7 @@
                       </validation-observer>
                       <v-form v-if="n.step === 5" ref="stepForm" v-model="n.valid" lazy-validation>
                         <result-summary-card
-                          :download-link="`ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`"
+                          @purchaseReport="purchase"
                           :summary-data="summaryData"
                         />
                       </v-form>
@@ -85,8 +85,25 @@ export default {
     this.$store.commit('setSheetTitle', '특허평가')
   },
   beforeRouteLeave(to, from, next) {
+    if (!this.isPurchase && this.isLastStep) {
+      this.removeReport(() => {
+        this.$store.commit('patent/resetTempEvalData')
+        next()
+      })
+    }
+    else {
+      this.$store.commit('patent/resetTempEvalData')
+      next()
+    }
+  },
+  destroyed() {
+    if (!this.isPurchase && this.isLastStep) {
+      this.removeReport(() => {
+        this.$store.commit('patent/resetTempEvalData')
+      })
+      return;
+    }
     this.$store.commit('patent/resetTempEvalData')
-    next()
   },
   data: () => ({
     header: '특허 평가',
@@ -99,9 +116,10 @@ export default {
       { step: 5, header: '분석 결과 요약', valid: true, errorMsg: '' },
     ],
     lastStep: 5,
-    loading: false,
     summaryData: null,
     ksic: {},
+    isPurchase: false,
+    isRemoving: false
   }),
   computed: {
     isLastStep() {
@@ -224,6 +242,57 @@ export default {
         }
       )
     },
+
+    async purchase(summaryId, callback) {
+      let body = {
+        summaryId: summaryId
+      }
+      await this.$store.dispatch('patent/purchaseReport', body).then(
+        res => {
+          let blob = new Blob([res], {type: "application/x-hwp, application/haansofthwp, application/vnd.hancom.hwp"});
+          let objectUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = objectUrl;
+          link.setAttribute('download', 'report.hwp');
+          document.body.appendChild(link);
+          link.click();
+          callback()
+          this.isPurchase = true;
+        },
+        err => {
+          this.$notifier.showMessage({
+            content: err,
+            color: 'error'
+          })
+          callback()
+          this.isPurchase = false;
+        }
+      )
+    },
+
+    async removeReport (callback) {
+      if (this.isRemoving) return;
+      this.isRemoving = true;
+      if (!this.isPurchase) {
+        this.$store.dispatch('patent/removeReport', this.summaryData.id).then(
+          res => {
+            this.isRemoving = false;
+            callback()
+          },
+          err => {
+            this.isRemoving = false;
+            this.$notifier.showMessage({
+              content: err,
+              color: 'error'
+            })
+          }
+        )
+      }
+      else {
+        this.isRemoving = false;
+        callback()
+      }
+    }
   },
 }
 </script>
