@@ -191,7 +191,7 @@ export default {
         res => {
           if (!res) {
             this.$notifier.showMessage({
-              content: '',
+              content: '특허 평가 결과 데이터가 없습니다.',
               color: 'error'
             })
             callback(true);
@@ -199,20 +199,19 @@ export default {
           }
           let randomNumber = Math.floor(Math.random() * 10000) + 1;
           let inputData = this.$store.getters["patent/getTempEvalData"]
-          let currentYear = parseInt(new Date().getFullYear())
           this.summaryData =  {
+            id: res['id'],
+            reportExpiredAt: res['reportExpiredAt'],
             targetPatentList: [
-              'KR ' + inputData.patentNumber,
+              res['patentNumber'],
             ],
-            techLife: res['cashFlowResult']['techLifeTime'],
-            cashFlowFrom: currentYear,
-            cashFlowTo: currentYear + res['cashFlowResult']['cashFlowPeriod'] - 1,
-            royalty: res['royaltyRateResult']['finalRoyaltyRate'] * 100,
-            discountRate: res['discountRateResult']['discountRateSum'],
-            industrialCode: `${inputData.ksic.title} (${inputData.ksic.code})`,
-            enterpriseType: inputData.businessScale.original,
-            techPriceFrom: randomNumber,
-            techPriceTo: randomNumber + 1,
+            cashFlowPeriod: res['cashFlowPeriod'],
+            techLifeTime: res['techLifeTime'],
+            royaltyRate: res['royaltyRate'],
+            discountRate: res['discountRate'],
+            industryCode: `${inputData.ksic.title} (${inputData.ksic.code})`,
+            companySize: res['companySize'],
+            companyValue: randomNumber
           }
           callback();
         },

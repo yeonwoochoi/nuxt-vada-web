@@ -96,26 +96,26 @@ export default {
 
     techLife() {
       // TODO: Sample
-      let sample = this.summaryData.techLife
+      let sample = this.summaryData.techLifeTime
       return `기술의 경제적 수명 : <span class="light-blue--text">${sample}</span>년\n`
     },
 
     cashFlow() {
-      let sample = this.summaryData
-      return `현금흐름 추정기간 : <span class="light-blue--text">${sample.cashFlowFrom} ~ ${sample.cashFlowTo}</span>`
+      let sample = this.summaryData.cashFlowPeriod
+      return `현금흐름 추정기간 : <span class="light-blue--text">${sample}</span>`
     },
 
     royaltyRate() {
-      let sample = this.summaryData.royalty
-      return `매출액 추정 : 직접 추정 (시장 점유율법)\n로열티 : 업종별 상관행법 X 로열티율 조정계수 = <span class="light-blue--text">${sample}%</span>`
+      let sample = this.summaryData.royaltyRate
+      return `매출액 추정 : 직접 추정 (시장 점유율법)\n로열티 : 업종별 상관행법 X 로열티율 조정계수 = <span class="light-blue--text">${sample}</span>`
     },
 
     discountRate() {
-      return `할인율 : <span class="light-blue--text">${this.summaryData.discountRate}%</span>\n업종 : <span class="light-blue--text">${this.summaryData.industrialCode}</span>\n기업분류 : <span class="light-blue--text">${this.summaryData.enterpriseType}</span>`
+      return `할인율 : <span class="light-blue--text">${this.summaryData.discountRate}</span>\n업종 : <span class="light-blue--text">${this.summaryData.industryCode}</span>\n기업분류 : <span class="light-blue--text">${this.summaryData.companySize}</span>`
     },
 
     techPrice() {
-      return `기술가치 = <span class="light-blue--text">${this.summaryData.techPriceFrom} ~ ${this.summaryData.techPriceTo}</span> 백만원 (구매를 하지 않은 경우 임의의 수가 생성됩니다.)`
+      return `기술가치 = <span class="light-blue--text">${this.summaryData.companyValue}</span> 백만원 (구매를 하지 않은 경우 임의의 수가 생성됩니다.)`
     },
 
     summaryContent() {

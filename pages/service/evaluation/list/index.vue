@@ -255,14 +255,6 @@ export default {
     goToDetail({content}) {
       this.$router.push('/service/analysis/' + content.applicationNumber)
     },
-    changePage() {
-      let query = { page: this.currentPage }
-      if (!!this.search) query.keyword = this.search;
-      this.$router.push({
-        path: this.currentPath,
-        query: query
-      })
-    },
     downloadSelectedAll() {
       console.dir(this.selected)
       console.dir(this.selected.length)

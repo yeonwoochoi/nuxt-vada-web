@@ -66,12 +66,12 @@ export const actions = {
       ...state.tempEvalData.sales,
       "companySize": state.tempEvalData.businessScale.data,
       "patentNumber": state.tempEvalData.patentNumber,
-      "industryCode": state.tempEvalData.ksic.code,
+      "industryCode": state.tempEvalData.ksic.code
     }
     return new Promise(((resolve, reject) => {
       this.$axios.$post('/patent/evaluation', params).then(res=> {
-        commit('setEvalData', res.result)
-        resolve(res.result)
+        commit('setEvalData', res['patentEvaluationSummary'])
+        resolve(res['patentEvaluationSummary'])
       }).catch(err => {
         reject(err.response.data.message)
       })
