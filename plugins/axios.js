@@ -8,10 +8,6 @@ export default ({ $axios, app, error: nuxtError }, inject) => {
 
   $axios.onError(err => {
     const code = parseInt(err.response && err.response.status)
-    nuxtError({
-      statusCode: code,
-      message: err.message,
-    });
-    return Promise.resolve(false);
+    console.error(err)
   })
 }
