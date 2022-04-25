@@ -485,6 +485,9 @@ export default {
         this.businessRegistrationFile = null
       }
     },
+    downloadFile(){
+      this.$emit('downloadTemplateFile')
+    }
   },
 }
 </script>

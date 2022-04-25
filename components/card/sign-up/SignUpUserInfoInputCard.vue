@@ -2,7 +2,7 @@
   <v-card flat style="width: 100%; height: fit-content;" class="elevation-0 mt-4 mb-4">
     <v-row align="center" justify="center" style="width: 100%; height: 100%;">
       <sign-up-private-user-info-input v-if="isPrivate" @submitUserInfo="submit" @prevStep="goPrev" @sendAuthCode="sendEmailAuthCode" @checkAuthCode="checkEmailAuthCode"/>
-      <sign-up-enterprise-user-info-input v-else @submitCompanyInfo="submit" @prevStep="goPrev" @sendAuthCode="sendEmailAuthCode" @checkAuthCode="checkEmailAuthCode"/>
+      <sign-up-enterprise-user-info-input v-else @submitCompanyInfo="submit" @prevStep="goPrev" @sendAuthCode="sendEmailAuthCode" @checkAuthCode="checkEmailAuthCode" @downloadTemplateFile="download"/>
     </v-row>
   </v-card>
 </template>
@@ -57,6 +57,9 @@ export default {
     },
     checkEmailAuthCode(email, code, callback) {
       this.$emit('checkCode', email, code, callback)
+    },
+    download() {
+      this.$emit('download')
     }
   }
 }

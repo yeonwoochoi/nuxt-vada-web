@@ -40,6 +40,7 @@
                     @prevStep="prevStep"
                     @sendCode="sendEmailAuthCode"
                     @checkCode="checkEmailAuthCode"
+                    @download="downloadFile"
                   />
                 </v-form>
               </validation-observer>
@@ -205,6 +206,25 @@ export default {
     },
     setUserType(val) {
       this.userType = val
+    },
+    downloadFile() {
+      this.$store.dispatch('patent/downloadSampleFile', 'IpEmailPair').then(
+        res => {
+          let blob = new Blob([res], {type: "application/vnd.ms-excel"});
+          let objectUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = objectUrl;
+          link.setAttribute('download', 'template.xls');
+          document.body.appendChild(link);
+          link.click();
+        },
+        err => {
+          this.$notifier.showMessage({
+            content: err,
+            color: 'error'
+          })
+        }
+      )
     }
   }
 }
