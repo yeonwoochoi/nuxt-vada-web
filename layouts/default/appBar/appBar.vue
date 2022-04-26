@@ -90,7 +90,7 @@
             >
               {{loginBtnText}}
             </v-btn>
-            <avartar-menu v-else @logout="onClickLogIn" :is-active="isActive" :email="'rud527@naver.com'" :point="10"/>
+            <avartar-menu v-else @logout="onClickLogIn" :is-active="isActive" :user-info="userInfo"/>
           </v-col>
         </v-row>
         <v-row
@@ -114,7 +114,7 @@
             >
               {{ loginBtnText }}
             </v-btn>
-            <avartar-menu v-else @logout="onClickLogIn" :is-active="isActive" :user-info="this.$auth.user"/>
+            <avartar-menu v-else @logout="onClickLogIn" :is-active="isActive" :user-info="userInfo"/>
           </v-col>
         </v-row>
       </v-container>
@@ -187,6 +187,12 @@ export default {
       //TODO (appBarSheetTitle)
       return this.sheetTitle
     },
+    userInfo() {
+      return {
+        email: this.$auth.user.email,
+        leftReport: this.$auth.user.leftReport,
+      }
+    }
   },
   methods: {
     onScroll(e) {
