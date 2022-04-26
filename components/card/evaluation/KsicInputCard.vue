@@ -31,22 +31,24 @@
           :item-text="item => item.code + ' ' + item.title"
         />
       </v-col>
-      <div style="display: flex;" class="mt-6 mb-4">
-        <custom-button
-          class="mx-1 darken-1"
-          :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
-          @submit="goNext"
-          :color="'primary'"
-          :text="`계속하기`"
-        />
-        <custom-button
-          class="mx-1"
-          :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
-          @submit="goPrev"
-          :color="'primary'"
-          :text="`이전으로`"
-        />
-      </div>
+      <v-col cols="11">
+        <div style="display: flex; justify-content: center;" class="mb-4">
+          <custom-button
+            :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
+            @submit="goNext"
+            :color="'primary'"
+            :text="`계속하기`"
+            class="darken-1"
+          />
+          <custom-button
+            class="mx-1"
+            :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
+            @submit="goPrev"
+            :color="'primary'"
+            :text="`이전으로`"
+          />
+        </div>
+      </v-col>
     </v-row>
   </v-card>
 </template>

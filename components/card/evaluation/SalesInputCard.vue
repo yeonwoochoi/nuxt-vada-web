@@ -89,10 +89,10 @@
           </div>
         </v-col>
       </v-expand-transition>
-      <v-col cols="12">
+      <v-col cols="11">
         <div style="display: flex; justify-content: center;" class="mb-4">
           <custom-button
-            :width="`200`"
+            :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
             @submit="goNext"
             :color="'primary'"
             :text="`계속하기`"
