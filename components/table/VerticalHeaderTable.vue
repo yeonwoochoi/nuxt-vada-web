@@ -73,7 +73,7 @@ pre {
 
 .v-data-table td {
   border: 1px solid #e5e5e5 !important;
-  min-width: 135px;
+  min-width: 180px;
   width: fit-content;
 }
 .v-data-table tbody tr {
