@@ -405,9 +405,6 @@ export default {
       else if (!this.ipFile) {
         errorMsg = 'IP 파일 첨부가 필요합니다.'
       }
-      else if (!this.isAuthorized) {
-        errorMsg = '이메일 인증이 필요합니다.'
-      }
       else {
         errorMsg = '입력한 정보를 확인해 주세요.'
       }
