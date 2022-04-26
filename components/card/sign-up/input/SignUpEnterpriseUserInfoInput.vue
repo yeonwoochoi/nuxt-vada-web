@@ -192,10 +192,10 @@
 </template>
 
 <script>
-import CustomButton from "../button/CustomButton";
+import CustomButton from "../../../button/CustomButton";
 import { required, email, confirmed } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from "vee-validate";
-import DownloadButton from "../button/DownloadButton";
+import DownloadButton from "../../../button/DownloadButton";
 
 setInteractionMode('eager')
 

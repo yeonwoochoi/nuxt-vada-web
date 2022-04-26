@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import SignUpEnterpriseUserInfoInput from "../../input/SignUpEnterpriseUserInfoInput";
-import SignUpPrivateUserInfoInput from "../../input/SignUpPrivateUserInfoInput";
+import SignUpEnterpriseUserInfoInput from "./input/SignUpEnterpriseUserInfoInput";
+import SignUpPrivateUserInfoInput from "./input/SignUpPrivateUserInfoInput";
 
 export default {
   name: "SignUpUserInfoInputCard",

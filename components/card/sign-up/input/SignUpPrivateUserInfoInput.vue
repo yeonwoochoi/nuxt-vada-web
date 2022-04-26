@@ -127,7 +127,7 @@
 <script>
 import { required, email, confirmed } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from "vee-validate";
-import CustomButton from "../button/CustomButton";
+import CustomButton from "../../../button/CustomButton";
 
 setInteractionMode('eager')
 
