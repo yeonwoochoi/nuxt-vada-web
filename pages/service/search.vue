@@ -75,13 +75,14 @@
                         type="file"
                         id="searchFile"
                         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+
                         :disabled="searchLoading"
                       >
                     </div>
                     <button
                       type="button"
                       class="no-background-hover elevation-0 mx-2 subtitle-2 font-weight-bold"
-                      @click="downloadSampleFile"
+                      @click="downloadTemplateFile"
                       style="background-color: transparent; color: #666666; height: fit-content"
                       :disabled="searchLoading"
                     >
@@ -399,8 +400,8 @@ export default {
       this.$store.commit('patent/setPatentNumber', item.content.applicationNumber);
       this.$router.push('/service/evaluation')
     },
-    downloadSampleFile() {
-      this.$store.dispatch('patent/downloadSampleFile', 'MultiPatent').then(
+    downloadTemplateFile() {
+      this.$store.dispatch('patent/downloadTemplateFile', 'MultiPatent').then(
         res => {
           let blob = new Blob([res], {type: "application/vnd.ms-excel"});
           let objectUrl = URL.createObjectURL(blob);

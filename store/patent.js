@@ -129,7 +129,7 @@ export const actions = {
   },
   // 기업회원가입시 IP Email: IpEmailPair
   // 특허검색 시 Template: MultiPatent
-  async downloadSampleFile({commit}, params) {
+  async downloadTemplateFile({commit}, params) {
     const config = {
       headers: {
         'Content-Type': 'application/json',

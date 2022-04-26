@@ -22,7 +22,7 @@ export default {
   auth: false,
   methods: {
     downloadFile() {
-      this.$store.dispatch('patent/downloadSampleFile', 'IpEmailPair').then(
+      this.$store.dispatch('patent/downloadTemplateFile', 'IpEmailPair').then(
         res => {
           let blob = new Blob([res], {type: "application/vnd.ms-excel"});
           let objectUrl = URL.createObjectURL(blob);

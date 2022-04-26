@@ -140,16 +140,19 @@
       />
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <download-button
-            :link="`ai.kunsan.ac.kr:3000/uploads/files-1637042697203.pdf`"
+          <button
+            type="button"
+            class="no-background-hover elevation-0 mx-2 subtitle-2 font-weight-bold"
+            @click="downloadFile"
+            style="background-color: transparent; color: #666666; height: fit-content"
+            v-bind="attrs"
+            v-on="on"
           >
-            <template>
-              <span v-bind="attrs" v-on="on">
-                <v-icon>mdi-file-download</v-icon>
-                양식 다운로드
-              </span>
-            </template>
-          </download-button>
+            <span>
+              <v-icon>mdi-file-download</v-icon>
+              양식 다운로드
+            </span>
+          </button>
         </template>
         <span style="white-space: pre-line">{{ipTooltip}}</span>
       </v-tooltip>
@@ -433,9 +436,9 @@ export default {
       this.$emit('prevStep')
     },
     handleImageFileSelect() {
-      this.previewImg();
+      this.checkInputFileValidity();
     },
-    previewImg() {
+    checkInputFileValidity() {
       if (!!this.businessRegistrationFile) {
         let selectFile = this.businessRegistrationFile;
         //this.uploadFiles[i].file = selectFile;
