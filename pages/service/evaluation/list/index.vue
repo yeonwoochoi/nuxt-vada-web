@@ -314,7 +314,7 @@ export default {
         },
         err => {
           this.$notifier.showMessage({
-            content: err,
+            content: "보고서 다운 중 오류가 발생했습니다. 다시 시도해주세요.",
             color: 'error'
           })
         }

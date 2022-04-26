@@ -12,14 +12,32 @@
         />
       </v-col>
       <div style="display: flex;" class="mt-6 mb-4">
-        <custom-button
-          class="mx-1 darken-1"
-          :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
-          :color="'primary'"
-          :text="`구매하기`"
-          @submit="purchase"
-          :loading="isDownload"
-        />
+        <v-dialog
+          v-model="isPurchaseDialogOpen"
+          max-width="350"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              x-large
+              v-on="on"
+              v-bind="attrs"
+              color="primary"
+              :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
+              :loading="isDownload"
+              height="52px"
+              class="mx-1 darken-1 font-weight-bold"
+              style="letter-spacing: 1px; text-transform: none;"
+            >
+              구매하기
+            </v-btn>
+          </template>
+          <confirmation-dialog
+            @cancel="isPurchaseDialogOpen = false"
+            @ok="purchase"
+            :title="purchaseDialogTitle"
+            :comment="purchaseDialogContent"
+          />
+        </v-dialog>
         <custom-button
           class="mx-1"
           :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
@@ -36,10 +54,11 @@
 <script>
 import CustomButton from "../../button/CustomButton";
 import VerticalHeaderTable from "../../table/VerticalHeaderTable";
+import ConfirmationDialog from "../../dialogue/ConfirmationDialog";
 
 export default {
   name: "ResultSummaryCard",
-  components: {VerticalHeaderTable, CustomButton},
+  components: {ConfirmationDialog, VerticalHeaderTable, CustomButton},
   props: {
     summaryData: {
       type: Object,
@@ -75,6 +94,9 @@ export default {
       },
     ],
     isDownload: false,
+    isPurchaseDialogOpen: false,
+    purchaseDialogTitle: '특허평가 보고서 구매',
+    purchaseDialogContent: '보고서 구매시, 포인트가 차감됩니다. 1년 사용권을 가지고 있는 경우 별도로 포인트가 차감되지 않습니다. 정말 구매하시겠습니까?',
   }),
   computed: {
     targetPatent() {
@@ -127,8 +149,16 @@ export default {
   methods: {
     async purchase() {
       this.isDownload = true;
-      await this.$emit('purchaseReport', this.summaryData.id, () => {
+      this.isPurchaseDialogOpen = false
+      await this.$emit('purchaseReport', this.summaryData.id, (success, msg) => {
         this.isDownload = false;
+        alert(msg)
+        if (success) {
+          this.$router.push('/service/evaluation/list')
+        }
+        else {
+          this.$router.push('/service/fee')
+        }
       })
     }
   }

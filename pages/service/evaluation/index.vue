@@ -256,16 +256,12 @@ export default {
           link.setAttribute('download', 'report.hwp');
           document.body.appendChild(link);
           link.click();
-          callback()
           this.isPurchase = true;
+          callback(true, "구매 완료되었습니다.")
         },
         err => {
-          this.$notifier.showMessage({
-            content: err,
-            color: 'error'
-          })
-          callback()
           this.isPurchase = false;
+          callback(false, (err.code === 1 && err.subCode === 1010) ? '포인트가 부족합니다.' : '구매 처리 중 오류가 발생했습니다.')
         }
       )
     },
