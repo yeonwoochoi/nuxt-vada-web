@@ -36,7 +36,7 @@
                   @page-count="totalPage = $event"
                   :mobile-breakpoint="600"
                   show-select
-                  item-key="content.applicationNumber"
+                  item-key="id"
                   :no-data-text="noDataText"
                   :search="search"
                   :custom-filter="customFilter"
@@ -165,6 +165,7 @@ export default {
         for (let i = 0; i < res.length; i++) {
           let temp = res[i]
           result.push({
+            no: i+1,
             id: temp['id'],
             summaryId: temp['summaryId'],
             content: {
@@ -218,7 +219,7 @@ export default {
         align: 'center',
         sortable: false,
         filterable: false,
-        value: 'indexNo',
+        value: 'no',
         width: '7%'
       },
       {
