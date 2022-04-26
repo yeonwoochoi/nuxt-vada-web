@@ -81,6 +81,7 @@
           </v-col>
           <v-col cols="2" align="center">
             <v-btn
+              v-if="!this.$auth.loggedIn"
               class="no-background-hover elevation-0 font-weight-bold"
               :ripple="false"
               @click="onClickLogIn"
@@ -89,6 +90,7 @@
             >
               {{loginBtnText}}
             </v-btn>
+            <avartar-menu v-else @logout="onClickLogIn" :is-active="isActive" :email="'rud527@naver.com'" :point="10"/>
           </v-col>
         </v-row>
         <v-row
@@ -101,6 +103,7 @@
           </v-col>
           <v-col cols="4" align="end">
             <v-btn
+              v-if="!this.$auth.loggedIn"
               class="no-background-hover"
               :class="`elevation-0 subtitle-1 ${isActive ? 'black--text' : 'white--text'} font-weight-medium`"
               :ripple="false"
@@ -111,6 +114,7 @@
             >
               {{ loginBtnText }}
             </v-btn>
+            <avartar-menu v-else @logout="onClickLogIn" :is-active="isActive" :user-info="this.$auth.user"/>
           </v-col>
         </v-row>
       </v-container>
@@ -130,9 +134,11 @@ import {mapState, mapGetters} from 'vuex'
 import CompanyLogoBtn from "../../../components/button/CompanyLogoBtn";
 import AppBarSheetView from "../../../components/sheet/appBar/AppBarSheetView";
 import AppBarMainSheetView from "../../../components/sheet/appBar/AppBarMainSheetView";
+import AvartarMenu from "../../../components/dropdown/AvartarMenu";
 export default {
   name: "DefaultAppBar",
   components: {
+    AvartarMenu,
     AppBarMainSheetView,
     AppBarSheetView,
     CompanyLogoBtn
@@ -141,7 +147,8 @@ export default {
     isScrolled: false,
     isHovered: false,
     isLogin: false,
-    appBarHeight: 100
+    appBarHeight: 100,
+    loginBtnText: '로그인'
   }),
   computed: {
     ...mapState({
@@ -152,9 +159,6 @@ export default {
       toolbarItems: 'toolbarItems',
       sheetTitle: 'getSheetTitle'
     }),
-    loginBtnText() {
-      return this.$auth.loggedIn ? '로그아웃' : '로그인'
-    },
     getColor() {
       return this.isActive ? 'rgba(255, 255, 255, 255)' : 'rgba(255, 255, 255, 0)'
     },
