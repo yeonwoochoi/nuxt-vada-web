@@ -15,6 +15,19 @@ class Utils {
   static getKiprisDoiLink(applicantNumber) {
     return 'https://doi.org/10.8080/' + applicantNumber
   }
+  static getCurrentYear() {
+    const now = new Date();
+    const utcNow = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+    const koreaTimeDiff = 9 * 60 * 60 * 1000;
+    const koreaNow = new Date(utcNow + koreaTimeDiff);
+    return koreaNow.getMonth() + 1 <= 6 ? koreaNow.getFullYear() - 1 : koreaNow.getFullYear();
+  }
+  static getCurrentDate() {
+    const now = new Date();
+    const utcNow = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+    const koreaTimeDiff = 9 * 60 * 60 * 1000;
+    return new Date(utcNow + koreaTimeDiff)
+  }
 }
 
 export default (context, inject) => {
