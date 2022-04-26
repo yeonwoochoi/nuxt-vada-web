@@ -16,13 +16,13 @@
         <v-col cols="11" md="8" v-if="hasSales">
           <div style="display: flex; align-items: center; justify-content: space-around">
             <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
-              {{recentYear-2 + '년'}}
+              {{currentYear-2 + '년'}}
             </v-subheader>
             <v-text-field
               @keypress="isNumber($event)"
               class="pr-2"
               v-model="salesData.firstRevenue"
-              :label="`${recentYear-2}년 매출액`"
+              :label="`${currentYear-2}년 매출액`"
               suffix="백만원"
               flat
               outlined
@@ -31,13 +31,13 @@
           </div>
           <div style="display: flex; align-items: center; justify-content: space-around">
             <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
-              {{recentYear-1 + '년'}}
+              {{currentYear-1 + '년'}}
             </v-subheader>
             <v-text-field
               @keypress="isNumber($event)"
               class="pr-2"
               v-model="salesData.secondRevenue"
-              :label="`${recentYear-1}년 매출액`"
+              :label="`${currentYear-1}년 매출액`"
               suffix="백만원"
               flat
               outlined
@@ -46,13 +46,13 @@
           </div>
           <div style="display: flex; align-items: center; justify-content: space-around">
             <v-subheader v-if="$vuetify.breakpoint.mdAndUp" class="px-6 pb-6">
-              {{recentYear + '년'}}
+              {{currentYear + '년'}}
             </v-subheader>
             <v-text-field
               @keypress="isNumber($event)"
               class="pr-2"
               v-model="salesData.thirdRevenue"
-              :label="`${recentYear}년 매출액`"
+              :label="`${currentYear}년 매출액`"
               suffix="백만원"
               flat
               outlined
@@ -130,8 +130,8 @@ export default {
     precaution: '＊실제 매출과 다르게 적을 경우 결과가 다르게 나올 수 있습니다.'
   }),
   computed: {
-    recentYear() {
-      return parseInt(new Date().getFullYear())-1
+    currentYear() {
+      return this.$util.getCurrentYear();
     },
     rules() {
       return {
