@@ -172,14 +172,13 @@ export const actions = {
       this.$axios.$post('/patent/purchase', payload, config).then(res => {
         resolve(res)
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
 
   async removeReport({commit}, payload) {
     return new Promise(((resolve, reject) => {
-      console.log("remove!: " + payload)
       this.$axios.$delete('/patent/evaluation/'+ payload).then(res => {
         resolve(res)
       }).catch(err => {

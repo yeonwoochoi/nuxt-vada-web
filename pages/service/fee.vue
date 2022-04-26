@@ -16,15 +16,6 @@
                       :table-content="incidentPlanData"
                     />
                   </div>
-                  <div class="my-12">
-                    <v-card-title class="font-weight-medium mb-4 pr-0" style="font-size: 25px;">
-                      • 연간 요금제
-                    </v-card-title>
-                    <simple-data-table
-                      :table-header="annualPlanHeader"
-                      :table-content="annualPlanData"
-                    />
-                  </div>
                   <div class="mt-12" style="display: flex; justify-content: end">
                     <v-btn
                       x-large
@@ -36,22 +27,13 @@
                     </v-btn>
                   </div>
                 </v-card>
-                <v-card v-else class="elevation-0 px-md-12 px-6 py-12" style="background-color: #F5F5F5; width: 100%">
+                <v-card v-else class="elevation-0 px-md-12 px-6 py-16" style="background-color: #F5F5F5; width: 100%">
                   <v-container fluid>
                     <v-row align="center" justify="start">
                       <v-col cols="2" v-if="$vuetify.breakpoint.mdAndUp" align-self="start">
-                        <v-subheader>요금제선택</v-subheader>
+                        <v-subheader>신청 건수</v-subheader>
                       </v-col>
-                      <v-col cols="12" md="9" class="pt-1 mb-4">
-                        <v-radio-group v-model="planType" row>
-                          <v-radio value="incident" label="건별 요금제"/>
-                          <v-radio value="annual" label="연간 요금제"/>
-                        </v-radio-group>
-                      </v-col>
-                      <v-col cols="2" v-if="$vuetify.breakpoint.mdAndUp && !isAnnualPlan" align-self="start">
-                        <v-subheader>건별 요금제</v-subheader>
-                      </v-col>
-                      <v-col cols="12" md="9" v-if="!isAnnualPlan" class="pt-2">
+                      <v-col cols="12" md="9" class="pt-2">
                         <v-text-field
                           @keypress="isNumber($event)"
                           v-model="incidentPlanCount"
@@ -60,18 +42,6 @@
                           flat
                           outlined
                         />
-                      </v-col>
-                      <v-col cols="2" v-if="$vuetify.breakpoint.mdAndUp && isAnnualPlan" align-self="start">
-                        <v-subheader>연간 요금제</v-subheader>
-                      </v-col>
-                      <v-col cols="12" md="9" v-if="isAnnualPlan" class="pt-1">
-                        <v-radio-group v-model="annualPlanYear">
-                          <v-radio value="1" label="1년"/>
-                          <v-radio value="2" label="2년"/>
-                          <v-radio value="3" label="3년"/>
-                          <v-radio value="4" label="4년"/>
-                          <v-radio value="5" label="5년"/>
-                        </v-radio-group>
                       </v-col>
                       <v-col cols="12">
                         <v-divider/>
@@ -118,7 +88,6 @@ export default {
     this.$store.commit('setSheetTitle', '이용신청')
   },
   data: () => ({
-    header: '요금안내',
     incidentPlanHeader: [
       {
         text: '유형',
@@ -151,70 +120,19 @@ export default {
         price: '800,000'
       },
     ],
-    annualPlanHeader: [
-      {
-        text: '유형',
-        value: 'type',
-        sortable: false,
-        align: 'center'
-      },
-      {
-        text: '기간',
-        value: 'period',
-        sortable: false,
-        align: 'center'
-      },
-      {
-        text: '가격(부가세 포함)',
-        value: 'price',
-        sortable: false,
-        align: 'center'
-      },
-    ],
-    annualPlanData: [
-      {
-        type: 'VADA1',
-        period: '1년',
-        price: '1,000,000'
-      },
-      {
-        type: 'VADA2',
-        period: '2년',
-        price: '1,800,000'
-      },
-      {
-        type: 'VADA3',
-        period: '3년',
-        price: '2,500,000'
-      },
-      {
-        type: 'VADA4',
-        period: '4년',
-        price: '3,200,000'
-      },
-    ],
     isPurchasing: false,
-    planType: 'incident',
     incidentPlanCount: '',
-    annualPlanYear: '1',
 
     // TODO: 가격 정해지면 그때 ㄱㄱ.. 아니면 서버 통신 하던가
     incidentPrice: 10000,
-    annualPrice: 100000,
   }),
   computed: {
-    isAnnualPlan() {
-      return this.planType === 'annual'
-    },
     totalPrice() {
-      if (this.isAnnualPlan) {
-        let year = parseInt(this.annualPlanYear)
-        return year * this.annualPrice
-      }
-      else {
-        let count = !this.incidentPlanCount ? 0 : parseInt(this.incidentPlanCount)
-        return count * this.incidentPrice
-      }
+      let count = !this.incidentPlanCount ? 0 : parseInt(this.incidentPlanCount)
+      return count * this.incidentPrice
+    },
+    header() {
+      return this.isPurchasing ? "이용신청" : "요금안내"
     }
   },
   methods : {
@@ -227,10 +145,8 @@ export default {
     },
     applyPlan() {
       let payload = {
-        type: this.planType,
         price: this.totalPrice,
-        incidentPlan: !this.isAnnualPlan ? parseInt(this.incidentPlanCount) : null,
-        annualPlan: this.isAnnualPlan ? parseInt(this.annualPlanYear) : null
+        count: parseInt(this.incidentPlanCount)
       }
       console.log(payload)
       // TODO 결제 모듈 연동
