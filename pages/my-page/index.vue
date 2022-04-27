@@ -223,6 +223,7 @@ export default {
                   content: err,
                   color: 'error'
                 })
+                if (!!callback) callback(false, this.userInfo);
               }
             )
           }
