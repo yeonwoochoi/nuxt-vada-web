@@ -59,19 +59,12 @@ export default {
   name: "change-password",
   components: {CustomButton, ResetPwdCard},
   asyncData({store,redirect}) {
-    if(store.$auth.loggedIn) {
+    if(!store.$auth.loggedIn || !store.$auth.user['roles'].includes("ROLE_ENTERPRISE_USER") || !store.$auth.user.enterprise['needChangePassword']) {
       redirect('/')
     }
   },
   created() {
     this.$store.commit('setSheetTitle', '비밀번호 변경')
-    if (this.$auth.user['roles'].includes("ROLE_ENTERPRISE_USER")) {
-      if (this.$auth.user.enterprise['needChangePassword']){
-        console.log(this.$auth.user)
-        return
-      }
-    }
-    this.$router.push('/')
   },
   data: () => ({
     valid: false,
@@ -95,14 +88,29 @@ export default {
       this.isLoading = true;
       let v = this.$refs.changePwdForm.validate();
       if (v) {
-        setTimeout(() => {
-          this.isLoading = false;
-          alert("비밀번호가 변경되었습니다.")
-          this.$router.push('/')
-        }, 3000)
+        let payload = {
+          password: this.password
+        }
+        this.$store.dispatch('user/changePasswordFromTemp', payload).then(
+          res => {
+            this.isLoading = false;
+            alert("비밀번호가 변경되었습니다.")
+            this.$router.push('/')
+          },
+          err => {
+            this.$notifier.showMessage({
+              content: err,
+              color: 'error'
+            })
+            this.isLoading = false;
+          }
+        )
       }
       else {
-        alert('입력한 정보를 확인해 주세요')
+        this.$notifier.showMessage({
+          content: '입력한 정보를 확인해 주세요',
+          color: 'error'
+        })
         this.isLoading = false;
       }
     }
