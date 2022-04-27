@@ -95,9 +95,9 @@ export default {
           }
           this.$router.push(`/`)
         })
-        .catch(e => {
+        .catch(err => {
           this.$notifier.showMessage({
-            content: e.toString(),
+            content: err.response.data.message,
             color: 'error'
           })
         })
