@@ -229,7 +229,7 @@ extend('min', {
     return value.length >= parseInt(min);
   },
   params: ["min"],
-  message: '{_field_}는 {min}자 이상이어야 합니다.'
+  message: '{_field_}는 8자 이상이어야 합니다.'
 })
 
 extend('max', {
@@ -237,7 +237,7 @@ extend('max', {
     return value.length <= parseInt(max);
   },
   params: ["max"],
-  message: '{_field_}는 {max}자 이하이어야 합니다.'
+  message: '{_field_}는 20자 이하이어야 합니다.'
 })
 
 extend('fileRequired', {
