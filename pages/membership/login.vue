@@ -86,6 +86,13 @@ export default {
     async submit() {
       await this.$auth.loginWith('local', { data: { email: this.id, password: this.password } })
         .then((res) => {
+          console.log(res.data)
+          if (res.data.user['roles'].includes("ROLE_ENTERPRISE_USER")) {
+            if (res.data.user.enterprise['needChangePassword']) {
+              this.$router.push('/change-password')
+              return;
+            }
+          }
           this.$router.push(`/`)
         })
         .catch(e => {
