@@ -96,7 +96,6 @@ export const actions = {
   },
   sendEmailAuthCode({commit}, payload) {
     return new Promise((resolve, reject) => {
-      console.log(payload)
       this.$axios.$post('/email', payload)
         .then(res => {
           resolve(res)
