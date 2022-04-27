@@ -130,12 +130,12 @@ export default {
       this.isLoading = true;
       let v = this.$refs.resetPwdAuthForm.validate();
       if (v) {
-        let params = {
+        let payload = {
           email: this.email,
           code: this.emailAuth,
           password: this.password
         }
-        await this.$store.dispatch('user/changePassword', params).then(
+        await this.$store.dispatch('user/changePassword', payload).then(
           res => {
             this.isLoading = false;
             this.$store.commit('user/setPwdResetSuccess', true)
