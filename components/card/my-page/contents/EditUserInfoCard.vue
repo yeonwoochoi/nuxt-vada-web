@@ -223,6 +223,7 @@ export default {
 
           this.passwordConfirm = this.password;
           this.isAuthorize = true;
+          this.isAuthLoading = false;
         }
         catch (e) {
           this.$notifier.showMessage({
@@ -230,8 +231,8 @@ export default {
             color: 'error'
           })
           this.isAuthorize = false;
+          this.isAuthLoading = false;
         }
-        this.isAuthLoading = false;
       })
     },
     async edit() {
