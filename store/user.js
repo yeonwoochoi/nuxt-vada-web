@@ -24,9 +24,9 @@ export const mutations = {
 }
 
 export const actions = {
-  createPrivateUser({commit}, params) {
+  createPrivateUser({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$post('/user', params)
+      this.$axios.$post('/user', payload)
         .then(res => {
           resolve(res)
         })
@@ -35,9 +35,9 @@ export const actions = {
         })
     })
   },
-  createEnterpriseUser({commit}, params) {
+  createEnterpriseUser({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$post('/enterprise', params, {
+      this.$axios.$post('/enterprise', payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
@@ -50,9 +50,9 @@ export const actions = {
         })
     })
   },
-  checkPassword({commit}, params) {
+  checkPassword({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$post('/user/password/validate', params)
+      this.$axios.$post('/user/password/validate', payload)
         .then(res => {
           resolve(res)
         })
@@ -61,9 +61,9 @@ export const actions = {
         })
     })
   },
-  getEnterpriseInfo({commit}, params) {
+  getEnterpriseInfo({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$post('/enterprise/' + params)
+      this.$axios.$post('/enterprise/' + payload)
         .then(res => {
           resolve(res)
         })
@@ -72,9 +72,9 @@ export const actions = {
         })
     })
   },
-  updateUser({commit}, params) {
+  updateUser({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$put('/user', params)
+      this.$axios.$put('/user', payload)
         .then(res => {
           resolve(res.user)
         })
@@ -94,9 +94,10 @@ export const actions = {
         })
     })
   },
-  sendEmailAuthCode({commit}, params) {
+  sendEmailAuthCode({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$post('/email', params)
+      console.log(payload)
+      this.$axios.$post('/email', payload)
         .then(res => {
           resolve(res)
         })
@@ -105,9 +106,9 @@ export const actions = {
         })
     })
   },
-  validateEmailAuthCode({commit}, params) {
+  validateEmailAuthCode({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$put('/email', params)
+      this.$axios.$put('/email', payload)
         .then(res => {
           resolve(res)
         })
@@ -116,9 +117,9 @@ export const actions = {
         })
     })
   },
-  changePassword({commit}, params) {
+  changePassword({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$put('/user/password/change', params)
+      this.$axios.$put('/user/password/change', payload)
         .then(res => {
           resolve(res.user)
         })
