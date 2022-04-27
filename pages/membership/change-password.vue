@@ -65,6 +65,13 @@ export default {
   },
   created() {
     this.$store.commit('setSheetTitle', '비밀번호 변경')
+    if (this.$auth.user['roles'].includes("ROLE_ENTERPRISE_USER")) {
+      if (this.$auth.user.enterprise['needChangePassword']){
+        console.log(this.$auth.user)
+        return
+      }
+    }
+    this.$router.push('/')
   },
   data: () => ({
     valid: false,
