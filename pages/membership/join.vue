@@ -168,6 +168,10 @@ export default {
       }
       await this.$store.dispatch('user/sendEmailAuthCode', param).then(
         res => {
+          this.$notifier.showMessage({
+            content: '인증번호가 전송되었습니다.',
+            color: 'success'
+          })
           callback(true)
         },
         err => {
