@@ -200,7 +200,7 @@ export default {
           this.tempPhone = this.initUserInfo.phoneNumber;
 
           // 관리자 회원은 접근 불가
-          if (userInfo['roles'][0] === "ROLE_ADMIN") {
+          if (userInfo['roles'].includes("ROLE_ADMIN")) {
             this.$notifier.showMessage({
               content: '관리 사이트로 이동하여 정보를 변경해주십시오.',
               color: 'error'
@@ -211,7 +211,7 @@ export default {
           }
 
           // 기업 귀속 회원도 접근 불가
-          if (userInfo['roles'][0] === "ROLE_ENTERPRISE_USER") {
+          if (userInfo['roles'][0].includes("ROLE_ENTERPRISE_USER")) {
             this.$notifier.showMessage({
               content: '기업 일반 회원은 본인이 소속된 기업 관리자 회원의 1:1 문의를 통해 회원정보를 변경할 수 있습니다.',
               color: 'error'
