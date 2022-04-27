@@ -75,7 +75,6 @@
                         type="file"
                         id="searchFile"
                         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-
                         :disabled="searchLoading"
                       >
                     </div>
