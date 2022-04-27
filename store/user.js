@@ -127,4 +127,15 @@ export const actions = {
         })
     })
   },
+  changePasswordFromTemp({commit}, payload) {
+    return new Promise((resolve, reject) => {
+      this.$axios.$put('/user/password/change-temp', payload)
+        .then(res => {
+          resolve(res.user)
+        })
+        .catch(err => {
+          reject(err.response.data.message)
+        })
+    })
+  },
 }
