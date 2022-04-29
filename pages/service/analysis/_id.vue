@@ -83,7 +83,7 @@
               </v-col>
 
               <v-col cols="11" class="text-start mt-12">
-                <p class="font-weight-bold title">대표청구권</p>
+                <p class="font-weight-bold title">대표청구항</p>
               </v-col>
               <v-col cols="11">
                 <p class="pa-6 subtitle-2 text-start scroll-y-info-card" v-html="claim" />
@@ -97,7 +97,7 @@
               </v-col>
 
               <v-col cols="12" sm="2" class="text-start mt-12">
-                <p class="font-weight-bold title">키프리스 링크</p>
+                <p class="font-weight-bold title">상세 보기</p>
               </v-col>
               <v-col cols="12" sm="8" class="mt-sm-12">
                 <a
@@ -229,7 +229,7 @@ export default {
       let result = ''
       let claims = this.patentData["claim"];
       for (let i = 0; i < claims.length; i++) {
-        result += `<p class="font-weight-bold subtitle-1">청구항${i+1}</p>${claims[i]["claim"]}\n\n\n`
+        result += `${claims[i]["claim"]}\n\n\n`
       }
       return result
     },
