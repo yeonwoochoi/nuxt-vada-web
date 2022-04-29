@@ -130,7 +130,7 @@ export default {
     },
 
     techPrice() {
-      return `기술가치 = <span class="light-blue--text">${this.summaryData.companyValue}</span> 백만원 (구매를 하지 않은 경우 임의의 수가 생성됩니다.)`
+      return `<span class="light-blue--text">${this.summaryData.companyValue}</span> 백만원 (구매를 하지 않은 경우 임의의 수가 생성됩니다.)`
     },
 
     summaryContent() {

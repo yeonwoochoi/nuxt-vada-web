@@ -181,7 +181,7 @@ export default {
     },
 
     techPrice() {
-      return `기술가치 = <span class="light-blue--text">${this.summaryData.techPrice}</span> 백만원`
+      return `<span class="light-blue--text">${this.summaryData.techPrice}</span> 백만원`
     },
   },
   methods: {
