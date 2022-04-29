@@ -154,7 +154,8 @@ export default {
         this.isDownload = false;
         alert(msg)
         if (success) {
-          this.$router.push('/service/evaluation/list')
+          console.log(window.location.href)
+          location.href = '/service/evaluation/list'
         }
         else {
           this.$router.push('/service/fee')
