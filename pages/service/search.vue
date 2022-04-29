@@ -392,7 +392,9 @@ export default {
         this.searchResults[i].loading = false
       }
       item.loading = true;
-      this.$router.push('analysis/'+item.content.applicationNumber)
+      let routeData = this.$router.resolve('analysis/'+item.content.applicationNumber);
+      window.open(routeData.href, '_blank');
+      item.loading = false;
     },
     // 개별 평가
     evaluateIndividual(item) {
