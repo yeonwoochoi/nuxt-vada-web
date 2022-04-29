@@ -1,7 +1,7 @@
 export const state = () => ({
   company: 'VADA PARTNERS',
   vuetifyVersion: '2.6.1',
-  companyDefaultLogo: require('assets/logo/logo_vada_black.png'),
+  companyDefaultLogo: require('assets/logo/logo_vada_default.png'),
   companyWhiteLogo: require('assets/logo/logo_vada_white.png'),
   toolbarItems: [],
   sheetTitle: '',
