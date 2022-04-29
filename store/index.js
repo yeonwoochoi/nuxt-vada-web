@@ -31,7 +31,7 @@ export const state = () => ({
     },
     {
       text: '개인정보처리방침',
-      link: '/privacy-policy'
+      link: '/policy'
     }
   ],
   copyright: 'COPYRIGHT 바다파트너스 2020. ALL RIGHTS RESERVED',
