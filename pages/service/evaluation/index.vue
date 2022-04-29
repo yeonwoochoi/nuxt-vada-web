@@ -57,6 +57,9 @@
                 </v-stepper>
               </v-card>
             </v-row>
+            <v-row align="center" justify="end">
+              <p class="subtitle-2 font-weight-regular mr-4">마지막 데이터 업데이트: <span class="title font-weight-black ml-1">2022-04-29</span></p>
+            </v-row>
           </template>
         </main-card>
       </v-card>
