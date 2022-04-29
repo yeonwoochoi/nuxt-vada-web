@@ -124,7 +124,7 @@ export default {
       firstRevenue: '',
       secondRevenue: '',
       thirdRevenue: '',
-      revenueRoyaltyRatio: '',
+      revenueRoyaltyRatio: '60',
     },
     toolTip: '귀사의 매출에서 특허가 차지하는 비중을 입력해주세요.',
     precaution: '＊실제 매출과 다르게 적을 경우 결과가 다르게 나올 수 있습니다.'
