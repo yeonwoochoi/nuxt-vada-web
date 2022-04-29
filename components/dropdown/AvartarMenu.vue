@@ -3,7 +3,8 @@
     bottom
     max-width="280px"
     offset-y
-    nudge-top="-10"
+    nudge-top="-25"
+    nudge-right="-115"
     z-index="0"
   >
     <template v-slot:activator="{ on }">
