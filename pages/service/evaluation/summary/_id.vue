@@ -16,7 +16,7 @@
                 <custom-button
                   :width="'200'"
                   :text="'목록보기'"
-                  @submit="goToSearch"
+                  @submit="goToEvalList"
                 />
               </v-col>
             </v-row>
@@ -185,7 +185,7 @@ export default {
     },
   },
   methods: {
-    goToSearch() {
+    goToEvalList() {
       this.$router.push('/service/evaluation/list')
     }
   },
