@@ -6,7 +6,7 @@
           <template v-slot:body>
             <v-row align="start" justify="space-around" class="mb-6 px-4" style="width: 100%;">
               <v-col cols="12">
-                <v-card v-if="!isPurchasing" class="elevation-0 px-md-12 px-6 py-12" style="background-color: #F5F5F5; width: 100%">
+                <v-card class="elevation-0 px-md-12 px-6 py-12" style="background-color: #F5F5F5; width: 100%">
                   <div class="mb-12">
                     <v-card-title class="font-weight-medium mb-4 pr-0" style="font-size: 25px;">
                       • 건별 요금제
@@ -21,12 +21,13 @@
                       x-large
                       class="elevation-0"
                       color="primary"
-                      @click="goToApplyPlanView"
+                      @click="purchase"
                     >
                       신청하기
                     </v-btn>
                   </div>
                 </v-card>
+                <!--
                 <v-card v-else class="elevation-0 px-md-12 px-6 py-16" style="background-color: #F5F5F5; width: 100%">
                   <v-container fluid>
                     <v-row align="center" justify="start">
@@ -58,7 +59,7 @@
                             x-large
                             class="elevation-0"
                             color="primary"
-                            @click="applyPlan"
+                            @click="purchase"
                           >
                             결제하기
                           </v-btn>
@@ -67,6 +68,7 @@
                     </v-row>
                   </v-container>
                 </v-card>
+                -->
               </v-col>
             </v-row>
           </template>
@@ -143,13 +145,8 @@ export default {
       }
       this.isPurchasing = true;
     },
-    applyPlan() {
-      let payload = {
-        price: this.totalPrice,
-        count: parseInt(this.incidentPlanCount)
-      }
-      console.log(payload)
-      // TODO 결제 모듈 연동
+    purchase() {
+      alert("결제 모듈")
     },
     isNumber: function(evt) {
       evt = (evt) ? evt : window.event;
