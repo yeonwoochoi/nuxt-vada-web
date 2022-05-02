@@ -58,7 +58,7 @@
               </v-card>
             </v-row>
             <v-row align="center" justify="end">
-              <p class="subtitle-2 font-weight-regular mr-4">마지막 데이터 업데이트: <span class="title font-weight-black ml-1">2022-04-29</span></p>
+              <p class="subtitle-2 font-weight-regular mr-4">마지막 데이터 업데이트: <span class="title font-weight-black ml-1">{{lastDataUpdatedAt}}</span></p>
             </v-row>
           </template>
         </main-card>
@@ -83,9 +83,31 @@ import ksicList from "../../../data/ksic.json";
 export default {
   name: "evaluation",
   components: {ResultSummaryCard, KsicInputCard, BusinessScaleInputCard, CompanyLogoBtn, PatentInfoInputCard, SalesInputCard, MainCard},
+  asyncData({store}) {
+    return store.dispatch('patent/getDataLastUpdatedAt').then(
+      res => {
+        return {
+          fetchError: null,
+          lastDataUpdatedAt: res.split('T')[0]
+        }
+      },
+      err => {
+        return {
+          fetchError: err,
+          lastDataUpdatedAt: null
+        }
+      }
+    )
+  },
   created() {
     this.$store.commit('patent/resetEvalData')
     this.$store.commit('setSheetTitle', '특허평가')
+    if (!!this.fetchError) {
+      this.$notifier.showMessage({
+        content: this.fetchError,
+        color: 'error'
+      })
+    }
   },
   beforeRouteLeave(to, from, next) {
     if (!this.isPurchase && this.isLastStep) {
