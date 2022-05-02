@@ -6,69 +6,134 @@
           <template v-slot:body>
             <v-row align="start" justify="space-around" class="mb-6 px-4" style="width: 100%;">
               <v-col cols="12">
-                <v-card class="elevation-0 px-md-12 px-6 py-12" style="background-color: #F5F5F5; width: 100%">
+                <v-card v-if="!isPurchasing" class="elevation-0 px-md-12 px-6 py-12" style="background-color: #F5F5F5; width: 100%">
                   <div class="mb-12">
                     <v-card-title class="font-weight-medium mb-4 pr-0" style="font-size: 25px;">
                       • 건별 요금제
                     </v-card-title>
-                    <simple-data-table
-                      :table-header="incidentPlanHeader"
-                      :table-content="incidentPlanData"
-                    />
+                    <v-data-table
+                      :headers="planHeaders"
+                      :items="planItems"
+                      hide-default-footer
+                      class="text-center"
+                      :mobile-breakpoint="0"
+                      style="width: 100%; height: fit-content; background-color: white; border: rgba(0,0,0,0.12) 1px solid"
+                    >
+                      <template v-slot:item.price="{item}">
+                        {{item.price.toLocaleString()}}
+                      </template>
+                    </v-data-table>
                   </div>
                   <div class="mt-12" style="display: flex; justify-content: end">
                     <v-btn
                       x-large
                       class="elevation-0"
                       color="primary"
-                      @click="purchase"
+                      @click="goToTermsOfPurchase"
                     >
                       신청하기
                     </v-btn>
                   </div>
                 </v-card>
-                <!--
                 <v-card v-else class="elevation-0 px-md-12 px-6 py-16" style="background-color: #F5F5F5; width: 100%">
                   <v-container fluid>
-                    <v-row align="center" justify="start">
-                      <v-col cols="2" v-if="$vuetify.breakpoint.mdAndUp" align-self="start">
-                        <v-subheader>신청 건수</v-subheader>
-                      </v-col>
-                      <v-col cols="12" md="9" class="pt-2">
-                        <v-text-field
-                          @keypress="isNumber($event)"
-                          v-model="incidentPlanCount"
-                          label="신청건수"
-                          suffix="건"
-                          flat
-                          outlined
-                        />
+                    <v-row align="center" justify="center" class="mb-16 mt-2">
+                      <v-col cols="12" class="pb-0">
+                        <div>
+                          <p class="font-weight-bold headline text-center mb-16">건별 요금제</p>
+                          <div style="display: flex; align-items: center; justify-content: space-between">
+                            <p class="subtitle-1 font-weight-bold mb-0 ml-2 red--text">* 구매하고자 하는 상품을 골라주세요.</p>
+                            <p class="caption mb-0 mr-2">(단위: 원)</p>
+                          </div>
+                        </div>
                       </v-col>
                       <v-col cols="12">
-                        <v-divider/>
+                        <v-data-table
+                          v-model="selected"
+                          :headers="planHeaders"
+                          :items="planItems"
+                          single-select
+                          show-select
+                          item-key="id"
+                          class="elevation-0"
+                          hide-default-footer
+                          disable-filtering
+                          disable-sort
+                          style="width: 100%; height: fit-content; background-color: white; border: rgba(0,0,0,0.12) 1px solid"
+                        >
+                          <template v-slot:item.price="{item}">
+                            {{item.price.toLocaleString()}}
+                          </template>
+                        </v-data-table>
                       </v-col>
-                      <v-col cols="2" align-self="start" v-if="$vuetify.breakpoint.mdAndUp">
-                        <v-subheader>이용요금</v-subheader>
+                    </v-row>
+                    <v-row align="center" justify="center" class="mt-16">
+                      <v-col cols="12">
+                        <p class="font-weight-bold headline text-center">구매 약관</p>
                       </v-col>
-                      <v-col cols="12" md="9">
-                        <p class="mb-0 title"><strong class="mr-1">{{ totalPrice.toLocaleString() }}</strong>원</p>
+                      <v-col cols="12" class="mt-4">
+                        <div v-for="(v, i) in termsOfPurchase" :key="`terms-of-purchase-${i}`" :class="`${i === 0 ? 'mb-12' : ''}`">
+                          <p class="subtitle-1 font-weight-bold">{{v.title}}</p>
+                          <p v-for="(c, j) in v.content" :key="`terms-of-purchase-${i}-${j}`" class="subtitle-2 ml-2">{{c}}</p>
+                        </div>
+                      </v-col>
+                      <v-col cols="12" align-self="center">
+                        <v-checkbox v-model="termsOfPurchaseAgreement" :label="termsOfPurchaseAgreementComment"/>
                       </v-col>
                       <v-col cols="12">
                         <div class="mt-4" style="display: flex; justify-content: end">
-                          <v-btn
-                            x-large
-                            class="elevation-0"
-                            color="primary"
-                            @click="purchase"
+                          <v-dialog
+                            v-model="showAlert"
+                            max-width="350"
                           >
-                            결제하기
-                          </v-btn>
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                x-large
+                                class="elevation-0"
+                                color="primary"
+                                @click="showAlert = !showAlert"
+                                :disabled="!termsOfPurchaseAgreement || selected.length <= 0 || showAlert"
+                              >
+                                결제하기
+                              </v-btn>
+                            </template>
+                            <confirmation-dialog
+                              @cancel="showAlert = false"
+                              @ok="purchase"
+                              title="구매 확인"
+                            >
+                              <template>
+                                <v-row align="center" justify="center" v-if="selected.length > 0">
+                                  <v-col cols="7" class="pb-0">
+                                    <v-subheader>유형</v-subheader>
+                                  </v-col>
+                                  <v-col cols="5" class="pb-0">
+                                    <p class="mb-0 font-weight-bold">{{selected[0]['serviceName']}}</p>
+                                  </v-col>
+                                  <v-col cols="7" class="py-0">
+                                    <v-subheader>가치평가 수</v-subheader>
+                                  </v-col>
+                                  <v-col cols="5" class="py-0">
+                                    <p class="mb-0 font-weight-bold">{{selected[0]['numReports']}}</p>
+                                  </v-col>
+                                  <v-col cols="7" class="pt-0">
+                                    <v-subheader>가격(부가세포함)</v-subheader>
+                                  </v-col>
+                                  <v-col cols="5" class="pt-0">
+                                    <p class="mb-0 font-weight-bold">{{selected[0]['price']}}</p>
+                                  </v-col>
+                                  <v-col cols="12">
+                                    <p class="font-weight-black mb-0 text-center">결제하시겠습니까?</p>
+                                  </v-col>
+                                </v-row>
+                              </template>
+                            </confirmation-dialog>
+                          </v-dialog>
                         </div>
                       </v-col>
                     </v-row>
                   </v-container>
                 </v-card>
-                -->
               </v-col>
             </v-row>
           </template>
@@ -82,10 +147,12 @@
 import MainCard from "../../components/card/MainCard";
 import SimpleDataTable from "../../components/table/SimpleDataTable";
 import CustomButton from "../../components/button/CustomButton";
+import ConfirmationDialog from "../../components/dialogue/ConfirmationDialog";
+
 export default {
   name: "fee",
   auth: false,
-  components: {CustomButton, SimpleDataTable, MainCard},
+  components: {ConfirmationDialog, CustomButton, SimpleDataTable, MainCard},
   created() {
     this.$store.commit('setSheetTitle', '이용신청')
   },
@@ -93,13 +160,13 @@ export default {
     incidentPlanHeader: [
       {
         text: '유형',
-        value: 'type',
+        value: 'serviceName',
         sortable: false,
         align: 'center'
       },
       {
         text: '가치평가 수',
-        value: 'number',
+        value: 'numReports',
         sortable: false,
         align: 'center'
       },
@@ -110,35 +177,70 @@ export default {
         align: 'center'
       },
     ],
-    incidentPlanData: [
-      {
-        type: 'VADA1',
-        number: 1,
-        price: '200,000'
-      },
-      {
-        type: 'VADA2',
-        number: 5,
-        price: '800,000'
-      },
-    ],
     isPurchasing: false,
     incidentPlanCount: '',
 
     // TODO: 가격 정해지면 그때 ㄱㄱ.. 아니면 서버 통신 하던가
     incidentPrice: 10000,
+
+    termsOfPurchase: [
+      {
+        'title': '제 17 조 (이용요금 및 요금의 납입방법 등)',
+        'content': [
+          '① 바다파트너스에서 제공하는 서비스 중 사이트상에 고지된 금액은 그 고지된 금액을 확정금액으로 한다.',
+          '② 바다파트너스가 제공하는 서비스에 대한 대금지급방법은 아래 항목을 이용 할 수 있다. 전자결제를 통한 신용카드결제 전자결제를 통한 계좌이체결제 바다파트너스와 서비스 이용가입자가 서로 합의한 기타 결제방법',
+          '③ 이용요금 납입책임자는 서비스 이용가입자를 원칙으로 한다. 다만, 바다파트너스가 인정하는 경우에는 타인을 이용요금 납입책임자로 할 수 있다.',
+          '④ 위 제③항의 규정에 의한 이용요금 납입책임자는 이용자가 바다파트너스에 대하여 부담하는 서비스 이용요금 등 약관에 따른 모든 채무를 이용자와 연대하여 바다파트너스에 납입하여야 한다.',
+        ]
+      },
+      {
+        'title': '제 18 조 (PARTNERS 요금제 이용기간 및 연장)',
+        'content': [
+          '① PARTNERS 요금제의 이용 기간은 계약 체결일로부터 12개월로 한다.',
+          '② 이용기간 만료일 1개월 이내 상호 별도의 서면 의사표시를 하여 바다파트너스가 이용요금의 납입을 확인 후 연간회원의 이용기간 연장을 승인할 수 있다.'
+        ]
+      }
+    ],
+    termsOfPurchaseAgreementComment: '상기 구매 약관을 모두 읽어보었으며 이에 동의합니다.',
+    termsOfPurchaseAgreement: false,
+
+    selected: [],
+
+    planHeaders: [
+      { text: '유형', value: 'serviceName', align: 'center' },
+      { text: '가치평가 수', value: 'numReports', align: 'center' },
+      { text: '가격(부가세포함)', value: 'price', align: 'center' }
+    ],
+    planItems:  [
+      {'id': 0, 'serviceName': 'VADA1', 'numReports': 1, 'price': 200000},
+      {'id': 1, 'serviceName': 'VADA2', 'numReports': 1, 'price': 800000},
+      {'id': 2, 'serviceName': 'VADA3', 'numReports': 1, 'price': 1400000},
+      {'id': 3, 'serviceName': 'VADA4', 'numReports': 1, 'price': 6000000},
+      {'id': 4, 'serviceName': 'VADA5', 'numReports': 1, 'price': 10000000},
+    ],
+    showAlert: false,
+    showPurchasePopup: false,
   }),
   computed: {
-    totalPrice() {
-      let count = !this.incidentPlanCount ? 0 : parseInt(this.incidentPlanCount)
-      return count * this.incidentPrice
-    },
     header() {
       return this.isPurchasing ? "이용신청" : "요금안내"
+    },
+    selectedItem() {
+      return {
+        'id': this.selected[0]['id'],
+        'serviceName': this.selected[0]['serviceName'],
+        'numReports': parseInt(this.selected[0]['numReports']),
+        'price': parseInt(this.selected[0]['price'])
+      }
+    },
+  },
+  watch: {
+    selected: (val, oldVal) => {
+      console.log(val)
     }
   },
   methods : {
-    goToApplyPlanView() {
+    goToTermsOfPurchase() {
       if (!this.$auth.loggedIn) {
         this.$router.push('/membership/login')
         return;
