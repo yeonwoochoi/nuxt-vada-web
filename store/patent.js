@@ -186,4 +186,15 @@ export const actions = {
       })
     }))
   },
+  async getDataLastUpdatedAt({commit}) {
+    return new Promise((resolve, reject) => {
+      this.$axios.$get('/patent/file/last').then(
+        res => {
+          resolve(res['lastUpdatedAt'])
+        })
+        .catch(err => {
+          reject(err.response.data.message)
+        })
+    })
+  }
 }
