@@ -4,7 +4,10 @@
       {{ title }}
       <v-divider class="mt-2 mb-1 px-2"/>
     </v-card-title>
-    <v-card-text>{{ comment }}</v-card-text>
+    <v-card-text v-if="$slots.default">
+      <slot/>
+    </v-card-text>
+    <v-card-text v-else>{{ comment }}</v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn
