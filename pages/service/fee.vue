@@ -140,6 +140,12 @@
         </main-card>
       </v-card>
     </v-row>
+    <v-dialog v-model="showPurchasePopup" max-width="600px" persistent>
+      <v-card height="600" color="white">
+        <iframe width="600" height="600" contenteditable="true" id="frame" :src="iframeSrc"/>
+      </v-card>
+      <v-btn @click="onCancelPurchase">취소하기</v-btn>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -153,35 +159,31 @@ export default {
   name: "fee",
   auth: false,
   components: {ConfirmationDialog, CustomButton, SimpleDataTable, MainCard},
+  asyncData({store}) {
+    return store.dispatch("purchase/readAllPlan").then(
+      res => {
+        return {
+          planItems: res.sort((a,b) => a.price - b.price),
+          fetchError: null
+        }
+      },
+      err => {
+        return {
+          planItems: [],
+          fetchError: err
+        }
+      }
+    )
+  },
   created() {
     this.$store.commit('setSheetTitle', '이용신청')
+    if (!!this.fetchError) {
+      this.$errorHandler.showMessage(this.fetchError)
+    }
   },
   data: () => ({
-    incidentPlanHeader: [
-      {
-        text: '유형',
-        value: 'serviceName',
-        sortable: false,
-        align: 'center'
-      },
-      {
-        text: '가치평가 수',
-        value: 'numReports',
-        sortable: false,
-        align: 'center'
-      },
-      {
-        text: '가격(부가세 포함)',
-        value: 'price',
-        sortable: false,
-        align: 'center'
-      },
-    ],
     isPurchasing: false,
     incidentPlanCount: '',
-
-    // TODO: 가격 정해지면 그때 ㄱㄱ.. 아니면 서버 통신 하던가
-    incidentPrice: 10000,
 
     termsOfPurchase: [
       {
@@ -207,19 +209,26 @@ export default {
     selected: [],
 
     planHeaders: [
-      { text: '유형', value: 'serviceName', align: 'center' },
-      { text: '가치평가 수', value: 'numReports', align: 'center' },
-      { text: '가격(부가세포함)', value: 'price', align: 'center' }
-    ],
-    planItems:  [
-      {'id': 0, 'serviceName': 'VADA1', 'numReports': 1, 'price': 200000},
-      {'id': 1, 'serviceName': 'VADA2', 'numReports': 1, 'price': 800000},
-      {'id': 2, 'serviceName': 'VADA3', 'numReports': 1, 'price': 1400000},
-      {'id': 3, 'serviceName': 'VADA4', 'numReports': 1, 'price': 6000000},
-      {'id': 4, 'serviceName': 'VADA5', 'numReports': 1, 'price': 10000000},
+      {
+        text: '요금제명',
+        value: 'name',
+        align: 'center'
+      },
+      {
+        text: '보고서 수',
+        value: 'numReports',
+        align: 'center'
+      },
+      {
+        text: '가격',
+        value: 'price',
+        align: 'center'
+      },
     ],
     showAlert: false,
     showPurchasePopup: false,
+
+    iframeSrc: ''
   }),
   computed: {
     header() {
@@ -234,11 +243,6 @@ export default {
       }
     },
   },
-  watch: {
-    selected: (val, oldVal) => {
-      console.log(val)
-    }
-  },
   methods : {
     goToTermsOfPurchase() {
       if (!this.$auth.loggedIn) {
@@ -247,18 +251,16 @@ export default {
       }
       this.isPurchasing = true;
     },
+
     purchase() {
       alert("결제 모듈")
     },
-    isNumber: function(evt) {
-      evt = (evt) ? evt : window.event;
-      let charCode = (evt.which) ? evt.which : evt.keyCode;
-      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();
-      } else {
-        return true;
-      }
+    onCancelPurchase() {
+
     },
+    resetPurchaseData() {
+
+    }
   }
 }
 </script>
