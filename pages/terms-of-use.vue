@@ -25,6 +25,7 @@ import MainCard from "../components/card/MainCard";
 export default {
   name: "terms-of-use",
   components: {MainCard},
+  auth: false,
   data: () => ({
     header: '이용약관',
     termsOfUseData: [
