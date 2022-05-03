@@ -129,10 +129,7 @@ export default {
             this.success = true;
           },
           err => {
-            this.$notifier.showMessage({
-              content: err,
-              color: 'error'
-            })
+            this.$errorHandler.showMessage(err)
             this.loading = false;
           }
         )

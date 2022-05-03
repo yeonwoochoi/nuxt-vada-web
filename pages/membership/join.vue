@@ -133,10 +133,7 @@ export default {
               this.currentStep = currentStep + 1;
             },
             err => {
-              this.$notifier.showMessage({
-                content: err,
-                color: "error"
-              })
+              this.$errorHandler.showMessage(err)
             }
           )
         }
@@ -146,10 +143,7 @@ export default {
               this.currentStep = currentStep + 1;
             },
             err => {
-              this.$notifier.showMessage({
-                content: err,
-                color: "error"
-              })
+              this.$errorHandler.showMessage(err)
             }
           )
         }
@@ -175,10 +169,7 @@ export default {
           callback(true)
         },
         err => {
-          this.$notifier.showMessage({
-            content: err,
-            color: 'error'
-          })
+          this.$errorHandler.showMessage(err)
           callback(false)
         }
       )
@@ -198,10 +189,7 @@ export default {
         },
         err => {
           callback(false)
-          this.$notifier.showMessage({
-            content: err,
-            color: 'error'
-          })
+          this.$errorHandler.showMessage(err)
         }
       )
     },
@@ -223,10 +211,7 @@ export default {
           link.click();
         },
         err => {
-          this.$notifier.showMessage({
-            content: err,
-            color: 'error'
-          })
+          this.$errorHandler.showMessage(err)
         }
       )
     }

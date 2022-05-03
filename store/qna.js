@@ -8,7 +8,7 @@ export const actions = {
       this.$axios.$post('/enquire', params).then(res => {
         resolve(res['enquire'])
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
@@ -17,7 +17,7 @@ export const actions = {
       this.$axios.$get('/enquire').then(res => {
         resolve(res['enquires'])
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   }

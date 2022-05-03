@@ -142,10 +142,7 @@ export default {
             this.$router.push('/membership/reset-password/done')
           },
           err => {
-            this.$notifier.showMessage({
-              content: err,
-              color: 'error'
-            })
+            this.$errorHandler.showMessage(err)
             this.isLoading = false;
           }
         )
@@ -164,7 +161,7 @@ export default {
       }
       else if (!/^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).*$/.test(this.password)) {
         this.$notifier.showMessage({
-          content: '영문 대소문자와 최소 1개의 숫자 혹은 특수 문자를 포함해야 합니다.',
+          content: '영문 대소문자와 최소 1개의 숫자를 포함해야 합니다.',
           color: 'error'
         })
       }
@@ -198,10 +195,7 @@ export default {
             this.isSendLoading = false;
           },
           err => {
-            this.$notifier.showMessage({
-              content: err,
-              color: 'error'
-            })
+            this.$errorHandler.showMessage(err)
             this.isSendLoading = false;
           }
         )

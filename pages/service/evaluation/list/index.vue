@@ -199,10 +199,7 @@ export default {
     this.$store.commit('setSheetTitle', '평가목록조회')
     this.$store.commit('patent/resetSelectedEval')
     if (!!this.fetchError) {
-      this.$notifier.showMessage({
-        content: this.fetchError,
-        color: 'error'
-      })
+      this.$errorHandler.showMessage(this.fetchError)
     }
   },
   data: () => ({
