@@ -108,7 +108,7 @@
                                     <v-subheader>유형</v-subheader>
                                   </v-col>
                                   <v-col cols="5" class="pb-0">
-                                    <p class="mb-0 font-weight-bold">{{selected[0]['serviceName']}}</p>
+                                    <p class="mb-0 font-weight-bold">{{selected[0]['name']}}</p>
                                   </v-col>
                                   <v-col cols="7" class="py-0">
                                     <v-subheader>가치평가 수</v-subheader>
@@ -237,7 +237,7 @@ export default {
     selectedItem() {
       return {
         'id': this.selected[0]['id'],
-        'serviceName': this.selected[0]['serviceName'],
+        'name': this.selected[0]['name'],
         'numReports': parseInt(this.selected[0]['numReports']),
         'price': parseInt(this.selected[0]['price'])
       }
