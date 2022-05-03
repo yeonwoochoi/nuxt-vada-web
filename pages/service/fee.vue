@@ -153,6 +153,22 @@ export default {
   name: "fee",
   auth: false,
   components: {ConfirmationDialog, CustomButton, SimpleDataTable, MainCard},
+  asyncData({store}) {
+    return store.dispatch('fee/readAllPlan').then(
+      res => {
+        return {
+          planItems: res,
+          fetchError: null
+        }
+      },
+      err => {
+        return {
+          planItems: [],
+          fetchError: err
+        }
+      }
+    )
+  },
   created() {
     this.$store.commit('setSheetTitle', '이용신청')
   },
@@ -178,10 +194,6 @@ export default {
       },
     ],
     isPurchasing: false,
-    incidentPlanCount: '',
-
-    // TODO: 가격 정해지면 그때 ㄱㄱ.. 아니면 서버 통신 하던가
-    incidentPrice: 10000,
 
     termsOfPurchase: [
       {
@@ -211,13 +223,6 @@ export default {
       { text: '가치평가 수', value: 'numReports', align: 'center' },
       { text: '가격(부가세포함)', value: 'price', align: 'center' }
     ],
-    planItems:  [
-      {'id': 0, 'serviceName': 'VADA1', 'numReports': 1, 'price': 200000},
-      {'id': 1, 'serviceName': 'VADA2', 'numReports': 1, 'price': 800000},
-      {'id': 2, 'serviceName': 'VADA3', 'numReports': 1, 'price': 1400000},
-      {'id': 3, 'serviceName': 'VADA4', 'numReports': 1, 'price': 6000000},
-      {'id': 4, 'serviceName': 'VADA5', 'numReports': 1, 'price': 10000000},
-    ],
     showAlert: false,
     showPurchasePopup: false,
   }),
@@ -234,11 +239,6 @@ export default {
       }
     },
   },
-  watch: {
-    selected: (val, oldVal) => {
-      console.log(val)
-    }
-  },
   methods : {
     goToTermsOfPurchase() {
       if (!this.$auth.loggedIn) {
@@ -249,15 +249,6 @@ export default {
     },
     purchase() {
       alert("결제 모듈")
-    },
-    isNumber: function(evt) {
-      evt = (evt) ? evt : window.event;
-      let charCode = (evt.which) ? evt.which : evt.keyCode;
-      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();
-      } else {
-        return true;
-      }
     },
   }
 }
