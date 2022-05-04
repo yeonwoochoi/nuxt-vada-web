@@ -128,7 +128,7 @@ export default {
     this.$store.commit('patent/resetTempEvalData')
   },
   data: () => ({
-    header: '특허 평가',
+    header: '특허평가',
     currentStep: 1,
     steps: [
       { step: 1, header: '특허 번호', valid: true, errorMsg: '유효한 특허번호를 입력해주십시오.' },
