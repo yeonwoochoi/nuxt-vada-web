@@ -30,7 +30,7 @@ export default {
     this.$store.commit('setSheetTitle', '오시는길')
   },
   data: () => ({
-    header: 'Contact',
+    header: '오시는 길',
     contactData1: {
       header: 'Mailing address',
       content: '132, Teheran-ro, Gangnam-gu,\n' +

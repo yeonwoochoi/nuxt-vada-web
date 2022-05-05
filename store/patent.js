@@ -73,7 +73,7 @@ export const actions = {
         commit('setEvalData', res['patentEvaluationSummary'])
         resolve(res['patentEvaluationSummary'])
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
@@ -82,7 +82,7 @@ export const actions = {
       this.$axios.$get('/patent/evaluation').then(res=> {
         resolve(res['patentEvaluations'])
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
@@ -91,7 +91,7 @@ export const actions = {
       this.$axios.$get('/patent/evaluation/' + params).then(res=> {
         resolve(res["patentEvaluationSummary"])
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
@@ -100,7 +100,7 @@ export const actions = {
       this.$axios.$post('/patent/search', payload).then(res => {
         resolve(res.result[0]['ipcCode'])
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
@@ -109,7 +109,7 @@ export const actions = {
       this.$axios.$post('/patent/search', payload).then(res => {
         resolve(res.result)
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
@@ -123,7 +123,7 @@ export const actions = {
         .then(res => {
           resolve(res.result)
         }).catch(err => {
-          reject(err.response.data.message)
+          reject(err.response.data)
       })
     })
   },
@@ -140,7 +140,7 @@ export const actions = {
       this.$axios.$get('/file/template?type=' + params, config).then(res => {
         resolve(res)
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
@@ -156,7 +156,7 @@ export const actions = {
       this.$axios.$post('/patent/download', payload, config).then(res => {
         resolve(res)
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
@@ -182,7 +182,7 @@ export const actions = {
       this.$axios.$delete('/patent/evaluation/'+ payload).then(res => {
         resolve(res)
       }).catch(err => {
-        reject(err.response.data.message)
+        reject(err.response.data)
       })
     }))
   },
@@ -193,7 +193,7 @@ export const actions = {
           resolve(res['lastUpdatedAt'])
         })
         .catch(err => {
-          reject(err.response.data.message)
+          reject(err.response.data)
         })
     })
   }

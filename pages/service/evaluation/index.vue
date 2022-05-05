@@ -103,10 +103,7 @@ export default {
     this.$store.commit('patent/resetEvalData')
     this.$store.commit('setSheetTitle', '특허평가')
     if (!!this.fetchError) {
-      this.$notifier.showMessage({
-        content: this.fetchError,
-        color: 'error'
-      })
+      this.$errorHandler.showMessage(this.fetchError)
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -131,7 +128,7 @@ export default {
     this.$store.commit('patent/resetTempEvalData')
   },
   data: () => ({
-    header: '특허 평가',
+    header: '특허평가',
     currentStep: 1,
     steps: [
       { step: 1, header: '특허 번호', valid: true, errorMsg: '유효한 특허번호를 입력해주십시오.' },
@@ -214,10 +211,7 @@ export default {
               }
             },
             err => {
-              this.$notifier.showMessage({
-                content: err,
-                color: 'error'
-              })
+              this.$errorHandler.showMessage(err)
               callback(true)
             }
           )
@@ -259,10 +253,7 @@ export default {
           callback();
         },
         err => {
-          this.$notifier.showMessage({
-            content: err,
-            color: 'error'
-          })
+          this.$errorHandler.showMessage(err)
           callback(true);
         }
       )
@@ -302,10 +293,7 @@ export default {
           },
           err => {
             this.isRemoving = false;
-            this.$notifier.showMessage({
-              content: err,
-              color: 'error'
-            })
+            this.$errorHandler.showMessage(err)
           }
         )
       }

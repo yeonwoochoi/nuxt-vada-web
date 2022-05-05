@@ -24,6 +24,7 @@
 import MainCard from "../components/card/MainCard";
 export default {
   name: "policy",
+  auth: false,
   components: {MainCard},
   data: () => ({
     header: '개인정보 처리방침',

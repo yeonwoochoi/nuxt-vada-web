@@ -85,10 +85,7 @@ export default {
             this.$router.push('/membership/reset-password/auth')
           },
           err => {
-            this.$notifier.showMessage({
-              content: err,
-              color: 'error'
-            })
+            this.$errorHandler.showMessage(err)
             this.isLoading = false;
           }
         )

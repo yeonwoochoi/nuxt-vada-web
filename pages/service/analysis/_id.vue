@@ -191,10 +191,7 @@ export default {
   created() {
     this.$store.commit('setSheetTitle', '특허분석')
     if (!!this.fetchError) {
-      this.$notifier.showMessage({
-        content: this.fetchError,
-        color: 'error'
-      })
+      this.$errorHandler.showMessage(this.fetchError)
     }
   },
   data: () => ({

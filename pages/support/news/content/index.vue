@@ -37,10 +37,7 @@ export default {
         }
       },
       err => {
-        this.$notifier.showMessage({
-          content: err,
-          color: 'error'
-        })
+        this.$errorHandler.showMessage(err)
       }
     )
   },
@@ -49,11 +46,8 @@ export default {
     let uid = this.$route.query.uid
     this.$store.dispatch('news/addViewCount', uid).then(
       (res) => {},
-      error => {
-        this.$notifier.showMessage({
-          content: error,
-          color: 'error'
-        })
+      err => {
+        this.$errorHandler.showMessage(err)
       }
     )
   },

@@ -26,8 +26,8 @@
         background-color="transparent"
       />
     </validation-provider>
-    <validation-provider v-slot="{ errors }" name="담당자명" rules="required">
-      <p class="ma-1 subtitle-2 text-start">담당자명</p>
+    <validation-provider v-slot="{ errors }" name="매니저명" rules="required">
+      <p class="ma-1 subtitle-2 text-start">매니저명</p>
       <v-text-field
         v-model="managerName"
         :error-messages="errors"
@@ -39,7 +39,7 @@
       />
     </validation-provider>
     <validation-provider v-slot="{ errors, valid }" name="이메일" rules="required|email">
-      <p class="ma-1 subtitle-2 text-start">담당자 이메일</p>
+      <p class="ma-1 subtitle-2 text-start">매니저 이메일</p>
       <div style="display:flex; flex-direction: row; justify-content: start; align-items: start">
         <v-text-field
           v-model="managerEmail"
@@ -117,7 +117,7 @@
       />
     </validation-provider>
     <validation-provider v-slot="{ errors }" name="연락처" rules="required">
-      <p class="ma-1 subtitle-2 text-start">담당자 연락처(-없이 번호만 입력)</p>
+      <p class="ma-1 subtitle-2 text-start">매니저 연락처(-없이 번호만 입력)</p>
       <v-text-field
         v-model="managerPhone"
         :error-messages="errors"

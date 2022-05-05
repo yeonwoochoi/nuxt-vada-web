@@ -95,10 +95,7 @@ export default {
           this.$router.push(`/`)
         })
         .catch(err => {
-          this.$notifier.showMessage({
-            content: err.response.data.message,
-            color: 'error'
-          })
+          this.$errorHandler.showMessage(err.response.data)
         })
     },
     goToSignUp() {

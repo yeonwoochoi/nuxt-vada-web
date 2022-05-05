@@ -108,7 +108,7 @@
                                     <v-subheader>유형</v-subheader>
                                   </v-col>
                                   <v-col cols="5" class="pb-0">
-                                    <p class="mb-0 font-weight-bold">{{selected[0]['serviceName']}}</p>
+                                    <p class="mb-0 font-weight-bold">{{selected[0]['name']}}</p>
                                   </v-col>
                                   <v-col cols="7" class="py-0">
                                     <v-subheader>가치평가 수</v-subheader>
@@ -140,6 +140,12 @@
         </main-card>
       </v-card>
     </v-row>
+    <v-dialog v-model="showPurchasePopup" max-width="600px" persistent>
+      <v-card height="600" color="white">
+        <iframe width="600" height="600" contenteditable="true" id="frame" :src="iframeSrc"/>
+      </v-card>
+      <v-btn @click="onCancelPurchase">취소하기</v-btn>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -154,10 +160,10 @@ export default {
   auth: false,
   components: {ConfirmationDialog, CustomButton, SimpleDataTable, MainCard},
   asyncData({store}) {
-    return store.dispatch('fee/readAllPlan').then(
+    return store.dispatch("purchase/readAllPlan").then(
       res => {
         return {
-          planItems: res,
+          planItems: res.sort((a,b) => a.price - b.price),
           fetchError: null
         }
       },
@@ -171,29 +177,13 @@ export default {
   },
   created() {
     this.$store.commit('setSheetTitle', '이용신청')
+    if (!!this.fetchError) {
+      this.$errorHandler.showMessage(this.fetchError)
+    }
   },
   data: () => ({
-    incidentPlanHeader: [
-      {
-        text: '유형',
-        value: 'serviceName',
-        sortable: false,
-        align: 'center'
-      },
-      {
-        text: '가치평가 수',
-        value: 'numReports',
-        sortable: false,
-        align: 'center'
-      },
-      {
-        text: '가격(부가세 포함)',
-        value: 'price',
-        sortable: false,
-        align: 'center'
-      },
-    ],
     isPurchasing: false,
+    incidentPlanCount: '',
 
     termsOfPurchase: [
       {
@@ -219,12 +209,26 @@ export default {
     selected: [],
 
     planHeaders: [
-      { text: '유형', value: 'serviceName', align: 'center' },
-      { text: '가치평가 수', value: 'numReports', align: 'center' },
-      { text: '가격(부가세포함)', value: 'price', align: 'center' }
+      {
+        text: '요금제명',
+        value: 'name',
+        align: 'center'
+      },
+      {
+        text: '보고서 수',
+        value: 'numReports',
+        align: 'center'
+      },
+      {
+        text: '가격',
+        value: 'price',
+        align: 'center'
+      },
     ],
     showAlert: false,
     showPurchasePopup: false,
+
+    iframeSrc: ''
   }),
   computed: {
     header() {
@@ -233,7 +237,7 @@ export default {
     selectedItem() {
       return {
         'id': this.selected[0]['id'],
-        'serviceName': this.selected[0]['serviceName'],
+        'name': this.selected[0]['name'],
         'numReports': parseInt(this.selected[0]['numReports']),
         'price': parseInt(this.selected[0]['price'])
       }
@@ -247,9 +251,16 @@ export default {
       }
       this.isPurchasing = true;
     },
+
     purchase() {
       alert("결제 모듈")
     },
+    onCancelPurchase() {
+
+    },
+    resetPurchaseData() {
+
+    }
   }
 }
 </script>

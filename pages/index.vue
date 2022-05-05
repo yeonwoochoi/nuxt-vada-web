@@ -128,6 +128,11 @@ export default {
       }
     )
   },
+  created() {
+    if (!!this.fetchError) {
+      this.$errorHandler.showMessage(this.fetchError)
+    }
+  },
   data: () => ({
     companyIntroImg: require('../assets/home/home_company_info.png'),
     companyIntroHeader1: '초간편',

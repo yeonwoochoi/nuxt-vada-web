@@ -337,10 +337,7 @@ export default {
             this.searchLoading = false;
           },
           err => {
-            this.$notifier.showMessage({
-              content: err,
-              color: 'error'
-            })
+            this.$errorHandler.showMessage(err)
             this.noDataText = '검색결과 없음'
             this.searchLoading = false;
           }
@@ -377,10 +374,7 @@ export default {
             this.searchLoading = false;
           },
           err => {
-            this.$notifier.showMessage({
-              content: err,
-              color: 'error'
-            })
+            this.$errorHandler.showMessage(err)
             this.noDataText = '검색결과 없음'
             this.searchLoading = false;
           }
@@ -413,10 +407,7 @@ export default {
           link.click();
         },
         err => {
-          this.$notifier.showMessage({
-            content: err,
-            color: 'error'
-          })
+          this.$errorHandler.showMessage(err)
         }
       )
     },

@@ -31,6 +31,7 @@ export default {
     { src: '~/plugins/vee-validate', ssr: false },
     { src: '~/plugins/vue-json-csv', ssr: false },
     { src: '~/plugins/notifier' },
+    { src: '~/plugins/errorHandler' },
     { src: '~/plugins/axios' },
     { src: '~/plugins/utils.js' },
   ],

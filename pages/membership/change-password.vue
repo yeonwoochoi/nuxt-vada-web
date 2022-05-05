@@ -98,10 +98,7 @@ export default {
             this.$router.push('/')
           },
           err => {
-            this.$notifier.showMessage({
-              content: err,
-              color: 'error'
-            })
+            this.$errorHandler.showMessage(err)
             this.isLoading = false;
           }
         )
