@@ -1,4 +1,4 @@
-import colors from 'vuetify/es5/util/colors'
+import bodyParser from 'body-parser'
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -49,7 +49,9 @@ export default {
   modules: [
     'cookie-universal-nuxt',
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
+    '@nuxtjs/proxy',
+    '@nuxtjs/dotenv',
   ],
 
   router: {
@@ -108,12 +110,26 @@ export default {
     }
   },
 
+  proxy: {
+    '/pay': {
+      'target': 'http://172.30.1.13',
+      'pathRewrite': { '^/pay': '' },
+      'changeOrigin': true,
+      'secure': false
+    }
+  },
+
   server: {
     port: 8765,
     host: '0.0.0.0'
   },
 
+  serverMiddleware: [
+    bodyParser.json(),
+    { path: '/api/pg-approve', handler: '~/api/pg-approve.js' }
+  ],
+
   axios: {
-    baseURL: process.env.API_URL
+    baseURL: process.env.API_URL,
   }
 }

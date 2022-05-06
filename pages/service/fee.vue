@@ -1,5 +1,10 @@
 <template>
   <v-container fluid>
+    <v-dialog v-model="showPurchasePopup" max-width="564" persistent>
+      <v-card color="white">
+        <iframe width="564" height="604" contenteditable="true" id="frame" :src="iframeSrc"/>
+      </v-card>
+    </v-dialog>
     <v-row align="center" justify="center">
       <v-card style="width: 1200px; height:fit-content;" class="elevation-0">
         <main-card :header="header">
@@ -39,6 +44,9 @@
                   <v-container fluid>
                     <v-row align="center" justify="center" class="mb-16 mt-2">
                       <v-col cols="12" class="pb-0">
+                        <form id="fdPay">
+                          <input type="hidden" name="PAYDATA" id="PAYDATA" :value="payloadData" />
+                        </form>
                         <div>
                           <p class="font-weight-bold headline text-center mb-16">건별 요금제</p>
                           <div style="display: flex; align-items: center; justify-content: space-between">
@@ -99,7 +107,7 @@
                             </template>
                             <confirmation-dialog
                               @cancel="showAlert = false"
-                              @ok="purchase"
+                              @ok="onClickPurchase"
                               title="구매 확인"
                             >
                               <template>
@@ -140,12 +148,6 @@
         </main-card>
       </v-card>
     </v-row>
-    <v-dialog v-model="showPurchasePopup" max-width="600px" persistent>
-      <v-card height="600" color="white">
-        <iframe width="600" height="600" contenteditable="true" id="frame" :src="iframeSrc"/>
-      </v-card>
-      <v-btn @click="onCancelPurchase">취소하기</v-btn>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -154,6 +156,7 @@ import MainCard from "../../components/card/MainCard";
 import SimpleDataTable from "../../components/table/SimpleDataTable";
 import CustomButton from "../../components/button/CustomButton";
 import ConfirmationDialog from "../../components/dialogue/ConfirmationDialog";
+import VadaRequestPayment from "../../utils/VadaRequestPayment";
 
 export default {
   name: "fee",
@@ -180,6 +183,16 @@ export default {
     if (!!this.fetchError) {
       this.$errorHandler.showMessage(this.fetchError)
     }
+  },
+  mounted() {
+    window.addEventListener('message', event => {
+      this.onIframeMessage(event)
+    })
+  },
+  beforeDestroy() {
+    window.removeEventListener('message', event => {
+      this.onIframeMessage(event)
+    })
   },
   data: () => ({
     isPurchasing: false,
@@ -228,7 +241,10 @@ export default {
     showAlert: false,
     showPurchasePopup: false,
 
-    iframeSrc: ''
+    iframeSrc: '',
+    tempPaymentObj: null,
+    paymentObj: null,
+    payloadData: null,
   }),
   computed: {
     header() {
@@ -237,7 +253,7 @@ export default {
     selectedItem() {
       return {
         'id': this.selected[0]['id'],
-        'name': this.selected[0]['name'],
+        'serviceName': this.selected[0]['name'],
         'numReports': parseInt(this.selected[0]['numReports']),
         'price': parseInt(this.selected[0]['price'])
       }
@@ -252,14 +268,64 @@ export default {
       this.isPurchasing = true;
     },
 
-    purchase() {
-      alert("결제 모듈")
+    onClickPurchase() {
+      document.getElementsByTagName("body")[0].className = "non-scroll"
+      const payment = new VadaRequestPayment(this.selectedItem)
+      this.payloadData = payment.getPayload()
+      this.paymentObj = payment
+      this.iframeSrc = process.env.PG_PAYMENT_URL
+      this.showPurchasePopup = true
     },
-    onCancelPurchase() {
 
+    onResetPurchase() {
+      document.body.removeAttribute("class", "non-scroll");
+      this.iframeSrc = ""
+      this.showPurchasePopup = false
+      this.payloadData = null
+      this.paymentObj = null
     },
-    resetPurchaseData() {
 
+    payResult: function (rtnCode, rtnMsg, fdTid) {
+      this.showPurchasePopup = false;
+
+      if (rtnCode === '0000') {
+        alert('성공!')
+        const data = {
+          'MxID': this.paymentObj.paymentData.MxID,
+          'MxIssueNO': this.paymentObj.paymentData.MxIssueNO,
+          'FDTid': fdTid,
+          'Amount': this.paymentObj.paymentData.Amount,
+          'ServiceId': this.paymentObj.paymentData.ServiceId
+        }
+        this.onResetPurchase()
+        this.$router.push({
+          name: 'pay-request',
+          params: {
+            data
+          }
+        })
+      } else {
+        alert(`인증 실패[${rtnCode}(${rtnMsg})]`)
+        this.onResetPurchase()
+      }
+    },
+
+    /**
+     * PG 리스폰스 데이터 핸들러
+     * rtncode: 결과 코드
+     * rtnmsg: 결과 메세지
+     * fdtid: 결제 요청 Transaction
+     * @param event
+     */
+    onIframeMessage: function (event) {
+      if (typeof event.data !== "string") return // CHECK EVENT DATA IS STRING
+      if (!event.data.includes('rtncode')) return // CHECK EVENT DATA CONTAINS RTNCODE
+      const data = JSON.parse(event.data);
+
+      console.log(data.rtncode)
+
+      const { rtncode, rtnmsg, fdtid } = data;
+      this.payResult(rtncode, rtnmsg, fdtid)
     }
   }
 }
@@ -270,5 +336,10 @@ tbody {
   tr:hover {
     background-color: transparent !important;
   }
+}
+.non-scroll {
+  position: fixed;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 </style>
