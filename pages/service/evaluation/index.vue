@@ -4,6 +4,9 @@
       <v-card style="height:fit-content;" class="elevation-0" :width="`${$vuetify.breakpoint.mdAndUp ? '1100px' : '100%'}`">
         <main-card :header="header">
           <template v-slot:body>
+            <v-row align="center" justify="start">
+              <p class="subtitle-2 font-weight-regular mr-4">특허 평가는 <span class="title font-weight-black ml-1">{{lastDataUpdatedAt}}</span>까지 등록된 특허만 가능합니다.</p>
+            </v-row>
             <v-row align="center" justify="center" class="ma-0">
               <v-card style="width: 100%; height: fit-content;">
                 <v-stepper v-model="currentStep" alt-labels class="pb-4 elevation-0">
@@ -57,9 +60,6 @@
                 </v-stepper>
               </v-card>
             </v-row>
-            <v-row align="center" justify="end">
-              <p class="subtitle-2 font-weight-regular mr-4">마지막 데이터 업데이트: <span class="title font-weight-black ml-1">{{lastDataUpdatedAt}}</span></p>
-            </v-row>
           </template>
         </main-card>
       </v-card>
@@ -86,9 +86,10 @@ export default {
   asyncData({store}) {
     return store.dispatch('patent/getDataLastUpdatedAt').then(
       res => {
+        let date = res.split('T')[0].split('-');
         return {
           fetchError: null,
-          lastDataUpdatedAt: res.split('T')[0]
+          lastDataUpdatedAt: `${date[0]}년 ${date[1]}월 ${date[2]}일`
         }
       },
       err => {

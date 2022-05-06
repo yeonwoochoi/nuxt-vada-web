@@ -41,7 +41,7 @@ export default {
     },
   },
   data: () => ({
-    title: '기술의 숨겨진 가치를\n찾아드립니다',
+    title: '기술의 가치를 실시간으로\n제공해드립니다',
     subtitle: '초간편 기술 가치평가 시스템',
     window: {
       width: 0,

@@ -106,10 +106,6 @@ export default {
         value: 'price',
       },
       {
-        text: '보고서 만료일',
-        value: 'expirationDate',
-      },
-      {
         text: '평가의 목적',
         value: 'purpose',
       },
@@ -132,6 +128,10 @@ export default {
       {
         text: '기술가치',
         value: 'techPrice',
+      },
+      {
+        text: '보고서 만료일',
+        value: 'expirationDate',
       },
     ],
   }),
@@ -156,7 +156,7 @@ export default {
 
     targetPatent() {
       let sample = this.summaryData.targetPatent
-      let result = `평가대상 특허 : 등록 ${!sample ? '' : '1'}건\n`
+      let result = `평가대상 특허 : 등록 ${!sample ? '' : '1'}건`
       result += `\n<span class="mb-0 light-blue--text">${sample}</span>`
       return result
     },
