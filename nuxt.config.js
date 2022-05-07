@@ -112,11 +112,11 @@ export default {
 
   proxy: {
     '/pay': {
-      'target': 'http://172.30.1.13',
+      'target': 'http://172.30.1.37',
       'pathRewrite': { '^/pay': '' },
       'changeOrigin': true,
       'secure': false
-    }
+    },
   },
 
   server: {
@@ -130,6 +130,6 @@ export default {
   ],
 
   axios: {
-    baseURL: process.env.API_URL,
+    baseURL: process.env.API_URL
   }
 }

@@ -7,6 +7,7 @@ import axios from "axios";
  */
 export default async function (req, res, next) {
   const config = req.body
+  console.log('hello')
   const { data } = await axios(config)
   res.end(JSON.stringify(data))
 }

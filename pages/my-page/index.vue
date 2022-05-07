@@ -21,7 +21,7 @@
                   v-if="activeIndex === 2"
                   :header="'구매내역'"
                   :table-header="purchaseListHeader"
-                  :table-content="purchaseListContents"
+                  :table-content="paymentLog"
                 />
                 <withdrawal-card
                   v-if="activeIndex === 3"
@@ -50,35 +50,51 @@ import WithdrawalCard from "../../components/card/my-page/contents/WithdrawalCar
 export default {
   name: "index",
   components: {WithdrawalCard, PurchaseListCard, InquiryListCard, EditUserInfoCard, MyPageCard, MainCard},
-  asyncData({store}) {
-    return store.dispatch('qna/readAll').then(
-      res => {
-        let result = []
-        for (let i = 0; i < res.length; i++) {
-          let item = res[i]
-          result.push({
-            id: item.id,
-            isAnswered: item.answered,
-            data: {
-              title: item.title,
-              content: item.content,
-              created_at: item.updatedAt.split('T')[0],
-              answer: !item.answered ? null : { data: item.answer, created_at: item.answeredAt.split('T')[0] }
-            }
-          })
-        }
-        return {
-          inquiryData: result,
-          fetchError: null
-        }
-      },
-      err => {
-        return {
-          inquiryData: [],
-          fetchError: err
-        }
+  async asyncData({store, $axios}) {
+    try {
+      let {paymentLogs} = await $axios.$post('/user/login-email')
+      let log = []
+      for(let i = paymentLogs.length-1; i >= 0; i--) {
+        let time = paymentLogs[i]['purchasedAt'].split("T")
+        let serviceInfo = await store.dispatch('payment/readPlanByIdx', paymentLogs[i]['serviceId'])
+        log.push({
+          index: paymentLogs.length-i,
+          price: paymentLogs[i]['price'],
+          purchased_at: `${time[0]} ${time[1].split(".")[0]}`,
+          serviceName: serviceInfo['name'],
+          numReports: serviceInfo['numReports']
+        })
       }
-    )
+
+      let qna = await store.dispatch('qna/readAll')
+      let qnaList = []
+      for (let i = 0; i < qna.length; i++) {
+        let item = qna[i]
+        qnaList.push({
+          id: item.id,
+          isAnswered: item.answered,
+          data: {
+            title: item.title,
+            content: item.content,
+            created_at: item.updatedAt.split('T')[0],
+            answer: !item.answered ? null : { data: item.answer, created_at: item.answeredAt.split('T')[0] }
+          }
+        })
+      }
+
+      return {
+        inquiryData: qnaList,
+        fetchError: null,
+        paymentLog: log
+      }
+    }
+    catch (err) {
+      return {
+        inquiryData: [],
+        fetchError: err,
+        paymentLog: []
+      }
+    }
   },
   created() {
     this.$store.commit('setSheetTitle', '마이페이지')
@@ -112,83 +128,29 @@ export default {
       {
         text: 'No',
         value: 'index',
-        sortable: false,
-        align: 'center'
-      },
-      {
-        text: '상태',
-        value: 'state',
-        sortable: false,
-        align: 'center'
-      },
-      {
-        text: '결제유형',
-        value: 'paymentType',
-        sortable: false,
         align: 'center'
       },
       {
         text: '요금제',
-        value: 'plan',
-        sortable: false,
+        value: 'serviceName',
         align: 'center'
       },
       {
         text: '신청금액',
         value: 'price',
-        sortable: false,
         align: 'center'
       },
       {
         text: '신청일',
-        value: 'date',
-        sortable: false,
+        value: 'purchased_at',
+        align: 'center'
+      },
+      {
+        text: '구매 보고서 수',
+        value: 'numReports',
         align: 'center'
       },
     ],
-    // TODO (구매내역): 데이터는 서버에서 받아오기
-    purchaseListContents: [
-      {
-        index: 1,
-        state: '결제완료',
-        paymentType: '신용카드',
-        plan: 'Vada1',
-        price: '1000 KRW',
-        date: '2022/02/22'
-      },
-      {
-        index: 2,
-        state: '결제완료',
-        paymentType: '신용카드',
-        plan: 'Vada1',
-        price: '1000 KRW',
-        date: '2022/02/22'
-      },
-      {
-        index: 3,
-        state: '결제완료',
-        paymentType: '신용카드',
-        plan: 'Vada1',
-        price: '1000 KRW',
-        date: '2022/02/22'
-      },
-      {
-        index: 4,
-        state: '결제완료',
-        paymentType: '신용카드',
-        plan: 'Vada1',
-        price: '1000 KRW',
-        date: '2022/02/22'
-      },
-      {
-        index: 5,
-        state: '결제완료',
-        paymentType: '신용카드',
-        plan: 'Vada1',
-        price: '1000 KRW',
-        date: '2022/02/22'
-      },
-    ]
   }),
   methods: {
     openTabContent(index) {

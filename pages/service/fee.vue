@@ -2,10 +2,10 @@
   <v-container fluid>
     <v-dialog v-model="showPurchasePopup" max-width="564" persistent>
       <v-card color="white">
-        <iframe width="564" height="604" contenteditable="true" id="frame" :src="iframeSrc"/>
+        <iframe width="564" height="604" id="frame" :src="iframeSrc"/>
       </v-card>
     </v-dialog>
-    <v-row align="center" justify="center">
+    <v-row v-if="!purchaseDone" align="center" justify="center">
       <v-card style="width: 1200px; height:fit-content;" class="elevation-0">
         <main-card :header="header">
           <template v-slot:body>
@@ -148,6 +148,36 @@
         </main-card>
       </v-card>
     </v-row>
+    <v-row v-else-if="purchaseSuccess" align="center" justify="center">
+      <v-card class="elevation-2 login-card">
+        <v-row align="center" justify="center" style="width: 100%; height: 100%" class="py-12">
+          <v-col cols="12">
+            <p class="font-weight-medium mb-0 text-center" style="font-size: 50px;">
+              결제 완료
+            </p>
+          </v-col>
+          <v-col cols="12">
+            <v-row class="justify-space-between pa-6">
+              <v-col cols="6" class="text-center title">주문번호</v-col>
+              <v-col cols="6" class="text-center title">{{ purchaseId }}</v-col>
+              <v-col cols="6" class="text-center title">상품명</v-col>
+              <v-col cols="6" class="text-center title">{{ tempPurchaseItem.serviceName }}</v-col>
+              <v-col cols="6" class="text-center title">가격</v-col>
+              <v-col cols="6" class="text-center title">{{ tempPurchaseItem.price }}</v-col>
+              <v-col cols="6" class="text-center title">구매한 보고서 수</v-col>
+              <v-col cols="6" class="text-center title">{{ tempPurchaseItem.numReports }}</v-col>
+            </v-row>
+          </v-col>
+          <custom-button
+            @submit="$router.go(0)"
+            :width="`200px`"
+            :color="'primary'"
+            :text="`확인`"
+            class="mt-2 darken-1"
+          />
+        </v-row>
+      </v-card>
+    </v-row>
   </v-container>
 </template>
 
@@ -157,13 +187,14 @@ import SimpleDataTable from "../../components/table/SimpleDataTable";
 import CustomButton from "../../components/button/CustomButton";
 import ConfirmationDialog from "../../components/dialogue/ConfirmationDialog";
 import VadaRequestPayment from "../../utils/VadaRequestPayment";
+import VadaApprovePayment from "@/utils/VadaApprovePayment";
 
 export default {
   name: "fee",
   auth: false,
   components: {ConfirmationDialog, CustomButton, SimpleDataTable, MainCard},
   asyncData({store}) {
-    return store.dispatch("purchase/readAllPlan").then(
+    return store.dispatch("payment/readAllPlan").then(
       res => {
         return {
           planItems: res.sort((a,b) => a.price - b.price),
@@ -193,6 +224,11 @@ export default {
     window.removeEventListener('message', event => {
       this.onIframeMessage(event)
     })
+    this.onResetPurchase()
+  },
+  beforeRouteLeave(to, from, next) {
+    this.onResetPurchase()
+    next()
   },
   data: () => ({
     isPurchasing: false,
@@ -245,6 +281,10 @@ export default {
     tempPaymentObj: null,
     paymentObj: null,
     payloadData: null,
+    purchaseSuccess: false,
+    paymentLog: null,
+    purchaseId: '',
+    purchaseDone: false,
   }),
   computed: {
     header() {
@@ -256,6 +296,14 @@ export default {
         'serviceName': this.selected[0]['name'],
         'numReports': parseInt(this.selected[0]['numReports']),
         'price': parseInt(this.selected[0]['price'])
+      }
+    },
+    tempPurchaseItem: {
+      get () {
+        return this.$store.getters['payment/getTempPurchaseItem']
+      },
+      set (value) {
+        return this.$store.commit('payment/setTempPurchaseItem', value)
       }
     },
   },
@@ -271,6 +319,7 @@ export default {
     onClickPurchase() {
       document.getElementsByTagName("body")[0].className = "non-scroll"
       const payment = new VadaRequestPayment(this.selectedItem)
+      this.tempPurchaseItem = this.selectedItem
       this.payloadData = payment.getPayload()
       this.paymentObj = payment
       this.iframeSrc = process.env.PG_PAYMENT_URL
@@ -283,13 +332,15 @@ export default {
       this.showPurchasePopup = false
       this.payloadData = null
       this.paymentObj = null
+      this.tempPurchaseItem = null
+      this.selected = []
+      this.termsOfPurchaseAgreement = false
     },
 
     payResult: function (rtnCode, rtnMsg, fdTid) {
       this.showPurchasePopup = false;
 
       if (rtnCode === '0000') {
-        alert('성공!')
         const data = {
           'MxID': this.paymentObj.paymentData.MxID,
           'MxIssueNO': this.paymentObj.paymentData.MxIssueNO,
@@ -297,16 +348,37 @@ export default {
           'Amount': this.paymentObj.paymentData.Amount,
           'ServiceId': this.paymentObj.paymentData.ServiceId
         }
-        this.onResetPurchase()
-        this.$router.push({
-          name: 'pay-request',
-          params: {
-            data
-          }
-        })
+        this.processApproveData(data)
       } else {
         alert(`인증 실패[${rtnCode}(${rtnMsg})]`)
         this.onResetPurchase()
+      }
+    },
+
+    async processApproveData(data) {
+      try {
+        document.body.removeAttribute("class", "non-scroll");
+        this.purchaseDone = true
+        this.purchaseSuccess = false
+        const approvePayment = new VadaApprovePayment(data)
+
+        this.$store.dispatch('payment/purchase', {
+          serviceId: this.selectedItem.id,
+          formData: approvePayment.createFormData()
+        }).then(
+          res => {
+            this.purchaseId = data['MxIssueNO']
+            this.purchaseSuccess = true
+            this.$auth.setUser(res['user'])
+            this.paymentLog = res['paymentLog']
+          },
+          err => {
+            alert('결제중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요')
+          }
+        )
+      } catch (e) {
+        alert('결제중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요')
+        //this.$router.go(0)
       }
     },
 
@@ -322,11 +394,9 @@ export default {
       if (!event.data.includes('rtncode')) return // CHECK EVENT DATA CONTAINS RTNCODE
       const data = JSON.parse(event.data);
 
-      console.log(data.rtncode)
-
       const { rtncode, rtnmsg, fdtid } = data;
       this.payResult(rtncode, rtnmsg, fdtid)
-    }
+    },
   }
 }
 </script>
@@ -341,5 +411,11 @@ tbody {
   position: fixed;
   overflow-x: hidden;
   overflow-y: hidden;
+}
+.login-card {
+  border-radius: 5px;
+  border: 1px solid rgba(0.06, 0.13, 0.25, 0.25);
+  width: 800px;
+  height: 500px;
 }
 </style>
