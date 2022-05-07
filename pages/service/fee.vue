@@ -35,6 +35,7 @@
                       class="elevation-0"
                       color="primary"
                       @click="goToTermsOfPurchase"
+                      :disabled="!$auth.loggedIn"
                     >
                       신청하기
                     </v-btn>
