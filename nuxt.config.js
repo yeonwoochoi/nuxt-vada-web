@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'vue-vada-web',
+    title: 'Vadapartners',
     htmlAttrs: {
       lang: 'en'
     },
