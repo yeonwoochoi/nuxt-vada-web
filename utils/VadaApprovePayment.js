@@ -8,7 +8,6 @@ import axios from "axios";
  */
 class VadaRequestPayment {
     constructor(data) {
-        console.dir(data)
         const keyData = process.env.PG_KEY
 
         const { MxID, MxIssueNO, FDTid, Amount, ServiceId, PIDS } = data
@@ -20,7 +19,6 @@ class VadaRequestPayment {
             typeof FDTid === 'undefined' ||
             typeof ServiceId == 'undefined'
         ) {
-            console.error('pay-request: invalid request')
             throw new TypeError('Invalid Request')
         }
 
@@ -49,24 +47,6 @@ class VadaRequestPayment {
 
         formDataStr += `FDHash=${this.hashValue}&EncodeType=${this.EncodeType}&SpecVer=F100C000`;
         return formDataStr
-    }
-
-    getAxiosConfig() {
-        const formData = this.createFormData()
-        const url = process.env.PG_REQ_URL
-
-
-        console.log(`pay-request: approvePayment url: ${url}, hashValue: ${this.hashValue}, encode type: ${this.EncodeType}`)
-        console.log(`pay-request: formDataStr: ${formData}`)
-
-        return {
-            method: 'post',
-            url: url,
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: formData
-        }
     }
 }
 

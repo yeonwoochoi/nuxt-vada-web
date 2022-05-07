@@ -63,7 +63,6 @@ class VadaRequestPayment {
             keyData,
             ServiceId
         }
-        console.dir(this.paymentData)
     }
 
     getPayload() {
