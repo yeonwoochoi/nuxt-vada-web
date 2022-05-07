@@ -50,7 +50,12 @@ import WithdrawalCard from "../../components/card/my-page/contents/WithdrawalCar
 export default {
   name: "index",
   components: {WithdrawalCard, PurchaseListCard, InquiryListCard, EditUserInfoCard, MyPageCard, MainCard},
-  async asyncData({store, $axios}) {
+  async asyncData({store, $axios, $auth, redirect}) {
+    if ($auth.user['roles'].includes("ROLE_ADMIN")) {
+      window.open('about:blank').location.href = process.env.ADMIN_URL
+      redirect('/')
+      return;
+    }
     try {
       let {paymentLogs} = await $axios.$post('/user/login-email')
       let log = []
