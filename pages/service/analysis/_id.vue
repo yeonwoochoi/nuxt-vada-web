@@ -70,7 +70,7 @@
               <v-col cols="12" class="mt-10" align="end">
                 <custom-button
                   :width="'200'"
-                  :text="'목록보기'"
+                  :text="`${isTargetBlank ? '창닫기' : '목록보기'}`"
                   @submit="goToSearch"
                 />
               </v-col>
@@ -188,14 +188,21 @@ export default {
         }
       )
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => vm.setBeforePath(from.fullPath))
+  },
   created() {
     this.$store.commit('setSheetTitle', '특허분석')
     if (!!this.fetchError) {
       this.$errorHandler.showMessage(this.fetchError)
     }
   },
+  mounted() {
+    console.log(this.beforePath)
+  },
   data: () => ({
     header: '개별특허분석',
+    beforePath: ""
   }),
   computed: {
     title() {
@@ -241,10 +248,22 @@ export default {
     link() {
       return this.$util.getKiprisDoiLink(this.patentData["applicationNumber"])
     },
+    isTargetBlank() {
+      return this.beforePath === '/' || !this.beforePath
+    }
   },
   methods: {
     goToSearch() {
+      if (this.isTargetBlank) {
+        window.close();
+      }
+      else if (this.beforePath === '/service/evaluation/list') {
+        this.$router.push('/service/evaluation/list')
+      }
       this.$router.push('/service/search')
+    },
+    setBeforePath(path) {
+      this.beforePath = path
     }
   }
 }
