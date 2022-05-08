@@ -64,7 +64,7 @@ export default {
         let serviceInfo = await store.dispatch('payment/readPlanByIdx', paymentLogs[i]['serviceId'])
         log.push({
           index: paymentLogs.length-i,
-          price: paymentLogs[i]['price'],
+          price: paymentLogs[i]['price'].toLocaleString(),
           purchased_at: `${time[0]} ${time[1].split(".")[0]}`,
           serviceName: serviceInfo['name'],
           numReports: serviceInfo['numReports']
