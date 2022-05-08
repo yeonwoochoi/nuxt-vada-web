@@ -101,7 +101,7 @@ export default {
   computed: {
     targetPatent() {
       let sample = this.summaryData.targetPatentList
-      let result = `평가대상 특허 : 등록 ${sample.length}건\n`
+      let result = `평가대상 특허 : 등록 ${sample.length}건`
       for (let i = 0; i < sample.length; i++) {
         let temp = sample[i];
         result += `\n<span class="mb-0 light-blue--text">${temp}</span>`

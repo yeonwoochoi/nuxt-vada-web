@@ -102,10 +102,6 @@ export default {
     title: '',
     summaryHeader: [
       {
-        text: '평가 금액',
-        value: 'price',
-      },
-      {
         text: '평가의 목적',
         value: 'purpose',
       },
