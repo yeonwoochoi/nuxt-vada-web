@@ -107,7 +107,6 @@ export default {
       {
         text: 'Date',
         align: 'center',
-        sortable: false,
         filterable: false,
         value: 'created_at',
         width: '20%'

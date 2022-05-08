@@ -55,7 +55,7 @@ export default {
     return store.dispatch('faq/readAll').then(
       res => {
         let result = []
-        for (let i = 0; i < res.length; i++) {
+        for (let i = res.length-1; i >= 0; i--) {
           let faq = res[i]
           result.push({
             id: faq['id'],

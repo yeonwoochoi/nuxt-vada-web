@@ -73,7 +73,7 @@ export default {
 
       let qna = await store.dispatch('qna/readAll')
       let qnaList = []
-      for (let i = 0; i < qna.length; i++) {
+      for (let i = qna.length-1; i >= 0; i--) {
         let item = qna[i]
         qnaList.push({
           id: item.id,
