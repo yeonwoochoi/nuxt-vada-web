@@ -12,7 +12,7 @@ export const state = () => ({
     patentNumber: '',
     ksic: null,
     sales: null, // can be null
-    businessScale: { original: '상장 기업', data: 'CAPM' },
+    businessScale: { original: '비상장 창업기업', data: 'STARTUP' },
   },
   evalData: null,
   downloadTypes: [ 'Report', 'MultiPatent', 'IpEmailPair' ]
