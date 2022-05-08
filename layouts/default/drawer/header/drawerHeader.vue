@@ -7,9 +7,6 @@
       <v-list-item-title class="text-h7 font-weight-medium my-1">
         {{ company.toUpperCase() }}
       </v-list-item-title>
-      <v-list-item-subtitle>
-        Vuetify {{version}}
-      </v-list-item-subtitle>
     </v-list-item-content>
   </v-list-item>
 </template>
