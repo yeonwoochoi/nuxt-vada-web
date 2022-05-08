@@ -57,7 +57,11 @@ export default {
   methods: {
     goNext() {
       this.loading = true;
-      if (!this.$util.validatePatentNumber(this.patentNumber)) {
+      let tempPatentNumber = this.patentNumber
+      if (!!this.patentNumber && this.patentNumber.length === 9) {
+        tempPatentNumber = `${this.patentNumber}0000`
+      }
+      if (!this.$util.validatePatentNumber(tempPatentNumber)) {
         this.$notifier.showMessage({
           content: '유효하지 않은 출원/등록번호입니다.',
           color: 'error'
@@ -65,7 +69,7 @@ export default {
         this.loading = false
         return;
       }
-      this.$store.commit('patent/setPatentNumber', this.patentNumber)
+      this.$store.commit('patent/setPatentNumber', tempPatentNumber)
       this.$emit('nextStep', 1, () => {
         this.loading = false
       });

@@ -20,6 +20,7 @@
                       small-chips
                       solo
                       class="pr-sm-4 my-2"
+                      @keypress="isNumber($event)"
                     >
                       <template v-slot:no-data>
                         <v-list-item>
@@ -298,8 +299,12 @@ export default {
       let validSearchData = []
       if (this.searchData.length > 0) {
         for (let i = 0; i < this.searchData.length; i++) {
-          if (this.$util.validatePatentNumber(this.searchData[i].text)) {
-            validSearchData.push(this.searchData[i].text)
+          let tempPatentNumber = this.searchData[i].text
+          if (this.searchData[i].text.length === 9) {
+            tempPatentNumber = `${this.searchData[i].text}0000`
+          }
+          if (this.$util.validatePatentNumber(tempPatentNumber)) {
+            validSearchData.push(tempPatentNumber)
           }
         }
       }
@@ -410,6 +415,15 @@ export default {
           this.$errorHandler.showMessage(err)
         }
       )
+    },
+    isNumber: function(evt) {
+      evt = (evt) ? evt : window.event;
+      let charCode = (evt.which) ? evt.which : evt.keyCode;
+      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
     },
   }
 }
