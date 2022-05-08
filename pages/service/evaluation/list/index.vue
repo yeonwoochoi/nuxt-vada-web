@@ -147,6 +147,7 @@
         </main-card>
       </v-card>
     </v-row>
+    <v-overlay :value="isDownload"/>
   </v-container>
 </template>
 
@@ -162,10 +163,10 @@ export default {
     return store.dispatch('patent/getEvaluationList').then(
       res => {
         let result = [];
-        for (let i = 0; i < res.length; i++) {
+        for (let i = res.length-1; i >= 0; i--) {
           let temp = res[i]
           result.push({
-            no: i+1,
+            no: res.length - i,
             id: temp['id'],
             summaryId: temp['summaryId'],
             content: {
@@ -280,7 +281,7 @@ export default {
       }
       this.isDownload = true;
       for (let i = 0; i < this.selected.length; i++) {
-        await this.download(this.selected[i])
+        await this.download(this.selected[i], true)
       }
       this.isDownload = false;
     },
@@ -295,25 +296,28 @@ export default {
       }
       return null
     },
-    async download(item) {
+    async download(item, isMultiDownload = false) {
       let payload = {
         evaluationId: item.id
       }
+      if (!isMultiDownload) this.isDownload = true;
       await this.$store.dispatch('patent/downloadReport', payload).then(
         res => {
-          let blob = new Blob([res], {type: "application/x-hwp, application/haansofthwp, application/vnd.hancom.hwp"});
+          let blob = new Blob([res], {type: "application/pdf"});
           let objectUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = objectUrl;
-          link.setAttribute('download', 'report.hwp');
+          link.setAttribute('download', '바다파트너스_평가보고서.pdf');
           document.body.appendChild(link);
           link.click();
+          if (!isMultiDownload) this.isDownload = false;
         },
         err => {
           this.$notifier.showMessage({
             content: "보고서 다운 중 오류가 발생했습니다. 다시 시도해주세요.",
             color: 'error'
           })
+          if (!isMultiDownload) this.isDownload = false;
         }
       )
     }
