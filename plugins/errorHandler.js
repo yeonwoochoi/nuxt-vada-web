@@ -112,6 +112,8 @@ function getErrorMessage(code, subCode) {
       }
     case 8:
       switch (subCodeInt) {
+        case 8000:
+          return "올바르지 않은 인증번호입니다."
         case 8001:
           return "인증 번호가 만료되었습니다. 인증 번호를 다시 전송해주십시오."
         case 8002:
