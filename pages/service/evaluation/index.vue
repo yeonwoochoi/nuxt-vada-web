@@ -277,7 +277,7 @@ export default {
           let objectUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = objectUrl;
-          link.setAttribute('download', `바다파트너스_평가보고서_${this.summaryData.targetPatentList[0]}_${this.$utils.toStringByFormatting('_')}.pdf`);
+          link.setAttribute('download', `바다파트너스_평가보고서_${this.summaryData.targetPatentList[0]}_${this.$util.toStringByFormatting('_')}.pdf`);
           document.body.appendChild(link);
           link.click();
           this.isPurchase = true;
