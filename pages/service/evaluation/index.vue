@@ -5,7 +5,7 @@
         <main-card :header="header">
           <template v-slot:body>
             <v-row align="center" justify="start">
-              <p class="subtitle-2 font-weight-regular mr-4">특허 평가는 <span class="title font-weight-black ml-1">{{lastDataUpdatedAt}}</span>까지 등록된 특허만 가능합니다.</p>
+              <p class="subtitle-2 font-weight-regular ml-6 mb-6">특허 평가는 <span class="title font-weight-black ml-1">{{lastDataUpdatedAt}}</span>까지 등록된 특허만 가능합니다.</p>
             </v-row>
             <v-row align="center" justify="center" class="ma-0">
               <v-card style="width: 100%; height: fit-content;">
@@ -64,8 +64,8 @@
         </main-card>
       </v-card>
     </v-row>
+    <v-overlay :value="downloadingReport"/>
   </v-container>
-
 </template>
 
 <script>
@@ -106,6 +106,7 @@ export default {
     if (!!this.fetchError) {
       this.$errorHandler.showMessage(this.fetchError)
     }
+    this.downloadingReport = false;
   },
   beforeRouteLeave(to, from, next) {
     if (!this.isPurchase && this.isLastStep) {
@@ -142,7 +143,8 @@ export default {
     summaryData: null,
     ksic: {},
     isPurchase: false,
-    isRemoving: false
+    isRemoving: false,
+    downloadingReport: false
   }),
   computed: {
     isLastStep() {
@@ -264,20 +266,27 @@ export default {
       let body = {
         summaryId: summaryId
       }
+      if (this.downloadingReport) {
+        this.$errorHandler.showMessage('보고서를 생성 및 변환하고 있는 중입니다.')
+        return
+      }
+      this.downloadingReport = true;
       await this.$store.dispatch('patent/purchaseReport', body).then(
         res => {
-          let blob = new Blob([res], {type: "application/x-hwp, application/haansofthwp, application/vnd.hancom.hwp"});
+          let blob = new Blob([res], {type: "application/pdf"});
           let objectUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = objectUrl;
-          link.setAttribute('download', 'report.hwp');
+          link.setAttribute('download', '바다파트너스_평가보고서.pdf');
           document.body.appendChild(link);
           link.click();
           this.isPurchase = true;
+          this.downloadingReport = false;
           callback(true, "구매 완료되었습니다.")
         },
         err => {
           this.isPurchase = false;
+          this.downloadingReport = false;
           callback(false, (err.code === 1 && err.subCode === 1010) ? '포인트가 부족합니다.' : '구매 처리 중 오류가 발생했습니다.')
         }
       )
