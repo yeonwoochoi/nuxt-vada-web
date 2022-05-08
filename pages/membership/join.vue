@@ -206,7 +206,7 @@ export default {
           let objectUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = objectUrl;
-          link.setAttribute('download', 'template.xls');
+          link.setAttribute('download', '바다파트너스_기업가입신청양식.xls');
           document.body.appendChild(link);
           link.click();
         },
