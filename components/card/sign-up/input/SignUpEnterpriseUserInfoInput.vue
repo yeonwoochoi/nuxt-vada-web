@@ -13,12 +13,12 @@
       />
     </validation-provider>
     <validation-provider v-slot="{ errors }" name="사업자등록번호" rules="required|businessNumber">
-      <p class="ma-1 subtitle-2 text-start">사업자등록번호(-없이 번호만 입력)</p>
+      <p class="ma-1 subtitle-2 text-start">사업자등록번호</p>
       <v-text-field
         v-model="businessNumber"
         :error-messages="errors"
         @keypress="isNumber($event)"
-        maxlength="10"
+        maxlength="12"
         required
         outlined
         dense
@@ -250,29 +250,25 @@ extend('fileRequired', {
 
 extend('businessNumber', {
   validate(value) {
-    let chkStep1 = 0;
-    if ( value.length === 10 ) {
-      const keyArr = [1, 3, 7, 1, 3, 7, 1, 3, 5]; // 인증키(고정)
+    let numberMap = value.replace(/-/gi, '').split('').map(function (d){
+      return parseInt(d, 10);
+    });
 
-      for (let i = 0; i < value.length - 1; i++) {
-        // 사업자번호의 9자리까지 인증키와 자릿수같은 숫자끼리 곱한 뒤, 계속 더해준다. (ex_ (0*1) + (1*3) + ...
-        chkStep1 += parseInt(value.substring( i, i+1 ), 10) * keyArr[ i ];
-      }
-      // 9번째 자리의 숫자에 0.5를 곱한 뒤, 다시 더해준다.
-      chkStep1 += Math.floor(parseInt(value.substring(8, 9), 10) * 5 / 10);
+    if(numberMap.length === 10){
+      let keyArr = [1, 3, 7, 1, 3, 7, 1, 3, 5];
+      let chk = 0;
+
+      keyArr.forEach(function(d, i){
+        chk += d * numberMap[i];
+      });
+
+      chk += parseInt((keyArr[8] * numberMap[8])/ 10, 10);
+      return Math.floor(numberMap[9]) === ( (10 - (chk % 10) ) % 10);
     }
-    // '10 - (지금까지 더한 수의 나머지) == 사업자번호의 마지막 자릿수'가 같다면 성공
-    const chkStep2 = parseInt( value.substring(9, 10), 10 );
-    return (10 - (chkStep1 % 10)) === chkStep2;
+
+    return false;
   },
   message: "사업자번호가 유효하지 않습니다."
-})
-
-extend('ip', {
-  validate(value) {
-    return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(value);
-  },
-  message: "IP가 유효하지 않습니다."
 })
 
 
@@ -283,9 +279,6 @@ export default {
     ValidationObserver,
     ValidationProvider,
     CustomButton
-  },
-  mounted() {
-    this.reset();
   },
   data: () => ({
     companyName: '',
@@ -325,6 +318,29 @@ export default {
         ipFile: this.ipFile,
       }
     },
+  },
+  watch: {
+    businessNumber() {
+      let str = this.businessNumber.replace(/-/g, '');
+      let tmp = '';
+
+      if (str.length < 4) {
+        tmp = str
+      }
+      else if(str.length < 6){
+        tmp += str.substring(0, 3);
+        tmp += '-';
+        tmp += str.substring(3);
+      }
+      else{
+        tmp += str.substring(0, 3);
+        tmp += '-';
+        tmp += str.substring(3, 5);
+        tmp += '-';
+        tmp += str.substring(5);
+      }
+      this.businessNumber = tmp
+    }
   },
   methods: {
     isNumber: function(evt) {
@@ -412,17 +428,17 @@ export default {
         errorMsg = '입력한 정보를 확인해 주세요.'
       }
 
+      let businessNum = this.businessNumber.replace(/-/g, '')
+
       let form = new FormData();
       form.append("companyName", this.companyName);
-      form.append("registrationNumber", this.businessNumber);
+      form.append("registrationNumber", businessNum);
       form.append("managerName", this.managerName);
       form.append("managerEmail", this.managerEmail);
       form.append("managerPhone", this.managerPhone);
       form.append("managerPassword", this.password);
       form.append("ipEmailPair", this.ipFile);
       form.append("license", this.businessRegistrationFile);
-
-
 
       await this.$emit('submitCompanyInfo', {
         data: form,
@@ -489,7 +505,7 @@ export default {
     },
     downloadFile(){
       this.$emit('downloadTemplateFile')
-    }
+    },
   },
 }
 </script>
