@@ -111,6 +111,12 @@ export default {
   },
 
   proxy: {
+    '/api/': {
+      target: process.env.API_URL,
+      pathRewrite: {
+        '^/api/': ''
+      }
+    },
     '/pay': {
       'target': 'http://172.30.1.37',
       'pathRewrite': { '^/pay': '' },
@@ -124,12 +130,8 @@ export default {
     host: '0.0.0.0'
   },
 
-  serverMiddleware: [
-    bodyParser.json(),
-    { path: '/api/pg-approve', handler: '~/api/pg-approve.js' }
-  ],
-
   axios: {
-    baseURL: process.env.API_URL
+    prefix: '/api',
+    proxy: true
   }
 }
