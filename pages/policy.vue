@@ -26,6 +26,9 @@ export default {
   name: "policy",
   auth: false,
   components: {MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '개인정보 처리방침')
+  },
   data: () => ({
     header: '개인정보 처리방침',
     policyData: [

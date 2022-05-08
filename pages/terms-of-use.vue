@@ -24,8 +24,11 @@
 import MainCard from "../components/card/MainCard";
 export default {
   name: "terms-of-use",
-  components: {MainCard},
   auth: false,
+  components: {MainCard},
+  created() {
+    this.$store.commit('setSheetTitle', '이용약관')
+  },
   data: () => ({
     header: '이용약관',
     termsOfUseData: [
