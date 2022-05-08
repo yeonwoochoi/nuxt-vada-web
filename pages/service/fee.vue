@@ -129,7 +129,7 @@
                                     <v-subheader>가격(부가세포함)</v-subheader>
                                   </v-col>
                                   <v-col cols="5" class="pt-0">
-                                    <p class="mb-0 font-weight-bold">{{selected[0]['price']}}</p>
+                                    <p class="mb-0 font-weight-bold">{{selected[0]['price'].toLocaleString()}}</p>
                                   </v-col>
                                   <v-col cols="12">
                                     <p class="font-weight-black mb-0 text-center">결제하시겠습니까?</p>
@@ -164,7 +164,7 @@
               <v-col cols="6" class="text-center title">상품명</v-col>
               <v-col cols="6" class="text-center title">{{ tempPurchaseItem.serviceName }}</v-col>
               <v-col cols="6" class="text-center title">가격</v-col>
-              <v-col cols="6" class="text-center title">{{ tempPurchaseItem.price }}</v-col>
+              <v-col cols="6" class="text-center title">{{ tempPurchaseItem.price.toLocaleString() }}</v-col>
               <v-col cols="6" class="text-center title">구매한 보고서 수</v-col>
               <v-col cols="6" class="text-center title">{{ tempPurchaseItem.numReports }}</v-col>
             </v-row>

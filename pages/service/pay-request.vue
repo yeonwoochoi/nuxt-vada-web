@@ -16,7 +16,7 @@
                 <v-col cols="6" class="text-center title">상품명</v-col>
                 <v-col cols="6" class="text-center title">{{ tempPurchaseItem.serviceName }}</v-col>
                 <v-col cols="6" class="text-center title">가격</v-col>
-                <v-col cols="6" class="text-center title">{{ tempPurchaseItem.price }}</v-col>
+                <v-col cols="6" class="text-center title">{{ tempPurchaseItem.price.toLocaleString() }}</v-col>
                 <v-col cols="6" class="text-center title">구매한 보고서 수</v-col>
                 <v-col cols="6" class="text-center title">{{ tempPurchaseItem.numReports }}</v-col>
               </v-row>

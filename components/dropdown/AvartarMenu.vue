@@ -23,7 +23,7 @@
         <div class="text-center pa-4" style="max-width: 95%">
           <p class="mt-1 mb-0 subtitle-1 ellipsis"><strong class="title">{{ userInfo.email }}</strong> 님 </p>
           <p class="subtitle-1">환영합니다.</p>
-          <p class="mb-0">포인트 <strong>{{ userInfo.leftReport }}</strong></p>
+          <p class="mb-0">포인트 <strong>{{ userInfo.leftReport.toLocaleString() }}</strong></p>
         </div>
         <div class="text-center">
           <v-divider class="my-3"/>

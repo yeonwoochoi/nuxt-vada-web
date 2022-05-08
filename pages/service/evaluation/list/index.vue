@@ -177,7 +177,6 @@ export default {
               applicantName: temp['patent']['items'][0]['applicantName'],
               personName: '',
               link: $util.getKiprisDoiLink(temp['patent']['items'][0]['applicationNumber']),
-              price: '12000 KRW',
               expirationDate: temp['reportExpiredAt'],
               status: temp['patent']['items'][0]['registerStatus']
             }
