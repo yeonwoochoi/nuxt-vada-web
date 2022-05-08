@@ -96,7 +96,7 @@ export default {
     isDownload: false,
     isPurchaseDialogOpen: false,
     purchaseDialogTitle: '특허평가 보고서 구매',
-    purchaseDialogContent: '보고서 구매시, 포인트가 차감됩니다. 1년 사용권을 가지고 있는 경우 별도로 포인트가 차감되지 않습니다. 정말 구매하시겠습니까?',
+    purchaseDialogContent: '보고서 구매시, 포인트가 차감됩니다. 정말 구매하시겠습니까?',
   }),
   computed: {
     targetPatent() {
