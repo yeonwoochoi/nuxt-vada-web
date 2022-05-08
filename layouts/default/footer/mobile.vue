@@ -30,8 +30,10 @@ export default {
     ...mapState({
       companyLogo: 'companyWhiteLogo',
       footerBtnInfo: 'footerBtnInfo',
-      copyright: 'copyright',
-    })
+    }),
+    copyright() {
+      return `COPYRIGHT 바다파트너스 ${new Date().getFullYear()}. ALL RIGHTS RESERVED`
+    }
   }
 }
 </script>

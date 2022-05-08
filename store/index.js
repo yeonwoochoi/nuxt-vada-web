@@ -35,7 +35,7 @@ export const state = () => ({
       link: '/policy'
     }
   ],
-  copyright: 'COPYRIGHT 바다파트너스 2020. ALL RIGHTS RESERVED',
+  userInfo: {email: '', leftReport: 0}
 })
 
 export const getters = {
@@ -50,6 +50,7 @@ export const getters = {
     return result;
   },
   getSheetTitle: state => state.sheetTitle,
+  getUserInfo: state => state.userInfo,
 }
 
 export const mutations = {
@@ -61,6 +62,10 @@ export const mutations = {
     state.sheetTitle = data
   },
 
+  setUserInfo: (state, data) => {
+    state.userInfo = data
+  },
+
   logout(state) {
     state.auth.user = {}
     state.auth.loggedIn = false;
@@ -68,6 +73,5 @@ export const mutations = {
 }
 
 export const actions = {
-
 }
 
