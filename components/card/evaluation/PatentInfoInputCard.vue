@@ -7,6 +7,7 @@
       <v-col cols="11" md="8" class="mb-0">
         <v-text-field
           v-model="patentNumber"
+          @keypress="isNumber($event)"
           label="출원/등록번호"
           flat
           filled
@@ -68,6 +69,15 @@ export default {
       this.$emit('nextStep', 1, () => {
         this.loading = false
       });
+    },
+    isNumber: function(evt) {
+      evt = (evt) ? evt : window.event;
+      let charCode = (evt.which) ? evt.which : evt.keyCode;
+      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
     },
   }
 }
