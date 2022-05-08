@@ -77,8 +77,8 @@
                         </v-col>
                         <v-col md="6" cols="12" class="pb-0">
                           <span>
-                            <em class="mr-1">평가금액</em>
-                            {{ item.content.price }}
+                            <em class="mr-1">보고서생성일</em>
+                            {{ item.content.createdDate }}
                           </span>
                         </v-col>
                         <v-col md="6" cols="12" class="pb-0">
@@ -172,7 +172,7 @@ export default {
             content: {
               inventionTitle: temp['patent']['items'][0]['inventionTitle'],
               registerNumber: temp['patent']['items'][0]['registerNumber'],
-              registerDate: temp['patent']['items'][0]['registerDate'],
+              createdDate: temp['createdAt'].split("T")[0],
               applicationNumber: temp['patent']['items'][0]['applicationNumber'],
               applicantName: temp['patent']['items'][0]['applicantName'],
               personName: '',
