@@ -182,7 +182,7 @@ export default {
         if (!!callback) callback(false, null);
         return
       }
-      await this.$store.dispatch('user/checkPassword', {password: pwd}).then(
+      this.$store.dispatch('user/checkPassword', {password: pwd}).then(
         res => {
           let enterpriseId = this.$auth.user["enterprise"]["enterpriseId"]
           if (!enterpriseId) {
@@ -197,7 +197,7 @@ export default {
                   organizationName: res['organizationName'],
                   organizationNumber: res['organizationNumber']
                 }
-                this.userInfo = this.$auth.user
+                this.userInfo = JSON.parse(JSON.stringify(this.$auth.user))
                 this.userInfo['enterprise'] = enterpriseInfo
                 if (!!callback) callback(true, this.userInfo);
               },

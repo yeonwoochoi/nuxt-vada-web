@@ -50,6 +50,17 @@ export const actions = {
         })
     })
   },
+  async readEnterpriseUserByIndex({commit}, param) {
+    return new Promise(((resolve, reject) => {
+      this.$axios.$get('/enterprise/' + param).then(
+        res => {
+          resolve(res)
+        })
+        .catch(err => {
+          reject(err.response.data)
+        })
+    }))
+  },
   checkPassword({commit}, payload) {
     return new Promise((resolve, reject) => {
       this.$axios.$post('/user/password/validate', payload)
@@ -63,9 +74,9 @@ export const actions = {
   },
   getEnterpriseInfo({commit}, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios.$post('/enterprise/' + payload)
+      this.$axios.$get('/enterprise/' + payload)
         .then(res => {
-          resolve(res)
+          resolve(res["enterprise"])
         })
         .catch(err => {
           reject(err.response.data)
