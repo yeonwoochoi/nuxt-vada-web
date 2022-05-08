@@ -182,6 +182,15 @@ export default {
         if (!!callback) callback(false, null);
         return
       }
+      // 기업 귀속 회원도 접근 불가
+      if (roles.includes("ROLE_ENTERPRISE_MANAGER_USER") && this.activeIndex === 3) {
+        this.$notifier.showMessage({
+          content: '기업 매니저 회원 탈퇴는 문의하기를 통해 진행될 수 있습니다.',
+          color: 'error'
+        })
+        if (!!callback) callback(false, null);
+        return
+      }
       this.$store.dispatch('user/checkPassword', {password: pwd}).then(
         res => {
           let enterpriseId = this.$auth.user["enterprise"]["enterpriseId"]
