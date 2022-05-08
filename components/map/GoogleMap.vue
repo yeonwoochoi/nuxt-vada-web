@@ -1,4 +1,10 @@
 <template>
+  <v-img
+    @click="openGoogleMap"
+    style="width: 800px; height: 450px; overflow-y: hidden; overflow-x: hidden; cursor: pointer"
+    :src="googleMap"
+  />
+  <!--
   <gmap-map
     :center="center"
     :zoom="15"
@@ -24,9 +30,12 @@
       @click="toggleInfo(item)"
     />
   </gmap-map>
+  -->
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "GoogleMap",
   data: () => ({
@@ -139,12 +148,19 @@ export default {
       }
     },
   }),
-
+  computed: {
+    ...mapState({
+      googleMap: "googleMap"
+    })
+  },
   methods: {
     toggleInfo: function(marker) {
       this.infoPosition = marker.position
       this.infoContent = marker.full_name
       this.infoOpened = true
+    },
+    openGoogleMap() {
+      window.open('https://map.naver.com/v5/entry/place/20637541?c=14141228.0460652,4508885.8311540,17,0,0,0,dh')
     }
   }
 }

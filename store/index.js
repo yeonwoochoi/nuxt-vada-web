@@ -3,6 +3,7 @@ export const state = () => ({
   vuetifyVersion: '2.6.1',
   companyDefaultLogo: require('assets/logo/logo_vada_default.png'),
   companyWhiteLogo: require('assets/logo/logo_vada_white.png'),
+  googleMap: require('assets/google_map.png'),
   toolbarItems: [],
   sheetTitle: '',
   drawer: false,
