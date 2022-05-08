@@ -154,7 +154,6 @@ export default {
         this.isDownload = false;
         alert(msg)
         if (success) {
-          console.log(window.location.href)
           location.href = '/service/evaluation/list'
         }
         else {
