@@ -260,7 +260,9 @@ export default {
       else if (this.beforePath === '/service/evaluation/list') {
         this.$router.push('/service/evaluation/list')
       }
-      this.$router.push('/service/search')
+      else {
+        this.$router.push('/service/search')
+      }
     },
     setBeforePath(path) {
       this.beforePath = path
