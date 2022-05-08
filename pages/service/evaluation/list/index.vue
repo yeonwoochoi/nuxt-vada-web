@@ -307,7 +307,7 @@ export default {
           let objectUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = objectUrl;
-          link.setAttribute('download', '바다파트너스_평가보고서.pdf');
+          link.setAttribute('download', `바다파트너스_평가보고서_${this.evaluations.content.applicationNumber}_${this.$utils.toStringByFormatting('_')}.pdf`);
           document.body.appendChild(link);
           link.click();
           if (!isMultiDownload) this.isDownload = false;

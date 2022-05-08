@@ -28,6 +28,16 @@ class Utils {
     const koreaTimeDiff = 9 * 60 * 60 * 1000;
     return new Date(utcNow + koreaTimeDiff)
   }
+
+  static toStringByFormatting(delimiter = '-') {
+    let source = new Date()
+    const year = source.getFullYear();
+    let tempMonth = source.getMonth() + 1
+    let tempDay = source.getDate()
+    const month = tempMonth >= 10 ? tempMonth : `0${tempMonth}`;
+    const day = tempDay >= 10 ? tempDay : `0${tempDay}`;
+    return [year, month, day].join(delimiter);
+  }
 }
 
 export default (context, inject) => {
