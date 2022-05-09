@@ -7,7 +7,7 @@
     <v-card-text v-if="$slots.default">
       <slot/>
     </v-card-text>
-    <v-card-text v-else>{{ comment }}</v-card-text>
+    <v-card-text v-else v-html="comment"/>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn

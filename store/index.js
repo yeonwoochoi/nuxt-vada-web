@@ -35,7 +35,7 @@ export const state = () => ({
       link: '/policy'
     }
   ],
-  userInfo: {email: '', leftReport: 0}
+  userInfo: {email: '', leftReport: 0, enterprisePass: '-',}
 })
 
 export const getters = {

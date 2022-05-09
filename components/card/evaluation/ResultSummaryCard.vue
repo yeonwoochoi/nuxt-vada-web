@@ -55,6 +55,7 @@
 import CustomButton from "../../button/CustomButton";
 import VerticalHeaderTable from "../../table/VerticalHeaderTable";
 import ConfirmationDialog from "../../dialogue/ConfirmationDialog";
+import {mapGetters} from "vuex";
 
 export default {
   name: "ResultSummaryCard",
@@ -96,9 +97,25 @@ export default {
     isDownload: false,
     isPurchaseDialogOpen: false,
     purchaseDialogTitle: '특허평가 보고서 구매',
-    purchaseDialogContent: '보고서 구매시, 포인트가 차감됩니다. 정말 구매하시겠습니까?',
   }),
   computed: {
+    ...mapGetters({
+      userInfo: 'getUserInfo'
+    }),
+    purchaseDialogContent() {
+      if (this.isEnterpriseUser) {
+        return `<p class="font-weight-bold subtitle-1">포인트: ${this.userInfo['leftReport']}</p><p class="font-weight-bold subtitle-1">이용권 만료일: ${this.userInfo['enterprisePass']}</p>이용권이 있는 경우를 제외하곤, 보고서 구매시 포인트가 차감됩니다. 정말 구매하시겠습니까?`
+      }
+      else {
+        return `<p class="font-weight-bold subtitle-1">포인트: ${this.userInfo['leftReport']}</p>보고서 구매시, 포인트가 차감됩니다. 정말 구매하시겠습니까?`
+      }
+    },
+    isEnterpriseUser() {
+      if (!this.$auth.loggedIn) {
+        return false
+      }
+      return this.$auth.user['roles'].includes("ROLE_ENTERPRISE_MANAGER_USER") || this.$auth.user['roles'].includes("ROLE_ENTERPRISE_USER")
+    },
     targetPatent() {
       let sample = this.summaryData.targetPatentList
       let result = `평가대상 특허 : 등록 ${sample.length}건`
@@ -146,6 +163,16 @@ export default {
       ]
     },
   },
+  watch: {
+    isPurchaseDialogOpen: {
+      handler: function(val, oldVal) {
+        if (val) {
+          this.fetchPointData()
+        }
+      },
+      deep: true
+    }
+  },
   methods: {
     async purchase() {
       this.isDownload = true;
@@ -160,6 +187,9 @@ export default {
           this.$router.push('/service/fee')
         }
       })
+    },
+    fetchPointData() {
+      this.$store.dispatch('refreshPointData')
     }
   }
 }
