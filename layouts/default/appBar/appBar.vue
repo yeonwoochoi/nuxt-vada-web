@@ -90,7 +90,7 @@
             >
               {{loginBtnText}}
             </v-btn>
-            <avartar-menu v-else @logout="onClickLogIn" :is-active="isActive" :user-info="userInfo"/>
+            <avartar-menu v-else @logout="onClickLogIn" :is-active="isActive" :user-info="userInfo" :is-enterprise="isEnterpriseUser"/>
           </v-col>
         </v-row>
         <v-row
@@ -114,7 +114,12 @@
             >
               {{ loginBtnText }}
             </v-btn>
-            <avartar-menu v-else @logout="onClickLogIn" :is-active="isActive" :user-info="userInfo"/>
+            <avartar-menu
+              v-else
+              :is-active="isActive"
+              :user-info="userInfo"
+              @logout="onClickLogIn"
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -148,7 +153,7 @@ export default {
     isHovered: false,
     isLogin: false,
     appBarHeight: 100,
-    loginBtnText: '로그인'
+    loginBtnText: '로그인',
   }),
   computed: {
     ...mapState({
@@ -157,7 +162,7 @@ export default {
     }),
     ...mapGetters({
       toolbarItems: 'toolbarItems',
-      sheetTitle: 'getSheetTitle'
+      sheetTitle: 'getSheetTitle',
     }),
     getColor() {
       return this.isActive ? 'rgba(255, 255, 255, 255)' : 'rgba(255, 255, 255, 0)'
@@ -187,10 +192,18 @@ export default {
       //TODO (appBarSheetTitle)
       return this.sheetTitle
     },
-    userInfo() {
-      return {
-        email: this.$auth.user.email,
-        leftReport: this.$auth.user.leftReport,
+    isEnterpriseUser() {
+      if (!this.$auth.loggedIn) {
+        return false
+      }
+      return this.$auth.user['roles'].includes("ROLE_ENTERPRISE_MANAGER_USER") || this.$auth.user['roles'].includes("ROLE_ENTERPRISE_USER")
+    },
+    userInfo: {
+      get () {
+        return this.$store.getters['getUserInfo']
+      },
+      set (value) {
+        return this.$store.commit('setUserInfo', value)
       }
     }
   },

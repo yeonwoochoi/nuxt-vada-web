@@ -69,9 +69,45 @@ export const mutations = {
   logout(state) {
     state.auth.user = {}
     state.auth.loggedIn = false;
-  }
+  },
 }
 
 export const actions = {
+  async nuxtServerInit({commit, dispatch, state}) {
+    await dispatch('refreshPointData')
+  },
+  async refreshPointData({commit, dispatch, state}) {
+    if (!state.auth.loggedIn){
+      commit("setUserInfo", {
+        email: '',
+        leftReport: -1,
+        enterprisePass: '-',
+      })
+    }
+    else {
+      if (state.auth.user['roles'].includes("ROLE_ENTERPRISE_MANAGER_USER") || state.auth.user['roles'].includes("ROLE_ENTERPRISE_USER")) {
+        let payload = {
+          enterpriseId: state.auth.user['enterprise']['enterpriseId']
+        }
+        let enterpriseInfo = await dispatch('user/getEnterpriseAssetInfo', payload)
+        let pass = '-'
+        if (enterpriseInfo.hasOwnProperty('enterprisePass')) {
+          pass = enterpriseInfo['enterprisePass']['expired'] ? '-' : enterpriseInfo['enterprisePass']['expiredAt'].split("T")[0]
+        }
+        commit("setUserInfo", {
+          email: state.auth.user.email,
+          leftReport: enterpriseInfo['enterpriseLeftReport'],
+          enterprisePass: pass,
+        })
+      }
+      else {
+        commit("setUserInfo", {
+          email: state.auth.user.email,
+          leftReport: state.auth.user.leftReport,
+          enterprisePass: '-',
+        })
+      }
+    }
+  }
 }
 

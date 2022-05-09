@@ -144,7 +144,7 @@ export default {
           techPrice: this.techPrice
         }
       ]
-    }
+    },
   },
   methods: {
     async purchase() {

@@ -84,7 +84,7 @@ export default {
   }),
   methods: {
     async submit() {
-      await this.$auth.loginWith('local', { data: { email: this.id, password: this.password } })
+      this.$auth.loginWith('local', { data: { email: this.id, password: this.password } })
         .then((res) => {
           if (res.data.user['roles'].includes("ROLE_ENTERPRISE_USER")) {
             if (res.data.user.enterprise['needChangePassword']) {
@@ -92,6 +92,7 @@ export default {
               return;
             }
           }
+          this.$store.dispatch('refreshPointData')
           this.$router.push(`/`)
         })
         .catch(err => {
