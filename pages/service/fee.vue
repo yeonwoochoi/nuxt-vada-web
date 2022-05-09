@@ -318,7 +318,7 @@ export default {
       }
       else if (this.$auth.user['roles'].includes("ROLE_ENTERPRISE_MANAGER_USER") || this.$auth.user['roles'].includes("ROLE_ENTERPRISE_USER")) {
         this.$notifier.showMessage({
-          content: "기업회원은 문의하기를 통해 포인트를 충전할 수 있습니다.",
+          content: "포인트 충전을 원하시는 기업회원은 고객센터로 문의 바랍니다.",
           color: 'info'
         })
         return
