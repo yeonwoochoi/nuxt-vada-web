@@ -123,6 +123,12 @@ export default {
       'changeOrigin': true,
       'secure': false
     },
+    '/pg': {
+      'target': 'https://vadapartners.com',
+      'pathRewrite': { '^/pg': '' },
+      'changeOrigin': true,
+      'secure': false
+    },
   },
 
   server: {
