@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-dialog v-model="showPurchasePopup" max-width="564" persistent>
       <v-card color="white">
-        <iframe width="564" height="604" id="frame" :src="iframeSrc"/>
+        <iframe width="564" height="604" id="frame" :src="iframeSrc" @load="onLoadIframe"/>
       </v-card>
     </v-dialog>
     <v-row v-if="!purchaseDone" align="center" justify="center">
@@ -405,6 +405,10 @@ export default {
       const { rtncode, rtnmsg, fdtid } = data;
       this.payResult(rtncode, rtnmsg, fdtid)
     },
+
+    onLoadIframe() {
+      document.getElementById('frame').contentDocument.location.reload(true);
+    }
   }
 }
 </script>
