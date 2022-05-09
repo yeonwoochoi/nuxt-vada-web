@@ -256,7 +256,15 @@ export default {
           callback();
         },
         err => {
-          this.$errorHandler.showMessage(err)
+          if (parseInt(err.code) === 10 && parseInt(err['subCode']) >= 10002 && parseInt(err['subCode']) <= 10010) {
+            this.$notifier.showMessage({
+              content: "특허 평가를 위한 데이터가 아직 준비되지 않았습니다.",
+              color: 'info'
+            })
+          }
+          else {
+            this.$errorHandler.showMessage(err)
+          }
           callback(true);
         }
       )
