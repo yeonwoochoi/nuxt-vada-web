@@ -67,7 +67,7 @@
         </v-col>
       </v-row>
     </v-img>
-    <v-container style="height: fit-content; margin-top: 100px; padding: 40px 100px 10px">
+    <v-container style="height: fit-content; margin-top: 100px;" :style="`padding: 40px ${$vuetify.breakpoint.smAndDown ? 10 : 100}px 10px`">
       <v-row align="start" :justify="`${$vuetify.breakpoint.smAndDown ? 'start' : 'center'}`" :class="`${$vuetify.breakpoint.smAndDown ? 'mx-9' : ''}`">
         <v-col cols="12" md="4" style="text-align: start" class="pr-8">
           <p class="mb-1 font-weight-regular" :style="`font-size: ${$vuetify.breakpoint.smAndDown ? 35 : 40}px;`">{{ noticeHeader }}</p>
