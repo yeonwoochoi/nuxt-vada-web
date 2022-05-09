@@ -6,7 +6,7 @@
           <div>
             <div>
               <p class="font-weight-medium mb-0 text-center" style="font-size: 50px;">
-                Vada
+                VADA
               </p>
               <p class="subtitle-1 text-center">
                 로그인 후 Vada의 다양한 서비스를 누려보세요.
