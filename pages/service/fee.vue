@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-dialog v-model="showPurchasePopup" max-width="564" persistent>
       <v-card color="white">
-        <iframe width="564" height="604" id="frame" :src="iframeSrc" @load="onLoadIframe"/>
+        <iframe width="564" height="604" id="frame" :src="iframeSrc"/>
       </v-card>
     </v-dialog>
     <v-row v-if="!purchaseDone" align="center" justify="center">
@@ -286,6 +286,8 @@ export default {
     paymentLog: null,
     purchaseId: '',
     purchaseDone: false,
+
+    isIframeUploadCalled: false
   }),
   computed: {
     header() {
@@ -330,8 +332,8 @@ export default {
       this.tempPurchaseItem = this.selectedItem
       this.payloadData = payment.getPayload()
       this.paymentObj = payment
-      this.iframeSrc = process.env.PG_PAYMENT_URL
       this.showPurchasePopup = true
+      this.iframeSrc = process.env.PG_PAYMENT_URL
     },
 
     onResetPurchase() {
@@ -343,6 +345,7 @@ export default {
       this.tempPurchaseItem = null
       this.selected = []
       this.termsOfPurchaseAgreement = false
+      this.isIframeUploadCalled = false
     },
 
     payResult: function (rtnCode, rtnMsg, fdTid) {
@@ -366,6 +369,7 @@ export default {
     async processApproveData(data) {
       try {
         document.body.removeAttribute("class", "non-scroll");
+        this.isIframeUploadCalled = false
         this.purchaseDone = true
         this.purchaseSuccess = false
         const approvePayment = new VadaApprovePayment(data)
@@ -405,10 +409,6 @@ export default {
       const { rtncode, rtnmsg, fdtid } = data;
       this.payResult(rtncode, rtnmsg, fdtid)
     },
-
-    onLoadIframe() {
-      document.getElementById('frame').contentDocument.location.reload(true);
-    }
   }
 }
 </script>
