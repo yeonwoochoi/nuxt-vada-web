@@ -27,7 +27,7 @@
           <p class="subtitle-1">환영합니다.</p>
           <p class="mb-0">포인트: <strong class="ml-1">{{ userInfo.leftReport.toLocaleString() }}</strong></p>
           <div v-if="isEnterprise">
-            <p class="mb-0 my-1">이용권: <strong class="ml-1">{{ `~ ${userInfo.enterprisePass}` }}</strong></p>
+            <p class="mb-0 my-1">이용권: <strong class="ml-1">{{ `${userInfo.enterprisePass}` }}</strong></p>
             <v-btn
               width="100%"
               text
