@@ -86,13 +86,13 @@ export default {
     async submit() {
       this.$auth.loginWith('local', { data: { email: this.id, password: this.password } })
         .then((res) => {
+          this.$store.dispatch('refreshPointData')
           if (res.data.user['roles'].includes("ROLE_ENTERPRISE_USER")) {
             if (res.data.user.enterprise['needChangePassword']) {
               this.$router.push('/membership/change-password')
               return;
             }
           }
-          this.$store.dispatch('refreshPointData')
           this.$router.push(`/`)
         })
         .catch(err => {

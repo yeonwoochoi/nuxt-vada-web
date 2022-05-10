@@ -95,6 +95,7 @@ export default {
           res => {
             this.isLoading = false;
             alert("비밀번호가 변경되었습니다.")
+            this.$auth.user.enterprise['needChangePassword'] = false
             this.$router.push('/')
           },
           err => {
