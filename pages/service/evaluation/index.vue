@@ -5,7 +5,7 @@
         <main-card :header="header">
           <template v-slot:body>
             <v-row align="center" justify="start">
-              <p class="subtitle-2 font-weight-regular ml-6 mb-6">특허 평가는 <span class="title font-weight-black ml-1">{{lastDataUpdatedAt}}</span>까지 등록된 특허만 가능합니다.</p>
+              <p class="subtitle-2 font-weight-regular pl-6 mb-6">특허 평가는 <span class="title font-weight-black pl-1">{{lastDataUpdatedAt}}</span>까지 등록된 특허만 가능합니다.</p>
             </v-row>
             <v-row align="center" justify="center" class="ma-0">
               <v-card style="width: 100%; height: fit-content;">

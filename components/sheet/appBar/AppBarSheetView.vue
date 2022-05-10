@@ -4,7 +4,7 @@
       <v-container fluid style="height: 100%;">
         <v-row align="center" justify="center" style="height: 100%;">
           <v-col cols="12" align="center" class="mt-4">
-            <pre class="font-weight-bold white--text mt-12 header-anim display-2">{{ headerTitle }}</pre>
+            <pre class="font-weight-bold white--text mt-12 header-anim" :class="`${$vuetify.breakpoint.smAndDown ? 'display-1' : 'display-2'}`">{{ headerTitle }}</pre>
           </v-col>
         </v-row>
       </v-container>

@@ -5,7 +5,7 @@
         <main-card :header="header">
           <template v-slot:body>
             <v-form v-model="valid" ref="form">
-              <v-row align="start" justify="space-around" class="mb-6 px-4" style="width: 100%;">
+              <v-row align="start" justify="space-around" class="mb-6 px-sm-4" style="width: 100%;">
                 <v-col cols="12">
                   <v-card v-if="!success" class="elevation-0 px-12 py-12" style="background-color: #F5F5F5; width: 100%">
                     <v-container fluid>
@@ -47,7 +47,7 @@
                     <v-card class="elevation-0 px-12 py-12 text-center" style="background-color: transparent; border: #F5F5F5 1px solid;">
                       <v-card-title class="headline mb-2 font-weight-bold">문의하신 내용이 정상적으로 접수되었습니다.</v-card-title>
                       <v-card-subtitle class="subtitle-1 font-weight-bold">문의에 대한 답변은 마이페이지에서 확인 가능하십니다.</v-card-subtitle>
-                      <v-card-actions class="mt-4">
+                      <div class="mt-4" style="display: flex; align-items: center; justify-content: center">
                         <custom-button
                           :width="`200`"
                           @submit="reset"
@@ -62,7 +62,7 @@
                           :text="`마이페이지`"
                           class="darken-1 mx-2"
                         />
-                      </v-card-actions>
+                      </div>
                     </v-card>
                   </div>
                 </v-col>

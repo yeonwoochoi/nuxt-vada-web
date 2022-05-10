@@ -3,7 +3,7 @@
     <v-card-text style="height: 100%; position: absolute;">
       <v-container fluid style="height: 100%;">
         <v-row align="center" justify="start" style="height: 100%;">
-          <v-col cols="12" align="start" :style="`margin-top: 4%; ${getWidth > 960 ? 'margin-left: 14%;' : 'margin-left: 10px;'}`">
+          <v-col cols="12" align="start" class="pl-0" :style="`margin-top: 4%; ${getWidth > 600 ? 'margin-left: 14%;' : 'margin-left: 0px;'}`">
             <pre class="font-weight-bold white--text" :class="getWidth > 1264 ? 'display-2' : 'display-1'" style="line-height: 130%;">{{ title }}</pre>
             <pre class="font-weight-bold white--text mt-2" :class="getWidth > 1264 ? 'title' : 'subtitle-1'">{{ subtitle }}</pre>
             <v-btn
