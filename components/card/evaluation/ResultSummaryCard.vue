@@ -23,7 +23,7 @@
               v-bind="attrs"
               color="primary"
               :width="`${$vuetify.breakpoint.smAndDown ? '49%' : '200'}`"
-              :loading="isDownload"
+              :disabled="isDownload"
               height="52px"
               class="mx-1 darken-1 font-weight-bold"
               style="letter-spacing: 1px; text-transform: none;"

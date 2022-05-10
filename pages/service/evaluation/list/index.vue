@@ -147,7 +147,16 @@
         </main-card>
       </v-card>
     </v-row>
-    <v-overlay :value="isDownload"/>
+    <v-overlay :value="isDownload">
+      <p class="white--text font-weight-black headline text-center">보고서 다운로드 중입니다</p>
+      <p class="white--text font-weight-black headline text-center pl-1">잠시만 기다려주세요</p>
+      <div class="mt-6" style="display: flex; justify-content: center;">
+        <v-progress-circular
+          indeterminate
+          color="white"
+        />
+      </div>
+    </v-overlay>
   </v-container>
 </template>
 
