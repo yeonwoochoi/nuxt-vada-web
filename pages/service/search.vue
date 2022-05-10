@@ -109,17 +109,6 @@
                   item-key="indexNo"
                   :no-data-text="noDataText"
                 >
-                  <!--
-                  <template v-slot:top>
-                    <v-btn
-                      class="elevation-0 mt-4 mb-6"
-                      color="primary"
-                      @click="evaluateSelectedAll"
-                    >
-                      일괄평가
-                    </v-btn>
-                  </template>
-                  -->
                   <template v-slot:item.content="{item}">
                     <td class="text-start ellipsis" style="font-size: 13px;">
                       <v-row align="center" justify="start" class="py-4">

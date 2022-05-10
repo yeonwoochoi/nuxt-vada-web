@@ -21,24 +21,6 @@
     <v-divider/>
 
     <drawer-list :items="items" />
-
-    <!--
-    <template #append>
-      <div class="pa-4 text-center">
-        <v-btn
-          block
-          class="font-weight-black"
-          color="red"
-          rounded
-          large
-          target="_blank"
-          to="/"
-          >
-          {{ company }}
-        </v-btn>
-      </div>
-    </template>
-    -->
   </v-navigation-drawer>
 </template>
 

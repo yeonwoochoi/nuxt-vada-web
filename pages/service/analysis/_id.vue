@@ -29,17 +29,6 @@
 
               <v-col cols="12" class="py-2"><v-divider/></v-col>
 
-              <!--
-              <v-col cols="12" sm="2" class="text-sm-center">
-                <p class="analysis-header">권리자명</p>
-              </v-col>
-              <v-col cols="12" sm="9">
-                <p class="analysis-content">{{ lastRightHolderName }}</p>
-              </v-col>
-
-              <v-col cols="12" class="py-2"><v-divider/></v-col>
-              -->
-
               <v-col cols="12" sm="2" class="text-sm-center">
                 <p class="analysis-header">출원인명</p>
               </v-col>

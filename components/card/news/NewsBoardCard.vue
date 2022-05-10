@@ -208,12 +208,6 @@ export default {
         query: query
       })
     },
-    // searchBy v-menu 누르면 호출됨
-    // 위에 sortBy나 page 값이 바뀌는 것과 다르게 검색하기 버튼을 누르지 않으면,
-    // 따로 router push 할 필요가 없으니 그냥 searchBy만 바꿔주는 것임.
-    changeSearchBy(searchBy) {
-      this.searchBy = searchBy;
-    },
     // 검색 버튼 눌렀을 때
     onClickSearchBtn () {
       this.search = this.searchInputText

@@ -24,9 +24,6 @@
           </p>
         </v-btn>
       </v-col>
-      <!--
-      <v-divider v-if="!$vuetify.breakpoint.smAndDown" vertical style="min-height: 100%; background-color: #DCDCDC" class="my-4"/>
-      -->
       <v-col cols="12" sm="10" md="9" class="pl-md-12 mt-4 pa-0">
         <slot name="body"/>
       </v-col>
