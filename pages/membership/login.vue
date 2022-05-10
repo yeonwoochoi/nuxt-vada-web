@@ -9,7 +9,7 @@
                 VADA
               </p>
               <p class="subtitle-1 text-center">
-                로그인 후 Vada의 다양한 서비스를 누려보세요.
+                로그인 후 VADA의 다양한 서비스를 누려보세요.
               </p>
             </div>
             <div class="pb-1">
