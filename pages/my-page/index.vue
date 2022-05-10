@@ -167,7 +167,7 @@ export default {
       if (roles.includes("ROLE_ADMIN")) {
         this.$notifier.showMessage({
           content: '관리 사이트로 이동하여 정보를 변경해주십시오.',
-          color: 'error'
+          color: 'info'
         })
         if (!!callback) callback(false, null);
         return
@@ -177,7 +177,7 @@ export default {
       if (roles.includes("ROLE_ENTERPRISE_USER")) {
         this.$notifier.showMessage({
           content: '기업 일반 회원은 본인이 소속된 기업 관리자 회원의 1:1 문의를 통해\n 회원정보를 변경할 수 있습니다.',
-          color: 'error'
+          color: 'info'
         })
         if (!!callback) callback(false, null);
         return
@@ -186,7 +186,7 @@ export default {
       if (roles.includes("ROLE_ENTERPRISE_MANAGER_USER") && this.activeIndex === 3) {
         this.$notifier.showMessage({
           content: '기업 매니저 회원 탈퇴는 문의하기를 통해 진행될 수 있습니다.',
-          color: 'error'
+          color: 'info'
         })
         if (!!callback) callback(false, null);
         return
