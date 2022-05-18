@@ -174,6 +174,9 @@ export default {
         let result = [];
         for (let i = res.length-1; i >= 0; i--) {
           let temp = res[i]
+          let currentDate = new Date();
+          let expiredAt = new Date(temp['reportExpiredAt']);
+          if (currentDate.getTime() > expiredAt.getTime()) continue
           result.push({
             no: res.length - i,
             id: temp['id'],
